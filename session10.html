@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Python Refresher - Session 10</title>
+<link rel="icon"
+      type="image/png"
+      href="Images/py.png">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+<!-- Prism Theme -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+
+<!-- Prism Line Numbers -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet"/>
+
+<!-- Prism Toolbar -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet"/>
+
+<!-- Toastr -->
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-color: #161b22;
+            --border-color: #30363d;
+            --text-color: #e6edf3;
+            --heading-color: #58a6ff;
+            --accent-color: #7c3aed;
+        }
+
+        html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Poppins', sans-serif;
+    padding-top: 80px;
+}
+
+.navbar-custom {
+    background: #111827;
+    border-bottom: 1px solid var(--border-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+}
+
+
+
+        .session-title {
+            color: white;
+            font-weight: 600;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 90px;
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .sidebar h5 {
+            color: var(--heading-color);
+            margin-bottom: 20px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #c9d1d9;
+            text-decoration: none;
+            padding: 8px 0;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            color: var(--heading-color);
+            padding-left: 5px;
+        }
+
+        .content-card {
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        h2 {
+            color: var(--heading-color);
+            margin-bottom: 20px;
+        }
+
+        p,
+        li {
+            line-height: 1.9;
+        }
+
+        .overview-box {
+            background: #111827;
+            border-left: 4px solid var(--accent-color);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .footer {
+    background: #111827;
+    border-top: 1px solid var(--border-color);
+    padding: 30px 20px;
+    text-align: center;
+    margin-top: 50px;
+    color: #c9d1d9;
+}
+
+pre[class*="language-"] {
+    border-radius: 12px;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #30363d;
+}
+
+.code-title {
+    background: #21262d;
+    color: #58a6ff;
+    padding: 10px 15px;
+    border-radius: 10px 10px 0 0;
+    font-weight: 600;
+    border: 1px solid #30363d;
+    border-bottom: none;
+}
+
+.toolbar-item button {
+    background: #7c3aed !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 4px 12px !important;
+    font-size: 13px !important;
+}
+
+.toolbar-item button:hover {
+    background: #6d28d9 !important;
+}
+
+.table-dark {
+    border-color: #30363d;
+}
+
+.table-dark th {
+    color: #58a6ff;
+}
+
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    border-color: #58a6ff !important;
+}
+
+
+.assignment-box {
+    background: #172554;
+    border-left: 5px solid #3b82f6;
+    border-radius: 12px;
+    padding: 25px;
+    color: #e6edf3;
+}
+
+.assignment-box strong {
+    color: #93c5fd;
+    font-size: 1.1rem;
+}
+
+.assignment-box ol {
+    margin-top: 15px;
+}
+
+.assignment-box li {
+    margin-bottom: 12px;
+}
+
+.btn-success {
+    background: #238636;
+    border-color: #238636;
+}
+
+.btn-success:hover {
+    background: #2ea043;
+    border-color: #2ea043;
+}
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Navbar -->
+
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+        <div class="container">
+
+           <span class="navbar-brand session-title">
+    <i class="fa-brands fa-python"></i>
+    Python Refresher - Session 10
+</span>
+
+        <div class="d-flex gap-2">
+        
+            <a href="playground.html" target="_blank" class="btn btn-success">
+                <i class="fa-solid fa-play"></i>
+                Playground
+            </a>
+        
+            <a href="index.html" class="btn btn-outline-light">
+                <i class="fa-solid fa-list"></i>
+                All Sessions
+            </a>
+        
+        </div>
+
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+
+        <div class="row">
+
+            <!-- Sidebar -->
+
+            <div class="col-lg-3">
+
+              <div class="sidebar">
+
+    <h5>
+        <i class="fa-solid fa-book"></i>
+        Contents
+    </h5>
+
+    <a href="#oop">OOP</a>
+    <a href="#classobject">Class & Object</a>
+    <a href="#constructor">Constructor</a>
+    <a href="#inheritance">Inheritance</a>
+    <a href="#revision">Quick Revision</a>
+    <a href="#assignment">Assignment</a>
+
+</div>
+
+            </div>
+
+            <!-- Main Content -->
+
+            <div class="col-lg-9">
+
+            <div class="content-card">
+
+    <h2>
+        <i class="fa-solid fa-graduation-cap"></i>
+        Session Overview
+    </h2>
+
+    <div class="overview-box">
+
+        <ul class="mb-0">
+
+            <li>Object Oriented Programming</li>
+            <li>Class</li>
+            <li>Object</li>
+            <li>Constructor</li>
+            <li>Inheritance</li>
+
+        </ul>
+
+    </div>
+
+</div>
+             <div class="content-card" id="oop">
+
+    <h2>
+        <i class="fa-solid fa-cubes"></i>
+        Object Oriented Programming (OOP)
+    </h2>
+
+    <p>
+        Object Oriented Programming (OOP) is a programming approach
+        that organizes code using Classes and Objects.
+    </p>
+
+    <p>
+        OOP helps us write reusable, maintainable and structured programs.
+    </p>
+
+    <table class="table table-dark table-bordered mt-3">
+        <thead>
+            <tr>
+                <th>Concept</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Class</td>
+                <td>Blueprint used to create objects.</td>
+            </tr>
+            <tr>
+                <td>Object</td>
+                <td>Instance of a class.</td>
+            </tr>
+            <tr>
+                <td>Constructor</td>
+                <td>Initializes object data.</td>
+            </tr>
+            <tr>
+                <td>Inheritance</td>
+                <td>Allows one class to use features of another class.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h5>Why Use OOP?</h5>
+
+    <ul>
+        <li>Improves code organization.</li>
+        <li>Promotes code reuse.</li>
+        <li>Makes large applications easier to manage.</li>
+        <li>Widely used in Django development.</li>
+    </ul>
+
+</div>
+<div class="content-card" id="classobject">
+
+    <h2>
+        <i class="fa-solid fa-cube"></i>
+        Class & Object
+    </h2>
+
+    <p>
+        A Class is a blueprint and an Object is an instance created from that blueprint.
+    </p>
+
+    <h5>Example</h5>
+
+<pre class="line-numbers"><code class="language-python">class Student:
+
+    def introduce(self):
+        print("Hello Student")
+
+s1 = Student()
+
+s1.introduce()</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">Hello Student</code></pre>
+<div class="content-card">
+
+    <h5>
+        <i class="fa-solid fa-circle-info"></i>
+        Understanding self
+    </h5>
+
+    <p class="mb-2">
+        <strong>self</strong> refers to the current object of the class.
+        It is used to access variables and methods belonging to that object.
+    </p>
+
+<pre class="line-numbers"><code class="language-python">class Student:
+
+    def introduce(self):
+        print("Hello Student")
+
+s1 = Student()
+
+s1.introduce()</code></pre>
+
+    <p class="mb-0">
+        When <strong>s1.introduce()</strong> is executed, Python automatically passes
+        <strong>s1</strong> as the value of <strong>self</strong>.
+    </p>
+
+</div>
+
+    <h5>Class with Attributes</h5>
+
+<pre class="line-numbers"><code class="language-python">class Student:
+
+    name = "Shree"
+    city = "Mumbai"
+
+s1 = Student()
+
+print(s1.name)
+print(s1.city)</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">Shree
+Mumbai</code></pre>
+
+    <p>
+        <strong>Note:</strong> Multiple objects can be created from the same class.
+    </p>
+
+</div>
+
+<div class="content-card" id="constructor">
+
+    <h2>
+        <i class="fa-solid fa-hammer"></i>
+        Constructor
+    </h2>
+
+    <p>
+        A Constructor is a special method that is automatically called when an object is created.
+    </p>
+
+    <p>
+        In Python, the constructor is defined using the
+        <code>__init__()</code> method.
+    </p>
+
+    <h5>Example 1 : Constructor Execution</h5>
+
+<pre class="line-numbers"><code class="language-python">class Student:
+
+    def __init__(self):
+        print("Object Created")
+
+s1 = Student()</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">Object Created</code></pre>
+
+    <h5>Example 2 : Initialize Object Data</h5>
+
+<pre class="line-numbers"><code class="language-python">class Student:
+
+    def __init__(self):
+        self.name = "Shree"
+        self.city = "Mumbai"
+
+s1 = Student()
+
+print(s1.name)
+print(s1.city)</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">Shree
+Mumbai</code></pre>
+
+    <h5>Example 3 : Constructor with Parameters</h5>
+
+<pre class="line-numbers"><code class="language-python">class Student:
+
+    def __init__(self, name, city):
+        self.name = name
+        self.city = city
+
+s1 = Student("Shree", "Mumbai")
+
+print(s1.name)
+print(s1.city)</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">Shree
+Mumbai</code></pre>
+
+    <p>
+        <strong>Note:</strong> Constructors are commonly used to initialize object data when an object is created.
+    </p>
+
+</div>
+<div class="content-card">
+
+    <h5>
+        <i class="fa-solid fa-lightbulb"></i>
+        Constructor vs Normal Method
+    </h5>
+
+    <p>
+        In the previous examples, we created objects without using a constructor.
+        We simply created methods and called them manually.
+    </p>
+
+<pre class="line-numbers"><code class="language-python">class Student:
+
+    def introduce(self):
+        print("Hello Student")
+
+s1 = Student()
+
+s1.introduce()</code></pre>
+
+    <p>
+        Here, the <strong>introduce()</strong> method executes only when we call it explicitly.
+    </p>
+
+    <p>
+        A Constructor is different because it runs automatically when an object is created.
+    </p>
+
+<pre class="line-numbers"><code class="language-python">class Student:
+
+    def __init__(self):
+        print("Object Created")
+
+s1 = Student()</code></pre>
+
+    <p class="mb-0">
+        When <strong>s1 = Student()</strong> is executed, the
+        <strong>__init__()</strong> constructor runs automatically.
+    </p>
+
+</div>
+<div class="content-card" id="inheritance">
+
+    <h2>
+        <i class="fa-solid fa-code-branch"></i>
+        Inheritance
+    </h2>
+
+    <p>
+        Inheritance allows one class to use the properties and methods of another class.
+    </p>
+
+    <p>
+        The existing class is called the <strong>Parent Class</strong> and the new class is called the <strong>Child Class</strong>.
+    </p>
+
+    <h5>Example</h5>
+
+<pre class="line-numbers"><code class="language-python">class Person:
+
+    def introduce(self):
+        print("I am a Person")
+
+class Student(Person):
+    pass
+
+s1 = Student()
+
+s1.introduce()</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">I am a Person</code></pre>
+<div class="content-card">
+
+    <h5>
+        <i class="fa-solid fa-circle-info"></i>
+        Understanding pass
+    </h5>
+
+    <p>
+        The <strong>pass</strong> statement is used when we do not want to write any code inside a class, function or loop.
+    </p>
+
+    <p>
+        It acts as a placeholder and prevents syntax errors.
+    </p>
+
+<pre class="line-numbers"><code class="language-python">class Student:
+    pass</code></pre>
+
+    <p class="mb-0">
+        Here, the Student class is empty, so <strong>pass</strong> is used as a placeholder.
+    </p>
+
+</div>
+    <h5>Adding Child Class Method</h5>
+
+<pre class="line-numbers"><code class="language-python">class Person:
+
+    def introduce(self):
+        print("I am a Person")
+
+class Student(Person):
+
+    def study(self):
+        print("Studying Python")
+
+s1 = Student()
+
+s1.introduce()
+s1.study()</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">I am a Person
+Studying Python</code></pre>
+
+    <h5>Inheritance Diagram</h5>
+
+<pre class="line-numbers"><code class="language-python">Person
+   ↑
+Student</code></pre>
+
+    <p>
+        <strong>Note:</strong> Inheritance helps in code reuse because the child class can use features of the parent class.
+    </p>
+
+</div>
+<div class="content-card" id="revision">
+
+    <h2>
+        <i class="fa-solid fa-bolt"></i>
+        Quick Revision
+    </h2>
+
+    <div class="row">
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">OOP</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Uses Classes & Objects</li>
+                        <li>Reusable Code</li>
+                        <li>Structured Programs</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Class</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Blueprint</li>
+                        <li>Defines Data</li>
+                        <li>Defines Methods</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Object</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Instance of Class</li>
+                        <li>Created from Class</li>
+                        <li>Accesses Members</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">self</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Current Object</li>
+                        <li>Access Variables</li>
+                        <li>Access Methods</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Constructor</h5>
+                    <ul class="mb-0 text-light">
+                        <li>__init__()</li>
+                        <li>Runs Automatically</li>
+                        <li>Initialize Data</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Inheritance</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Code Reuse</li>
+                        <li>Parent Class</li>
+                        <li>Child Class</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<div class="content-card" id="assignment">
+
+    <h2>
+        <i class="fa-solid fa-clipboard-check"></i>
+        Assignment
+    </h2>
+
+    <div class="assignment-box">
+
+      
+
+        <ol>
+            <li>Create a class named Student and display a welcome message using a method.</li>
+
+            <li>Create a class Employee with attributes Name and City and display their values using an object.</li>
+
+            <li>Create a class Student with a constructor that initializes Name and Course.</li>
+
+            <li>Create a class Person and a child class Student using inheritance. Call methods from both classes.</li>
+
+            <li>Create a class Product with a constructor that accepts Product Name and Price and displays them.</li>
+        </ol>
+
+    </div>
+
+</div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <footer class="footer">
+
+    <a href="https://www.revolutionit.in" target="_blank">
+        <img src="Images/whitelogo.png"
+             alt="Company Logo"
+             style="height:55px; margin-bottom:10px;">
+    </a>
+
+    <div>
+        Full Stack Development Training -  Python Django
+    </div>
+
+   
+
+</footer>
+<!-- JQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- Toastr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<!-- Prism Core -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/prism.min.js"></script>
+
+<!-- Python -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-python.min.js"></script>
+
+<!-- Bash -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-bash.min.js"></script>
+
+<!-- Line Numbers -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+
+<!-- Toolbar -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/toolbar/prism-toolbar.min.js"></script>
+
+<!-- Copy Button -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+
+<script>
+
+document.addEventListener("click", function(e){
+
+    if(e.target.innerText === "Copy")
+    {
+        toastr.success("Code copied successfully");
+    }
+
+});
+
+toastr.options = {
+    closeButton: true,
+    progressBar: true,
+    positionClass: "toast-bottom-right",
+    timeOut: "2000"
+};
+
+</script>
+</body>
+
+</html>

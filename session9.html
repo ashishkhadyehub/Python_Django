@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Python Refresher - Session 9</title>
+<link rel="icon"
+      type="image/png"
+      href="Images/py.png">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+<!-- Prism Theme -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+
+<!-- Prism Line Numbers -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet"/>
+
+<!-- Prism Toolbar -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet"/>
+
+<!-- Toastr -->
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-color: #161b22;
+            --border-color: #30363d;
+            --text-color: #e6edf3;
+            --heading-color: #58a6ff;
+            --accent-color: #7c3aed;
+        }
+
+        html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Poppins', sans-serif;
+    padding-top: 80px;
+}
+
+.navbar-custom {
+    background: #111827;
+    border-bottom: 1px solid var(--border-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+}
+
+
+
+        .session-title {
+            color: white;
+            font-weight: 600;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 90px;
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .sidebar h5 {
+            color: var(--heading-color);
+            margin-bottom: 20px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #c9d1d9;
+            text-decoration: none;
+            padding: 8px 0;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            color: var(--heading-color);
+            padding-left: 5px;
+        }
+
+        .content-card {
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        h2 {
+            color: var(--heading-color);
+            margin-bottom: 20px;
+        }
+
+        p,
+        li {
+            line-height: 1.9;
+        }
+
+        .overview-box {
+            background: #111827;
+            border-left: 4px solid var(--accent-color);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .footer {
+    background: #111827;
+    border-top: 1px solid var(--border-color);
+    padding: 30px 20px;
+    text-align: center;
+    margin-top: 50px;
+    color: #c9d1d9;
+}
+
+pre[class*="language-"] {
+    border-radius: 12px;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #30363d;
+}
+
+.code-title {
+    background: #21262d;
+    color: #58a6ff;
+    padding: 10px 15px;
+    border-radius: 10px 10px 0 0;
+    font-weight: 600;
+    border: 1px solid #30363d;
+    border-bottom: none;
+}
+
+.toolbar-item button {
+    background: #7c3aed !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 4px 12px !important;
+    font-size: 13px !important;
+}
+
+.toolbar-item button:hover {
+    background: #6d28d9 !important;
+}
+
+.table-dark {
+    border-color: #30363d;
+}
+
+.table-dark th {
+    color: #58a6ff;
+}
+
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    border-color: #58a6ff !important;
+}
+
+
+.assignment-box {
+    background: #172554;
+    border-left: 5px solid #3b82f6;
+    border-radius: 12px;
+    padding: 25px;
+    color: #e6edf3;
+}
+
+.assignment-box strong {
+    color: #93c5fd;
+    font-size: 1.1rem;
+}
+
+.assignment-box ol {
+    margin-top: 15px;
+}
+
+.assignment-box li {
+    margin-bottom: 12px;
+}
+
+.btn-success {
+    background: #238636;
+    border-color: #238636;
+}
+
+.btn-success:hover {
+    background: #2ea043;
+    border-color: #2ea043;
+}
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Navbar -->
+
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+        <div class="container">
+
+           <span class="navbar-brand session-title">
+    <i class="fa-brands fa-python"></i>
+    Python Refresher - Session 9
+</span>
+
+        <div class="d-flex gap-2">
+        
+            <a href="playground.html" target="_blank" class="btn btn-success">
+                <i class="fa-solid fa-play"></i>
+                Playground
+            </a>
+        
+            <a href="index.html" class="btn btn-outline-light">
+                <i class="fa-solid fa-list"></i>
+                All Sessions
+            </a>
+        
+        </div>
+
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+
+        <div class="row">
+
+            <!-- Sidebar -->
+
+            <div class="col-lg-3">
+
+               <div class="sidebar">
+
+    <h5>
+        <i class="fa-solid fa-book"></i>
+        Contents
+    </h5>
+
+    <a href="#collections">Collections</a>
+    <a href="#list">List</a>
+    <a href="#tuple">Tuple</a>
+    <a href="#set">Set</a>
+    <a href="#dictionary">Dictionary</a>
+    <a href="#revision">Quick Revision</a>
+    <a href="#assignment">Assignment</a>
+
+</div>
+
+            </div>
+
+            <!-- Main Content -->
+
+            <div class="col-lg-9">
+
+            <div class="content-card">
+
+    <h2>
+        <i class="fa-solid fa-graduation-cap"></i>
+        Session Overview
+    </h2>
+
+    <div class="overview-box">
+
+        <ul class="mb-0">
+
+            <li>Collections</li>
+            <li>List</li>
+            <li>Tuple</li>
+            <li>Set</li>
+            <li>Dictionary</li>
+
+        </ul>
+
+    </div>
+
+</div>
+             <div class="content-card" id="collections">
+
+    <h2>
+        <i class="fa-solid fa-boxes-stacked"></i>
+        Collections
+    </h2>
+
+    <p>
+        Collections are data types used to store multiple values in a single variable.
+        They help us organize and manage data efficiently.
+    </p>
+
+    <p>
+        Python provides four commonly used collection types:
+    </p>
+
+    <table class="table table-dark table-bordered mt-3">
+        <thead>
+            <tr>
+                <th>Collection</th>
+                <th>Ordered</th>
+                <th>Allows Duplicates</th>
+                <th>Mutable</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>List</td>
+                <td>Yes</td>
+                <td>Yes</td>
+                <td>Yes</td>
+            </tr>
+            <tr>
+                <td>Tuple</td>
+                <td>Yes</td>
+                <td>Yes</td>
+                <td>No</td>
+            </tr>
+            <tr>
+                <td>Set</td>
+                <td>No</td>
+                <td>No</td>
+                <td>Yes</td>
+            </tr>
+            <tr>
+                <td>Dictionary</td>
+                <td>Yes</td>
+                <td>Keys: No</td>
+                <td>Yes</td>
+            </tr>
+        </tbody>
+    </table>
+
+ <div class="mt-4">
+
+    <h5>Mutable vs Immutable</h5>
+
+    <ul>
+        <li>
+            <strong>Mutable:</strong> Data can be modified after creation.
+            Example: List, Set, Dictionary.
+        </li>
+
+        <li>
+            <strong>Immutable:</strong> Data cannot be modified after creation.
+            Example: Tuple.
+        </li>
+    </ul>
+
+<pre class="line-numbers"><code class="language-python"># Mutable Example (List)
+
+students = ["Shree", "Vinayak"]
+
+students.append("Rohit")
+
+print(students)</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">['Shree', 'Vinayak', 'Rohit']</code></pre>
+
+<pre class="line-numbers"><code class="language-python"># Immutable Example (Tuple)
+
+students = ("Shree", "Vinayak")
+
+students[0] = "Rohit"</code></pre>
+
+    <div class="code-title">
+        Result
+    </div>
+
+<pre class="line-numbers"><code class="language-python">TypeError:
+'tuple' object does not support item assignment</code></pre>
+
+</div>
+
+</div>
+<div class="content-card" id="list">
+
+    <h2>
+        <i class="fa-solid fa-list"></i>
+        List
+    </h2>
+
+    <p>
+        A List is an ordered collection that can store multiple values.
+        Lists are mutable, which means their contents can be modified.
+    </p>
+
+    <h5>Creating a List</h5>
+
+<pre class="line-numbers"><code class="language-python">students = ["Shree", "Vinayak", "Rohit"]
+
+print(students)</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">['Shree', 'Vinayak', 'Rohit']</code></pre>
+
+    <h5>Accessing List Elements</h5>
+
+<pre class="line-numbers"><code class="language-python">students = ["Shree", "Vinayak", "Rohit"]
+
+print(students[0])
+print(students[1])</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">Shree
+Vinayak</code></pre>
+
+    <h5>Adding Item using append()</h5>
+
+<pre class="line-numbers"><code class="language-python">students = ["Shree", "Vinayak"]
+
+students.append("Rohit")
+
+print(students)</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">['Shree', 'Vinayak', 'Rohit']</code></pre>
+
+    <h5>Looping Through a List</h5>
+
+<pre class="line-numbers"><code class="language-python">students = ["Shree", "Vinayak", "Rohit"]
+
+for student in students:
+    print(student)</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">Shree
+Vinayak
+Rohit</code></pre>
+
+</div>
+
+<div class="content-card" id="tuple">
+
+    <h2>
+        <i class="fa-solid fa-link"></i>
+        Tuple
+    </h2>
+
+    <p>
+        A Tuple is an ordered collection used to store multiple values.
+        Unlike Lists, Tuples are immutable, which means their values cannot be changed after creation.
+    </p>
+
+    <h5>Creating a Tuple</h5>
+
+<pre class="line-numbers"><code class="language-python">students = ("Shree", "Vinayak", "Rohit")
+
+print(students)</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">('Shree', 'Vinayak', 'Rohit')</code></pre>
+
+    <h5>Accessing Tuple Elements</h5>
+
+<pre class="line-numbers"><code class="language-python">students = ("Shree", "Vinayak", "Rohit")
+
+print(students[0])
+print(students[1])</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">Shree
+Vinayak</code></pre>
+
+    <h5>Tuple is Immutable</h5>
+
+<pre class="line-numbers"><code class="language-python">students = ("Shree", "Vinayak", "Rohit")
+
+students[0] = "Ram"</code></pre>
+
+    <div class="code-title">
+        Result
+    </div>
+
+<pre class="line-numbers"><code class="language-python">TypeError:
+'tuple' object does not support item assignment</code></pre>
+
+    <p>
+        <strong>Note:</strong> Use Tuple when data should not be modified after creation.
+    </p>
+
+</div>
+
+<div class="content-card" id="set">
+
+    <h2>
+        <i class="fa-solid fa-layer-group"></i>
+        Set
+    </h2>
+
+    <p>
+        A Set is an unordered collection of unique values.
+        Duplicate values are automatically removed.
+    </p>
+
+    <h5>Creating a Set</h5>
+
+<pre class="line-numbers"><code class="language-python">numbers = {10, 20, 30, 40}
+
+print(numbers)</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">{10, 20, 30, 40}</code></pre>
+
+    <h5>Duplicate Values are Removed</h5>
+
+<pre class="line-numbers"><code class="language-python">numbers = {10, 20, 20, 30, 30, 40}
+
+print(numbers)</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">{10, 20, 30, 40}</code></pre>
+
+    <h5>Adding an Item using add()</h5>
+
+<pre class="line-numbers"><code class="language-python">numbers = {10, 20, 30}
+
+numbers.add(40)
+
+print(numbers)</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">{10, 20, 30, 40}</code></pre>
+
+    <h5>Looping Through a Set</h5>
+
+<pre class="line-numbers"><code class="language-python">numbers = {10, 20, 30}
+
+for num in numbers:
+    print(num)</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">10
+20
+30</code></pre>
+
+    <p>
+        <strong>Note:</strong> Since Sets are unordered, the output order may vary.
+    </p>
+
+</div>
+
+<div class="content-card" id="dictionary">
+
+    <h2>
+        <i class="fa-solid fa-book-open"></i>
+        Dictionary
+    </h2>
+
+    <p>
+        A Dictionary stores data in <strong>key-value</strong> pairs.
+        Each value is accessed using its corresponding key.
+    </p>
+
+    <h5>Creating a Dictionary</h5>
+
+<pre class="line-numbers"><code class="language-python">student = {
+    "name": "Shree",
+    "city": "Mumbai",
+    "age": 22
+}
+
+print(student)</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">{'name': 'Shree', 'city': 'Mumbai', 'age': 22}</code></pre>
+
+    <h5>Accessing Values</h5>
+
+<pre class="line-numbers"><code class="language-python">student = {
+    "name": "Shree",
+    "city": "Mumbai"
+}
+
+print(student["name"])
+print(student["city"])</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">Shree
+Mumbai</code></pre>
+
+    <h5>Adding a New Key</h5>
+
+<pre class="line-numbers"><code class="language-python">student = {
+    "name": "Shree"
+}
+
+student["city"] = "Mumbai"
+
+print(student)</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">{'name': 'Shree', 'city': 'Mumbai'}</code></pre>
+
+    <h5>Looping Through a Dictionary</h5>
+
+<pre class="line-numbers"><code class="language-python">student = {
+    "name": "Shree",
+    "city": "Mumbai"
+}
+
+for key, value in student.items():
+    print(key, value)</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">name Shree
+city Mumbai</code></pre>
+
+    <p>
+        <strong>Note:</strong> Dictionaries are heavily used in Python and Django for storing structured data using key-value pairs.
+    </p>
+
+</div>
+<div class="content-card" id="revision">
+
+    <h2>
+        <i class="fa-solid fa-bolt"></i>
+        Quick Revision
+    </h2>
+
+    <div class="row">
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">List</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Ordered</li>
+                        <li>Mutable</li>
+                        <li>Allows Duplicates</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Tuple</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Ordered</li>
+                        <li>Immutable</li>
+                        <li>Allows Duplicates</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Set</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Unique Values</li>
+                        <li>Mutable</li>
+                        <li>Unordered</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Dictionary</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Key-Value Pairs</li>
+                        <li>Mutable</li>
+                        <li>Ordered</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Mutable</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Can Be Modified</li>
+                        <li>List</li>
+                        <li>Set, Dictionary</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Immutable</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Cannot Be Modified</li>
+                        <li>Tuple</li>
+                        <li>Fixed Data</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<div class="content-card" id="assignment">
+
+    <h2>
+        <i class="fa-solid fa-clipboard-check"></i>
+        Assignment
+    </h2>
+
+    <div class="assignment-box">
+
+     
+
+        <ol>
+            <li>Create a List of 5 student names and display all names using a loop.</li>
+
+            <li>Create a Tuple containing City Names and display the first and last city.</li>
+
+            <li>Create a Set with duplicate numbers and display the final Set.</li>
+
+            <li>Create a Dictionary containing Name, City and Age of a student and display all values.</li>
+
+            <li>Create a Dictionary of an employee and display all key-value pairs using a loop.</li>
+        </ol>
+
+    </div>
+
+</div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <footer class="footer">
+
+    <a href="https://www.revolutionit.in" target="_blank">
+        <img src="Images/whitelogo.png"
+             alt="Company Logo"
+             style="height:55px; margin-bottom:10px;">
+    </a>
+
+    <div>
+        Full Stack Development Training -  Python Django
+    </div>
+
+   
+
+</footer>
+<!-- JQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- Toastr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<!-- Prism Core -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/prism.min.js"></script>
+
+<!-- Python -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-python.min.js"></script>
+
+<!-- Bash -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-bash.min.js"></script>
+
+<!-- Line Numbers -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+
+<!-- Toolbar -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/toolbar/prism-toolbar.min.js"></script>
+
+<!-- Copy Button -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+
+<script>
+
+document.addEventListener("click", function(e){
+
+    if(e.target.innerText === "Copy")
+    {
+        toastr.success("Code copied successfully");
+    }
+
+});
+
+toastr.options = {
+    closeButton: true,
+    progressBar: true,
+    positionClass: "toast-bottom-right",
+    timeOut: "2000"
+};
+
+</script>
+</body>
+
+</html>

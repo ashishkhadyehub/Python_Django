@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Python Refresher - Session 8</title>
+<link rel="icon"
+      type="image/png"
+      href="Images/py.png">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+<!-- Prism Theme -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+
+<!-- Prism Line Numbers -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet"/>
+
+<!-- Prism Toolbar -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet"/>
+
+<!-- Toastr -->
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-color: #161b22;
+            --border-color: #30363d;
+            --text-color: #e6edf3;
+            --heading-color: #58a6ff;
+            --accent-color: #7c3aed;
+        }
+
+        html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Poppins', sans-serif;
+    padding-top: 80px;
+}
+
+.navbar-custom {
+    background: #111827;
+    border-bottom: 1px solid var(--border-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+}
+
+
+
+        .session-title {
+            color: white;
+            font-weight: 600;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 90px;
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .sidebar h5 {
+            color: var(--heading-color);
+            margin-bottom: 20px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #c9d1d9;
+            text-decoration: none;
+            padding: 8px 0;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            color: var(--heading-color);
+            padding-left: 5px;
+        }
+
+        .content-card {
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        h2 {
+            color: var(--heading-color);
+            margin-bottom: 20px;
+        }
+
+        p,
+        li {
+            line-height: 1.9;
+        }
+
+        .overview-box {
+            background: #111827;
+            border-left: 4px solid var(--accent-color);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .footer {
+    background: #111827;
+    border-top: 1px solid var(--border-color);
+    padding: 30px 20px;
+    text-align: center;
+    margin-top: 50px;
+    color: #c9d1d9;
+}
+
+pre[class*="language-"] {
+    border-radius: 12px;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #30363d;
+}
+
+.code-title {
+    background: #21262d;
+    color: #58a6ff;
+    padding: 10px 15px;
+    border-radius: 10px 10px 0 0;
+    font-weight: 600;
+    border: 1px solid #30363d;
+    border-bottom: none;
+}
+
+.toolbar-item button {
+    background: #7c3aed !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 4px 12px !important;
+    font-size: 13px !important;
+}
+
+.toolbar-item button:hover {
+    background: #6d28d9 !important;
+}
+
+.table-dark {
+    border-color: #30363d;
+}
+
+.table-dark th {
+    color: #58a6ff;
+}
+
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    border-color: #58a6ff !important;
+}
+
+
+.assignment-box {
+    background: #172554;
+    border-left: 5px solid #3b82f6;
+    border-radius: 12px;
+    padding: 25px;
+    color: #e6edf3;
+}
+
+.assignment-box strong {
+    color: #93c5fd;
+    font-size: 1.1rem;
+}
+
+.assignment-box ol {
+    margin-top: 15px;
+}
+
+.assignment-box li {
+    margin-bottom: 12px;
+}
+
+.btn-success {
+    background: #238636;
+    border-color: #238636;
+}
+
+.btn-success:hover {
+    background: #2ea043;
+    border-color: #2ea043;
+}
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Navbar -->
+
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+        <div class="container">
+
+           <span class="navbar-brand session-title">
+    <i class="fa-brands fa-python"></i>
+    Python Refresher - Session 8
+</span>
+
+        <div class="d-flex gap-2">
+        
+            <a href="playground.html" target="_blank" class="btn btn-success">
+                <i class="fa-solid fa-play"></i>
+                Playground
+            </a>
+        
+            <a href="index.html" class="btn btn-outline-light">
+                <i class="fa-solid fa-list"></i>
+                All Sessions
+            </a>
+        
+        </div>
+
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+
+        <div class="row">
+
+            <!-- Sidebar -->
+
+            <div class="col-lg-3">
+
+               <div class="sidebar">
+
+    <h5>
+        <i class="fa-solid fa-book"></i>
+        Contents
+    </h5>
+
+    <a href="#loops">Loops</a>
+    <a href="#forloop">For Loop</a>
+    <a href="#whileloop">While Loop</a>
+    <a href="#breakcontinue">Break & Continue</a>
+    <a href="#functions">Functions</a>
+    <a href="#parameters">Parameters</a>
+    <a href="#returnvalue">Return Values</a>
+    <a href="#comp">print() vs return</a>
+    <a href="#revision">Quick Revision</a>
+    <a href="#assignment">Assignment</a>
+
+</div>
+
+            </div>
+
+            <!-- Main Content -->
+
+            <div class="col-lg-9">
+
+             <div class="content-card">
+
+    <h2>
+        <i class="fa-solid fa-graduation-cap"></i>
+        Session Overview
+    </h2>
+
+    <div class="overview-box">
+
+        <ul class="mb-0">
+
+            <li>Loops</li>
+            <li>For Loop</li>
+            <li>While Loop</li>
+            <li>Break Statement</li>
+            <li>Continue Statement</li>
+            <li>Functions</li>
+            <li>Parameters</li>
+            <li>Return Values</li>
+
+        </ul>
+
+    </div>
+
+</div>
+              <div class="content-card" id="loops">
+
+    <h2>
+        <i class="fa-solid fa-repeat"></i>
+        Loops
+    </h2>
+
+    <p>
+        Loops are used to execute a block of code repeatedly.
+        Instead of writing the same statement multiple times,
+        we can use loops to automate repetitive tasks.
+    </p>
+
+    <p>
+        Python provides two main looping statements:
+    </p>
+
+    <ul>
+        <li>for loop</li>
+        <li>while loop</li>
+    </ul>
+
+    <p>
+        Loops are commonly used for displaying records,
+        processing data and performing repetitive operations.
+    </p>
+
+</div>
+
+<div class="content-card" id="forloop">
+
+    <h2>
+        <i class="fa-solid fa-arrow-rotate-right"></i>
+        For Loop
+    </h2>
+
+    <p>
+        The for loop is used to execute a block of code a fixed number of times.
+    </p>
+
+    <h5>Syntax</h5>
+
+<pre class="line-numbers"><code class="language-python">for variable in sequence:
+    statements</code></pre>
+
+    <h5>Example 1 : Print Numbers 1 to 5</h5>
+
+<pre class="line-numbers"><code class="language-python">for i in range(1, 6):
+    print(i)</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">1
+2
+3
+4
+5</code></pre>
+
+    <h5>Example 2 : Print Student Name 5 Times</h5>
+
+<pre class="line-numbers"><code class="language-python">for i in range(5):
+    print("Shree")</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">Shree
+Shree
+Shree
+Shree
+Shree</code></pre>
+
+    <h5>Understanding range()</h5>
+
+    <table class="table table-dark table-bordered mt-3">
+        <thead>
+            <tr>
+                <th>Statement</th>
+                <th>Output</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>range(5)</td>
+                <td>0 to 4</td>
+            </tr>
+            <tr>
+                <td>range(1,5)</td>
+                <td>1 to 4</td>
+            </tr>
+            <tr>
+                <td>range(1,6)</td>
+                <td>1 to 5</td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>
+
+<div class="content-card" id="whileloop">
+
+    <h2>
+        <i class="fa-solid fa-clock-rotate-left"></i>
+        While Loop
+    </h2>
+
+    <p>
+        The while loop executes a block of code as long as the specified condition is True.
+    </p>
+
+    <h5>Syntax</h5>
+
+<pre class="line-numbers"><code class="language-python">while condition:
+    statements</code></pre>
+
+    <h5>Example 1 : Print Numbers 1 to 5</h5>
+
+<pre class="line-numbers"><code class="language-python">i = 1
+
+while i <= 5:
+    print(i)
+    i = i + 1</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">1
+2
+3
+4
+5</code></pre>
+
+    <h5>Example 2 : Print Student Name 3 Times</h5>
+
+<pre class="line-numbers"><code class="language-python">count = 1
+
+while count <= 3:
+    print("Shree")
+    count = count + 1</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">Shree
+Shree
+Shree</code></pre>
+
+    <p>
+        <strong>Note:</strong> Always update the loop variable inside a while loop,
+        otherwise the loop may run forever (Infinite Loop).
+    </p>
+
+</div>
+<div class="content-card" id="breakcontinue">
+
+    <h2>
+        <i class="fa-solid fa-forward"></i>
+        Break & Continue
+    </h2>
+
+    <p>
+        Break and Continue statements are used to control loop execution.
+    </p>
+
+    <h5>Break Statement</h5>
+
+    <p>
+        The break statement immediately terminates the loop.
+    </p>
+
+<pre class="line-numbers"><code class="language-python">for i in range(1, 11):
+
+    if i == 6:
+        break
+
+    print(i)</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">1
+2
+3
+4
+5</code></pre>
+
+    <h5>Continue Statement</h5>
+
+    <p>
+        The continue statement skips the current iteration and moves to the next iteration.
+    </p>
+
+<pre class="line-numbers"><code class="language-python">for i in range(1, 6):
+
+    if i == 3:
+        continue
+
+    print(i)</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">1
+2
+4
+5</code></pre>
+
+    <h5>Difference Between Break and Continue</h5>
+
+    <table class="table table-dark table-bordered mt-3">
+        <thead>
+            <tr>
+                <th>Break</th>
+                <th>Continue</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Terminates the loop completely.</td>
+                <td>Skips current iteration only.</td>
+            </tr>
+            <tr>
+                <td>Loop execution stops.</td>
+                <td>Loop continues with next iteration.</td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>
+<div class="content-card" id="functions">
+
+    <h2>
+        <i class="fa-solid fa-gears"></i>
+        Functions
+    </h2>
+
+    <p>
+        A function is a block of code that performs a specific task.
+        Functions help us avoid code duplication and make programs easier to manage.
+    </p>
+
+    <h5>Syntax</h5>
+
+<pre class="line-numbers"><code class="language-python">def function_name():
+    statements
+
+function_name()</code></pre>
+
+    <h5>Example 1 : Simple Function</h5>
+
+<pre class="line-numbers"><code class="language-python">def greet():
+    print("Welcome to Python")
+
+greet()</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">Welcome to Python</code></pre>
+
+    <h5>Example 2 : Calling Function Multiple Times</h5>
+
+<pre class="line-numbers"><code class="language-python">def greet():
+    print("Hello Student")
+
+greet()
+greet()
+greet()</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">Hello Student
+Hello Student
+Hello Student</code></pre>
+
+    <p>
+        <strong>Note:</strong> A function is created using the <code>def</code> keyword and executed by calling its name.
+    </p>
+
+</div>
+<div class="content-card" id="parameters">
+
+    <h2>
+        <i class="fa-solid fa-arrow-right-arrow-left"></i>
+        Parameters
+    </h2>
+
+    <p>
+        Parameters allow us to pass values to a function.
+        This makes functions more flexible and reusable.
+    </p>
+
+    <h5>Example 1 : Single Parameter</h5>
+
+<pre class="line-numbers"><code class="language-python">def greet(name):
+    print("Hello", name)
+
+greet("Shree")
+greet("Vinayak")</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">Hello Shree
+Hello Vinayak</code></pre>
+
+    <h5>Example 2 : Multiple Parameters</h5>
+
+<pre class="line-numbers"><code class="language-python">def student(name, city):
+    print(name, city)
+
+student("Shree", "Mumbai")</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">Shree Mumbai</code></pre>
+
+    <h5>Example 3 : Addition using Parameters</h5>
+
+<pre class="line-numbers"><code class="language-python">def add(num1, num2):
+    print(num1 + num2)
+
+add(10, 20)</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">30</code></pre>
+
+</div>
+<div class="content-card" id="returnvalue">
+
+    <h2>
+        <i class="fa-solid fa-reply"></i>
+        Return Values
+    </h2>
+
+    <p>
+        The <strong>return</strong> statement is used to send a value back from a function.
+        It allows the result of a function to be stored in a variable or used elsewhere in the program.
+    </p>
+
+    <h5>Example 1 : Returning a Value</h5>
+
+<pre class="line-numbers"><code class="language-python">def add(num1, num2):
+    return num1 + num2
+
+result = add(10, 20)
+
+print(result)</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">30</code></pre>
+
+    <h5>Example 2 : Returning Student Name</h5>
+
+<pre class="line-numbers"><code class="language-python">def get_name():
+    return "Shree"
+
+name = get_name()
+
+print(name)</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">Shree</code></pre>
+
+    <h5>Example 3 : Returning Square of a Number</h5>
+
+<pre class="line-numbers"><code class="language-python">def square(num):
+    return num * num
+
+print(square(5))</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">25</code></pre>
+
+    <p>
+        <strong>Note:</strong> A function can return data using the <code>return</code> keyword. Once a return statement executes, the function ends.
+    </p>
+
+</div>
+<div class="content-card" id="comp">
+
+    <h2>
+        <i class="fa-solid fa-code-compare"></i>
+        print() vs return
+    </h2>
+
+    <table class="table table-dark table-bordered mt-3">
+        <thead>
+            <tr>
+                <th>print()</th>
+                <th>return</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Displays output on screen.</td>
+                <td>Sends value back from function.</td>
+            </tr>
+            <tr>
+                <td>Cannot be reused later.</td>
+                <td>Returned value can be stored and reused.</td>
+            </tr>
+            <tr>
+                <td>Used for displaying results.</td>
+                <td>Used for processing and calculations.</td>
+            </tr>
+        </tbody>
+    </table>
+
+<pre class="line-numbers"><code class="language-python">def add(num1, num2):
+    return num1 + num2
+
+result = add(10, 20)
+
+print(result)</code></pre>
+
+</div>
+
+<div class="content-card" id="revision">
+
+    <h2>
+        <i class="fa-solid fa-bolt"></i>
+        Quick Revision
+    </h2>
+
+    <div class="row">
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">For Loop</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Fixed Iterations</li>
+                        <li>Uses range()</li>
+                        <li>Most Common Loop</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">While Loop</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Condition Based</li>
+                        <li>Runs Until False</li>
+                        <li>Update Loop Variable</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Break</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Stops Loop</li>
+                        <li>Immediate Exit</li>
+                        <li>Used in Search Logic</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Continue</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Skip Iteration</li>
+                        <li>Loop Continues</li>
+                        <li>Does Not Stop Loop</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Functions</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Reusable Code</li>
+                        <li>Created using def</li>
+                        <li>Reduces Duplication</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Parameters</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Input to Function</li>
+                        <li>Multiple Values Allowed</li>
+                        <li>Makes Functions Flexible</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Return</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Sends Value Back</li>
+                        <li>Ends Function</li>
+                        <li>Result Can Be Reused</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<div class="content-card" id="assignment">
+
+    <h2>
+        <i class="fa-solid fa-clipboard-check"></i>
+        Assignment
+    </h2>
+
+    <div class="assignment-box" id="assignment">
+
+        
+
+        <ol>
+            <li>Print numbers from 1 to 10 using a <strong>for loop</strong>.</li>
+
+            <li>Print numbers from 10 to 1 using a <strong>while loop</strong>.</li>
+
+            <li>Accept a number from the user and display its <strong>multiplication table</strong>.</li>
+
+            <li>Create a function named <strong>student()</strong> that displays student Name, City and Course.</li>
+
+            <li>Create a function named <strong>add()</strong> that accepts two numbers and returns their addition.</li>
+        </ol>
+
+    </div>
+
+</div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <footer class="footer">
+
+    <a href="https://www.revolutionit.in" target="_blank">
+        <img src="Images/whitelogo.png"
+             alt="Company Logo"
+             style="height:55px; margin-bottom:10px;">
+    </a>
+
+    <div>
+        Full Stack Development Training -  Python Django
+    </div>
+
+   
+
+</footer>
+<!-- JQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- Toastr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<!-- Prism Core -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/prism.min.js"></script>
+
+<!-- Python -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-python.min.js"></script>
+
+<!-- Bash -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-bash.min.js"></script>
+
+<!-- Line Numbers -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+
+<!-- Toolbar -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/toolbar/prism-toolbar.min.js"></script>
+
+<!-- Copy Button -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+
+<script>
+
+document.addEventListener("click", function(e){
+
+    if(e.target.innerText === "Copy")
+    {
+        toastr.success("Code copied successfully");
+    }
+
+});
+
+toastr.options = {
+    closeButton: true,
+    progressBar: true,
+    positionClass: "toast-bottom-right",
+    timeOut: "2000"
+};
+
+</script>
+</body>
+
+</html>

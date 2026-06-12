@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Python Refresher - Session 7</title>
+<link rel="icon"
+      type="image/png"
+      href="Images/py.png">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+<!-- Prism Theme -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+
+<!-- Prism Line Numbers -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet"/>
+
+<!-- Prism Toolbar -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet"/>
+
+<!-- Toastr -->
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-color: #161b22;
+            --border-color: #30363d;
+            --text-color: #e6edf3;
+            --heading-color: #58a6ff;
+            --accent-color: #7c3aed;
+        }
+
+        html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Poppins', sans-serif;
+    padding-top: 80px;
+}
+
+.navbar-custom {
+    background: #111827;
+    border-bottom: 1px solid var(--border-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+}
+
+        .session-title {
+            color: white;
+            font-weight: 600;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 90px;
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .sidebar h5 {
+            color: var(--heading-color);
+            margin-bottom: 20px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #c9d1d9;
+            text-decoration: none;
+            padding: 8px 0;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            color: var(--heading-color);
+            padding-left: 5px;
+        }
+
+        .content-card {
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        h2 {
+            color: var(--heading-color);
+            margin-bottom: 20px;
+        }
+
+        p,
+        li {
+            line-height: 1.9;
+        }
+
+        .overview-box {
+            background: #111827;
+            border-left: 4px solid var(--accent-color);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .footer {
+    background: #111827;
+    border-top: 1px solid var(--border-color);
+    padding: 30px 20px;
+    text-align: center;
+    margin-top: 50px;
+    color: #c9d1d9;
+}
+
+pre[class*="language-"] {
+    border-radius: 12px;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #30363d;
+}
+
+.code-title {
+    background: #21262d;
+    color: #58a6ff;
+    padding: 10px 15px;
+    border-radius: 10px 10px 0 0;
+    font-weight: 600;
+    border: 1px solid #30363d;
+    border-bottom: none;
+}
+
+.toolbar-item button {
+    background: #7c3aed !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 4px 12px !important;
+    font-size: 13px !important;
+}
+
+.toolbar-item button:hover {
+    background: #6d28d9 !important;
+}
+
+.table-dark {
+    border-color: #30363d;
+}
+
+.table-dark th {
+    color: #58a6ff;
+}
+
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    border-color: #58a6ff !important;
+}
+
+
+.assignment-box {
+    background: #172554;
+    border-left: 5px solid #3b82f6;
+    border-radius: 12px;
+    padding: 25px;
+    color: #e6edf3;
+}
+
+.assignment-box strong {
+    color: #93c5fd;
+    font-size: 1.1rem;
+}
+
+.assignment-box ol {
+    margin-top: 15px;
+}
+
+.assignment-box li {
+    margin-bottom: 12px;
+}
+
+.btn-success {
+    background: #238636;
+    border-color: #238636;
+}
+
+.btn-success:hover {
+    background: #2ea043;
+    border-color: #2ea043;
+}
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Navbar -->
+
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+        <div class="container">
+
+            <span class="navbar-brand session-title">
+                <i class="fa-brands fa-python"></i>
+                Python Refresher - Session 7
+            </span>
+
+        <div class="d-flex gap-2">
+        
+            <a href="playground.html" target="_blank" class="btn btn-success">
+                <i class="fa-solid fa-play"></i>
+                Playground
+            </a>
+        
+            <a href="index.html" class="btn btn-outline-light">
+                <i class="fa-solid fa-list"></i>
+                All Sessions
+            </a>
+        
+        </div>
+
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+
+        <div class="row">
+
+            <!-- Sidebar -->
+
+            <div class="col-lg-3">
+
+                <div class="sidebar">
+
+                    <h5>
+                        <i class="fa-solid fa-book"></i>
+                        Contents
+                    </h5>
+
+                    <a href="#intro">Introduction</a>
+                    <a href="#installation">Installation</a>
+                    <a href="#variables">Variables</a>
+                    <a href="#datatypes">Data Types</a>
+                    <a href="#io">Input / Output</a>
+                    <a href="#operators">Operators</a>
+                    <a href="#conditions">Conditional Statements</a>
+                    
+                    <a href="#revision">Quick Revision</a>
+                    <a href="#assignment">Assignment</a>
+
+                </div>
+
+            </div>
+
+            <!-- Main Content -->
+
+            <div class="col-lg-9">
+
+                <div class="content-card">
+
+                    <h2>
+                        <i class="fa-solid fa-graduation-cap"></i>
+                        Session Overview
+                    </h2>
+
+                    <div class="overview-box">
+
+                        <ul class="mb-0">
+
+                            <li>Introduction to Python</li>
+                            <li>Python Installation</li>
+                            <li>Variables</li>
+                            <li>Data Types</li>
+                            <li>Input / Output</li>
+                            <li>Operators</li>
+                            <li>Conditional Statements</li>
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+                <div class="content-card" id="intro">
+
+                    <h2>
+                        <i class="fa-solid fa-circle-info"></i>
+                        Introduction
+                    </h2>
+
+                    <p>
+                        Python is a high-level, interpreted, and easy-to-learn programming language.
+                        It is widely used for web development, automation, data science,
+                        artificial intelligence, desktop applications, and scripting.
+                    </p>
+
+                </div>
+
+                <div class="content-card" id="installation">
+
+                    <h2>
+                        <i class="fa-solid fa-download"></i>
+                        Installation
+                    </h2>
+
+                    <p>
+                        Download Python from the official website:
+                    </p>
+
+                    <a href="https://www.python.org/downloads/"
+                        target="_blank"
+                        class="btn btn-primary">
+
+                        <i class="fa-solid fa-link"></i>
+                        Download Python
+
+                    </a>
+
+                </div>
+            <div class="content-card" id="variables">
+            
+                <h2>
+                    <i class="fa-solid fa-database"></i>
+                    Variables
+                </h2>
+            
+                <p>
+                    A variable is a named memory location used to store data.
+                    Variables help us store and reuse values in a program.
+                </p>
+            
+                
+                <pre class="line-numbers"><code class="language-python">variable_name = value</code></pre>
+            
+                <h5>Example 1 : Store Text</h5>
+            
+                
+            
+                <pre class="line-numbers"><code class="language-python">name = "Shree"
+print(name)</code></pre>
+            
+               
+            
+                <div class="code-title">
+                    Output
+                </div>
+            
+                <pre class="line-numbers"><code class="language-python">Shree</code></pre>
+            
+                <h5>Example 2 : Store Number</h5>
+            
+               
+            
+                <pre class="line-numbers"><code class="language-python">age = 35
+print(age)</code></pre>
+            
+                
+            
+                <div class="code-title">
+                    Output
+                </div>
+            
+                <pre class="line-numbers"><code class="language-python">35</code></pre>
+            
+                <h5>Example 3 : Multiple Variables</h5>
+            
+               
+            
+                <pre class="line-numbers"><code class="language-python">name = "Shree"
+city = "Mumbai"
+age = 35
+            
+print(name)
+print(city)
+print(age)</code></pre>
+            
+                
+            
+                <div class="code-title">
+                    Output
+                </div>
+            
+                <pre class="line-numbers"><code class="language-python">Shree
+Mumbai
+35</code></pre>
+            
+                <h5>Variable Naming Rules</h5>
+            
+                <ul>
+                    <li>Can contain letters, numbers and underscore (_).</li>
+                    <li>Cannot start with a number.</li>
+                    <li>Variable names are case sensitive.</li>
+                    <li>Avoid Python keywords as variable names.</li>
+                </ul>
+            
+                <h5>Valid Variable Names</h5>
+            
+                <pre class="line-numbers"><code class="language-python">name = "Shree"
+student_name = "Vinayak"
+age1 = 25</code></pre>
+            
+                <h5>Invalid Variable Names</h5>
+            
+                <pre class="line-numbers"><code class="language-python">1name = "Shree"
+student-name = "Vinayak"
+class = "Python"</code></pre>
+            
+            </div>
+            <div class="content-card" id="datatypes">
+
+    <h2>
+        <i class="fa-solid fa-layer-group"></i>
+        Data Types
+    </h2>
+
+    <p>
+        Data Types define the type of value stored in a variable.
+        Python automatically detects the data type based on the assigned value.
+    </p>
+
+    <h5>Common Data Types in Python</h5>
+
+    <table class="table table-dark table-bordered mt-3">
+        <thead>
+            <tr>
+                <th>Data Type</th>
+                <th>Description</th>
+                <th>Example</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>int</td>
+                <td>Whole Numbers</td>
+                <td>10</td>
+            </tr>
+            <tr>
+                <td>float</td>
+                <td>Decimal Numbers</td>
+                <td>10.5</td>
+            </tr>
+            <tr>
+                <td>str</td>
+                <td>Text/String Values</td>
+                <td>"Python"</td>
+            </tr>
+            <tr>
+                <td>bool</td>
+                <td>True or False</td>
+                <td>True</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h5>Integer (int)</h5>
+
+<pre class="line-numbers"><code class="language-python">age = 25
+print(age)</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">25</code></pre>
+
+    <h5>Float (float)</h5>
+
+<pre class="line-numbers"><code class="language-python">salary = 25000.50
+print(salary)</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">25000.5</code></pre>
+
+    <h5>String (str)</h5>
+
+<pre class="line-numbers"><code class="language-python">course = "Python Django"
+print(course)</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">Python Django</code></pre>
+
+    <h5>Boolean (bool)</h5>
+
+<pre class="line-numbers"><code class="language-python">is_active = True
+print(is_active)</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">True</code></pre>
+
+    <h5>Finding Data Type using type()</h5>
+
+<pre class="line-numbers"><code class="language-python">name = "Shree"
+age = 25
+salary = 25000.50
+
+print(type(name))
+print(type(age))
+print(type(salary))</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">&lt;class 'str'&gt;
+&lt;class 'int'&gt;
+&lt;class 'float'&gt;</code></pre>
+
+            </div>
+
+
+            <div class="content-card" id="io">
+
+    <h2>
+        <i class="fa-solid fa-keyboard"></i>
+        Input / Output
+    </h2>
+
+   
+
+    <h5>Displaying Output using print()</h5>
+
+<pre class="line-numbers"><code class="language-python">print("Welcome to Python")</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">Welcome to Python</code></pre>
+
+    <h5>Accepting Input using input()</h5>
+
+<pre class="line-numbers"><code class="language-python">name = input("Enter Your Name : ")
+print(name)</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">Enter Your Name : Shree
+Shree</code></pre>
+
+    <h5>Input and Output Together</h5>
+
+<pre class="line-numbers"><code class="language-python">city = input("Enter City : ")
+print("City :", city)</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">Enter City : Mumbai
+City : Mumbai</code></pre>
+
+            </div>
+
+            <div class="content-card" id="operators">
+
+    <h2>
+        <i class="fa-solid fa-calculator"></i>
+        Operators
+    </h2>
+
+    <p>
+        Operators are special symbols used to perform operations on variables and values.
+        Most operators in Python are similar to those used in C, C++, Java, C# and JavaScript.
+    </p>
+
+    <h5>Arithmetic Operators</h5>
+
+    <table class="table table-dark table-bordered mt-3">
+        <thead>
+            <tr>
+                <th>Operator</th>
+                <th>Description</th>
+                <th>Example</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>+</td>
+                <td>Addition</td>
+                <td>10 + 5</td>
+            </tr>
+            <tr>
+                <td>-</td>
+                <td>Subtraction</td>
+                <td>10 - 5</td>
+            </tr>
+            <tr>
+                <td>*</td>
+                <td>Multiplication</td>
+                <td>10 * 5</td>
+            </tr>
+            <tr>
+                <td>/</td>
+                <td>Division</td>
+                <td>10 / 5</td>
+            </tr>
+            <tr>
+                <td>%</td>
+                <td>Modulus</td>
+                <td>10 % 3</td>
+            </tr>
+        </tbody>
+    </table>
+
+<pre class="line-numbers"><code class="language-python">num1 = 10
+num2 = 5
+
+print(num1 + num2)
+print(num1 - num2)
+print(num1 * num2)
+print(num1 / num2)</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">15
+5
+50
+2.0</code></pre>
+
+    <h5>Comparison Operators</h5>
+
+    <p>
+        Comparison operators are used to compare two values and return either True or False.
+    </p>
+
+<pre class="line-numbers"><code class="language-python">age = 18
+
+print(age >= 18)
+print(age < 18)</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">True
+False</code></pre>
+
+    <h5>Logical Operators</h5>
+
+    <p>
+        Logical operators are used to combine multiple conditions.
+    </p>
+
+<pre class="line-numbers"><code class="language-python">age = 25
+citizen = True
+
+print(age >= 18 and citizen)</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-python">True</code></pre>
+
+            </div>
+
+            <div class="content-card" id="conditions">
+            
+                <h2>
+                    <i class="fa-solid fa-code-branch"></i>
+                    Conditional Statements
+                </h2>
+            
+                <p>
+                    Conditional statements are used to execute different blocks of code based on a condition.
+                    They help programs make decisions.
+                </p>
+            
+                <h5>if Statement</h5>
+            
+                <p>
+                    The <strong>if</strong> statement executes a block of code only when the condition is True.
+                </p>
+            
+                <pre class="line-numbers"><code class="language-python">age = 20
+            
+            if age >= 18:
+                print("Eligible for Voting")</code></pre>
+            
+                <div class="code-title">
+                    Output
+                </div>
+            
+                <pre class="line-numbers"><code class="language-python">Eligible for Voting</code></pre>
+            
+                <h5>if else Statement</h5>
+            
+                <p>
+                    The <strong>else</strong> block executes when the condition is False.
+                </p>
+            
+                <pre class="line-numbers"><code class="language-python">age = 15
+            
+            if age >= 18:
+                print("Eligible for Voting")
+            else:
+                print("Not Eligible for Voting")</code></pre>
+            
+                <div class="code-title">
+                    Output
+                </div>
+            
+                <pre class="line-numbers"><code class="language-python">Not Eligible for Voting</code></pre>
+            
+                <h5>if elif else Statement</h5>
+            
+                <p>
+                    The <strong>elif</strong> statement allows us to check multiple conditions.
+                </p>
+            
+                <pre class="line-numbers"><code class="language-python">marks = 75
+            
+            if marks >= 80:
+                print("Grade A")
+            elif marks >= 60:
+                print("Grade B")
+            elif marks >= 35:
+                print("Grade C")
+            else:
+                print("Fail")</code></pre>
+            
+                <div class="code-title">
+                    Output
+                </div>
+            
+                <pre class="line-numbers"><code class="language-python">Grade B</code></pre>
+            
+                <h5>Nested if Statement</h5>
+            
+                <p>
+                    An <strong>if</strong> statement can be placed inside another <strong>if</strong> statement.
+                </p>
+            
+                <pre class="line-numbers"><code class="language-python">age = 25
+            citizen = True
+            
+            if age >= 18:
+                if citizen:
+                    print("Eligible to Vote")</code></pre>
+            
+                <div class="code-title">
+                    Output
+                </div>
+            
+                <pre class="line-numbers"><code class="language-python">Eligible to Vote</code></pre>
+            
+            </div>
+
+            <div class="content-card" id="revision">
+
+    <h2>
+        <i class="fa-solid fa-bolt"></i>
+        Quick Revision
+    </h2>
+
+    <div class="row">
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Variables</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Store Data</li>
+                        <li>Reusable</li>
+                        <li>Named Memory Location</li>
+                    </ul>
+                    <hr>
+                    <small>name = "Shree"</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Data Types</h5>
+                    <ul class="mb-0 text-light">
+                        <li>int → 25</li>
+                        <li>float → 25.5</li>
+                        <li>str → "Python"</li>
+                        <li>bool → True</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Input / Output</h5>
+                    <ul class="mb-0 text-light">
+                        <li>input()</li>
+                        <li>print()</li>
+                        <li>User Interaction</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Operators</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Arithmetic</li>
+                        <li>Comparison</li>
+                        <li>Logical</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Conditions</h5>
+                    <ul class="mb-0 text-light">
+                        <li>if</li>
+                        <li>if else</li>
+                        <li>if elif else</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+            </div>
+
+            <div class="assignment-box" id="assignment">
+
+   
+    <ol>
+        <li>Create a program to display your Name, City and Age using variables.</li>
+        <li>Accept student name as input and display it on screen.</li>
+        <li>Accept two numbers and display their Addition.</li>
+        <li>Accept marks and display "Pass" if marks are greater than or equal to 35, otherwise display "Fail".</li>
+        <li>Accept age and display whether the person is eligible for voting or not.</li>
+    </ol>
+
+</div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <footer class="footer">
+
+    <a href="https://www.revolutionit.in" target="_blank">
+        <img src="Images/whitelogo.png"
+             alt="Company Logo"
+             style="height:55px; margin-bottom:10px;">
+    </a>
+
+    <div>
+        Full Stack Development Training -  Python Django
+    </div>
+
+   
+
+</footer>
+<!-- JQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- Toastr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<!-- Prism Core -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/prism.min.js"></script>
+
+<!-- Python -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-python.min.js"></script>
+
+<!-- Bash -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-bash.min.js"></script>
+
+<!-- Line Numbers -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+
+<!-- Toolbar -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/toolbar/prism-toolbar.min.js"></script>
+
+<!-- Copy Button -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+
+<script>
+
+document.addEventListener("click", function(e){
+
+    if(e.target.innerText === "Copy")
+    {
+        toastr.success("Code copied successfully");
+    }
+
+});
+
+toastr.options = {
+    closeButton: true,
+    progressBar: true,
+    positionClass: "toast-bottom-right",
+    timeOut: "2000"
+};
+
+</script>
+</body>
+
+</html>

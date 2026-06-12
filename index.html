@@ -1,0 +1,340 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Industrial Training : Python Django Full Stack Development</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <style>
+
+        :root {
+            --bg-color: #0d1117;
+            --card-color: #161b22;
+            --border-color: #30363d;
+            --text-color: #e6edf3;
+            --heading-color: #58a6ff;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Poppins', sans-serif;
+            padding-top: 80px;
+        }
+
+        .navbar-custom {
+            background: #111827;
+            border-bottom: 1px solid var(--border-color);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 9999;
+        }
+
+        .hero-section {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .hero-section h1 {
+            font-weight: 700;
+            color: var(--heading-color);
+        }
+
+        .hero-section p {
+            color: #9ca3af;
+            font-size: 18px;
+        }
+
+        .section-title {
+            color: var(--heading-color);
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        .session-card {
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .session-card:hover {
+            transform: translateY(-5px);
+            border-color: #58a6ff;
+        }
+
+        .session-card a {
+            text-decoration: none;
+            color: var(--text-color);
+            display: block;
+            padding: 20px;
+            height: 100%;
+        }
+
+        .session-card h5 {
+            color: #58a6ff;
+            margin-bottom: 10px;
+        }
+
+        .coming-soon {
+            background: #161b22;
+            border: 1px dashed #4b5563;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            color: #9ca3af;
+        }
+
+        .footer {
+            margin-top: 60px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            padding: 25px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Navbar -->
+
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+
+        <div class="container">
+
+            <span class="navbar-brand">
+                <i class="fa-brands fa-python"></i>
+                Python Django Training
+            </span>
+
+            <a href="playground.html"
+               target="_blank"
+               class="btn btn-success">
+
+                <i class="fa-solid fa-play"></i>
+                Playground
+
+            </a>
+
+        </div>
+
+    </nav>
+
+    <!-- Hero -->
+
+    <div class="container">
+
+        <div class="hero-section">
+
+            <h2>
+                Industrial Training : Python Django Full Stack Development
+            </h2>
+
+            <p>
+                Complete Training Notes, Assignments and Live Python Playground
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- Frontend -->
+
+    <div class="container mb-5">
+
+        <h2 class="section-title">
+            <i class="fa-solid fa-code"></i>
+            Frontend Fundamentals
+        </h2>
+
+        <div class="row g-4">
+
+            <div class="col-md-6 col-lg-4">
+                <div class="session-card">
+                    <a href="Session1.html">
+                        <h5>Session 1</h5>
+                        HTML Fundamentals
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="session-card">
+                    <a href="Session2.html">
+                        <h5>Session 2</h5>
+                        CSS Fundamentals
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="session-card">
+                    <a href="Session3.html">
+                        <h5>Session 3</h5>
+                        Bootstrap Fundamentals
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="session-card">
+                    <a href="Session4.html">
+                        <h5>Session 4</h5>
+                        Bootstrap Components
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="session-card">
+                    <a href="Session5.html">
+                        <h5>Session 5</h5>
+                        JavaScript Basics
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="session-card">
+                    <a href="Session6.html">
+                        <h5>Session 6</h5>
+                        JavaScript DOM & Small Project
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Python -->
+
+    <div class="container mb-5">
+
+        <h2 class="section-title">
+            <i class="fa-brands fa-python"></i>
+            Python Refresher
+        </h2>
+
+        <div class="row g-4">
+
+            <div class="col-md-6 col-lg-3">
+                <div class="session-card">
+                    <a href="session7.html">
+                        <h5>Session 7</h5>
+                        Python Basics
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="session-card">
+                    <a href="session8.html">
+                        <h5>Session 8</h5>
+                        Loops & Functions
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="session-card">
+                    <a href="session9.html">
+                        <h5>Session 9</h5>
+                        Collections
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="session-card">
+                    <a href="session10.html">
+                        <h5>Session 10</h5>
+                        OOP Basics
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- MySQL -->
+
+    <div class="container mb-5">
+
+        <h2 class="section-title">
+            <i class="fa-solid fa-database"></i>
+            MySQL Database
+        </h2>
+
+        <div class="coming-soon">
+
+            <h4>Coming Soon</h4>
+
+            <p class="mb-0">
+                Database Design, SQL Queries, Joins, Stored Procedures and Transactions
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- Django -->
+
+    <div class="container mb-5">
+
+        <h2 class="section-title">
+            <i class="fa-solid fa-globe"></i>
+            Django Development
+        </h2>
+
+        <div class="coming-soon">
+
+            <h4>Coming Soon</h4>
+
+            <p class="mb-0">
+                Django, Models, Views, Templates, CRUD, Blog Project and REST API
+            </p>
+
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+
+    <footer class="footer">
+
+        <img src="Images/whitelogo.png"
+             style="height:55px; margin-bottom:10px;">
+
+        <div>
+            Industrial Training : Python Django Full Stack Development
+        </div>
+
+    </footer>
+
+</body>
+
+</html>
