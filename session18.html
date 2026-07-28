@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Django - Session 18</title>
+<link rel="icon"
+      type="image/png"
+      href="Images/djnago_icon.png">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+<!-- Prism Theme -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+
+<!-- Prism Line Numbers -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet"/>
+
+<!-- Prism Toolbar -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+<!-- Toastr -->
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-color: #161b22;
+            --border-color: #30363d;
+            --text-color: #e6edf3;
+            --heading-color: #58a6ff;
+            --accent-color: #7c3aed;
+        }
+
+        html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Poppins', sans-serif;
+    padding-top: 80px;
+}
+
+.navbar-custom {
+    background: #111827;
+    border-bottom: 1px solid var(--border-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+}
+
+
+
+        .session-title {
+            color: white;
+            font-weight: 600;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 90px;
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .sidebar h5 {
+            color: var(--heading-color);
+            margin-bottom: 20px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #c9d1d9;
+            text-decoration: none;
+            padding: 8px 0;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            color: var(--heading-color);
+            padding-left: 5px;
+        }
+
+        .content-card {
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        h2 {
+            color: var(--heading-color);
+            margin-bottom: 20px;
+        }
+
+        p,
+        li {
+            line-height: 1.9;
+        }
+
+        .overview-box {
+            background: #111827;
+            border-left: 4px solid var(--accent-color);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .footer {
+    background: #111827;
+    border-top: 1px solid var(--border-color);
+    padding: 30px 20px;
+    text-align: center;
+    margin-top: 50px;
+    color: #c9d1d9;
+}
+
+pre[class*="language-"] {
+    border-radius: 12px;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #30363d;
+}
+
+.code-title {
+    background: #21262d;
+    color: #58a6ff;
+    padding: 10px 15px;
+    border-radius: 10px 10px 0 0;
+    font-weight: 600;
+    border: 1px solid #30363d;
+    border-bottom: none;
+}
+
+.toolbar-item button {
+    background: #7c3aed !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 4px 12px !important;
+    font-size: 13px !important;
+}
+
+.toolbar-item button:hover {
+    background: #6d28d9 !important;
+}
+
+.table-dark {
+    border-color: #30363d;
+}
+
+.table-dark th {
+    color: #58a6ff;
+}
+
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    border-color: #58a6ff !important;
+}
+
+
+.assignment-box {
+    background: #172554;
+    border-left: 5px solid #3b82f6;
+    border-radius: 12px;
+    padding: 25px;
+    color: #e6edf3;
+}
+
+.assignment-box strong {
+    color: #93c5fd;
+    font-size: 1.1rem;
+}
+
+.assignment-box ol {
+    margin-top: 15px;
+}
+
+.assignment-box li {
+    margin-bottom: 12px;
+}
+
+.btn-success {
+    background: #238636;
+    border-color: #238636;
+}
+
+.btn-success:hover {
+    background: #2ea043;
+    border-color: #2ea043;
+}
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Navbar -->
+
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+        <div class="container">
+
+           <span class="navbar-brand session-title">
+    <i class="fa-brands fa-python"></i>
+    Django - Session 18
+</span>
+
+        <div class="d-flex gap-2">
+        
+           
+        
+            <a href="index.html" class="btn btn-outline-light">
+                <i class="fa-solid fa-list"></i>
+                All Sessions
+            </a>
+        
+        </div>
+
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+
+        <div class="row">
+
+            <!-- Sidebar -->
+
+            <div class="col-lg-3">
+
+              <div class="sidebar">
+
+    <h5>
+        <i class="fa-solid fa-book"></i>
+        Contents
+    </h5>
+
+    <a href="#modelform">Model Forms Introduction</a>
+    <a href="#createform">Creating First Form</a>
+    
+    <a href="#savedata">Saving Data to Database</a>
+    <a href="#createpage">Category Create Page</a>
+    <a href="#redirect">Redirecting After Save</a>
+    
+    <a href="#revision">Quick Revision</a>
+    <a href="#assignment">Assignment</a>
+
+</div>
+
+            </div>
+
+            <!-- Main Content -->
+
+            <div class="col-lg-9">
+
+            <div class="content-card">
+
+    <h2>
+        <i class="fa-solid fa-graduation-cap"></i>
+        Session Overview
+    </h2>
+
+    <div class="overview-box">
+
+        <ul class="mb-0">
+
+            <li>Model Forms Introduction</li>
+            <li>Creating First Form</li>
+            <li>Saving Data to Database</li>
+            
+            <li>Redirecting After Save</li>
+            <li>Category Create Page</li>
+
+        </ul>
+
+    </div>
+
+</div>
+<div class="content-card" id="modelform">
+
+    <h2>
+        <i class="fa-solid fa-file-lines"></i>
+        Model Forms Introduction
+    </h2>
+
+    <p>
+        A Model Form automatically creates an HTML form based on a Django Model.
+    </p>
+
+    <p>
+        It reduces the amount of code required for creating forms and handling user input.
+    </p>
+
+    <h5>Without Model Form</h5>
+
+    <ul>
+
+        <li>Create HTML Form</li>
+
+        <li>Read Form Values</li>
+
+        <li>Validate Data</li>
+
+        <li>Save Data</li>
+
+    </ul>
+
+    <h5>With Model Form</h5>
+
+    <ul>
+
+        <li>Create Form Class</li>
+
+        <li>Django Generates Form</li>
+
+        <li>Automatic Validation</li>
+
+        <li>Easy Database Save</li>
+
+    </ul>
+
+    <div class="alert bg-dark">
+
+        <strong>Advantage</strong>
+
+        A Model Form connects directly with a Model, making Create and Update operations much easier.
+
+    </div>
+
+</div>
+<div class="alert bg-dark">
+
+    <strong>Relationship</strong>
+
+<pre class="line-numbers"><code class="language-text">Model
+   ↓
+Model Form
+   ↓
+HTML Form
+   ↓
+Database</code></pre>
+
+</div>
+<div class="content-card" id="createform">
+
+    <h2>
+        <i class="fa-solid fa-square-plus"></i>
+        Creating First Form
+    </h2>
+
+    <p>
+        We will create a Model Form for the Category Model.
+    </p>
+
+    <h5>File Location</h5>
+
+<pre class="line-numbers"><code class="language-bash">demo/forms.py</code></pre>
+
+    <h5>Create Category Form</h5>
+
+<pre class="line-numbers"><code class="language-python">from django import forms
+
+from .models import Category
+
+class CategoryForm(forms.ModelForm):
+
+    class Meta:
+
+        model = Category
+
+        fields = ['Name']</code></pre>
+
+    <h5>Understanding the Code</h5>
+
+    <table class="table table-dark table-bordered">
+
+        <thead>
+
+            <tr>
+
+                <th>Code</th>
+
+                <th>Purpose</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+
+                <td>forms.ModelForm</td>
+
+                <td>Create Form From Model</td>
+
+            </tr>
+
+            <tr>
+
+                <td>model</td>
+
+                <td>Specify Model Name</td>
+
+            </tr>
+
+            <tr>
+
+                <td>fields</td>
+
+                <td>Select Fields To Display</td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+<div class="alert bg-dark">
+
+    <strong>Why is Id not included?</strong>
+
+    <p class="mt-2">
+
+        The Id field is automatically generated by the database.
+
+        Therefore, only the Name field is included in the form.
+
+    </p>
+
+</div>
+<div class="alert bg-dark">
+
+    <strong>Note:</strong>
+
+    If we want to display all Model fields, we can use:
+
+<pre class="line-numbers"><code class="language-python">fields = '__all__'</code></pre>
+
+    However, in most projects we include only the fields required for user input.
+
+</div>
+<div class="content-card" id="savedata">
+<h5>File Location</h5>
+
+<pre class="line-numbers"><code class="language-bash">demo/views.py</code></pre>
+
+<h5>Update View</h5>
+
+<pre class="line-numbers"><code class="language-python">from django.shortcuts import render
+
+from .forms import CategoryForm
+
+def createCategory(request):
+
+    message = ""
+
+    if request.method == "POST":
+
+        form = CategoryForm(request.POST)
+
+        if form.is_valid():
+
+            form.save()
+
+            message = "Category Added Successfully."
+
+            form = CategoryForm()
+
+    else:
+
+        form = CategoryForm()
+
+    return render(request,
+                  "createcategory.html",
+                  {
+                      "form": form,
+                      "message": message
+                  })</code></pre>
+<div class="alert bg-dark">
+
+    <strong>Why do we check request.method?</strong>
+
+<pre class="line-numbers"><code class="language-text">GET
+ ↓
+Display Form
+
+POST
+ ↓
+Save Form Data</code></pre>
+
+    <p class="mb-0">
+
+        When the page opens, Django receives a GET request.
+        When the user clicks the Submit button, Django receives a POST request.
+
+    </p>
+
+</div>
+</div>
+<div class="alert bg-dark">
+
+    <strong>Understanding request.POST</strong>
+
+<pre class="line-numbers"><code class="language-python">form = CategoryForm(request.POST)</code></pre>
+
+    <p class="mt-2">
+
+        <strong>request.POST</strong> contains the values entered by the user in the HTML form.
+
+    </p>
+
+    <p>
+
+        These values are passed to the Model Form for validation and saving.
+
+    </p>
+
+</div>
+<div class="content-card" id="createpage">
+
+    <h2>
+        <i class="fa-solid fa-window-maximize"></i>
+        Creating the HTML Form
+    </h2>
+
+    <p>
+        Create a new template to display the Category Form.
+    </p>
+
+    <h5>File Location</h5>
+
+<pre class="line-numbers"><code class="language-bash">demo/templates/createcategory.html</code></pre>
+
+    <h5>Create Form</h5>
+
+<pre class="line-numbers"><code class="language-html">&#123;% extends 'base.html' %&#125;
+
+&#123;% block content %&#125;
+
+&lt;div class="container mt-4"&gt;
+
+    &lt;h2&gt;Create Category&lt;/h2&gt;
+    &#123;% if message % &#125;
+    &lt;div class="alert alert-success"&gt;
+
+        &#123;&#123; message &#125;&#125;
+
+    &lt;/div&gt;
+
+    &#123;% endif %&#125;
+
+    &lt;form method="post"&gt;
+
+        &#123;% csrf_token %&#125;
+
+        &#123;&#123; form.as_p &#125;&#125;
+
+        &lt;button type="submit"
+                class="btn btn-primary"&gt;
+            Save
+        &lt;/button&gt;
+
+    &lt;/form&gt;
+
+&lt;/div&gt;
+
+&#123;% endblock %&#125;</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Result:</strong>
+
+        Django automatically generates the Category form based on the Model Form.
+
+    </div>
+
+</div>
+<div class="alert bg-dark">
+
+    <strong>What is csrf_token?</strong>
+
+    <p class="mt-2">
+
+        Django protects forms from Cross-Site Request Forgery (CSRF) attacks.
+
+    </p>
+
+<pre class="line-numbers"><code class="language-html">&#123;% csrf_token %&#125;</code></pre>
+
+    <p class="mb-0">
+
+        Every HTML form that submits data using the POST method should include the CSRF token.
+
+    </p>
+
+</div>
+<div class="alert bg-dark">
+
+    <strong>Understanding form.as_p</strong>
+
+<pre class="line-numbers"><code class="language-html">&#123;&#123; form.as_p &#125;&#125;</code></pre>
+
+    <p class="mt-2">
+
+        Django automatically generates HTML form controls using the Model Form.
+
+    </p>
+
+    <h6>Generated HTML</h6>
+
+<pre class="line-numbers"><code class="language-html">&lt;p&gt;
+
+    &lt;label&gt;Name&lt;/label&gt;
+
+    &lt;input type="text"&gt;
+
+&lt;/p&gt;</code></pre>
+
+    <p class="mb-0">
+
+        The <strong>as_p</strong> method wraps each field inside a paragraph (&lt;p&gt;) tag.
+
+    </p>
+
+</div>
+<div class="content-card" id="redirect">
+
+    <h2>
+        <i class="fa-solid fa-arrow-right"></i>
+        Redirecting After Save
+    </h2>
+
+    <p>
+        Instead of staying on the same page, we can redirect the user to another page after saving the record.
+    </p>
+
+    <h5>Import redirect</h5>
+
+<pre class="line-numbers"><code class="language-python">from django.shortcuts import render, redirect</code></pre>
+
+    <h5>Update View</h5>
+
+<pre class="line-numbers"><code class="language-python">if form.is_valid():
+
+    form.save()
+
+    return redirect('/categories/')</code></pre>
+
+    <h5>Result</h5>
+
+    <p>
+        After saving the record, Django redirects the user to the Categories page.
+    </p>
+
+    <div class="alert bg-dark">
+
+        <strong>Why Redirect?</strong>
+
+        Redirecting prevents duplicate form submissions if the user refreshes the page after saving.
+
+    </div>
+
+</div>
+<div class="content-card" id="revision">
+
+    <h2>
+        <i class="fa-solid fa-bolt"></i>
+        Quick Revision
+    </h2>
+
+    <div class="row">
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Model Form</h5>
+                    <ul class="mb-0 text-light">
+                        <li>forms.ModelForm</li>
+                        <li>Linked to Model</li>
+                        <li>Automatic Form</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Form Fields</h5>
+                    <ul class="mb-0 text-light">
+                        <li>fields</li>
+                        <li>__all__</li>
+                        <li>Selected Fields</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">POST Request</h5>
+                    <ul class="mb-0 text-light">
+                        <li>request.method</li>
+                        <li>request.POST</li>
+                        <li>Form Submission</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Validation</h5>
+                    <ul class="mb-0 text-light">
+                        <li>is_valid()</li>
+                        <li>Validate Input</li>
+                        <li>Prevent Invalid Data</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Save Data</h5>
+                    <ul class="mb-0 text-light">
+                        <li>form.save()</li>
+                        <li>Insert Record</li>
+                        <li>Database Table</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">User Experience</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Success Message</li>
+                        <li>Clear Form</li>
+                        <li>Redirect</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="alert bg-dark">
+
+        <strong>Important Methods</strong>
+
+<pre class="line-numbers"><code class="language-python">CategoryForm()
+
+request.POST
+
+form.is_valid()
+
+form.save()
+
+redirect()</code></pre>
+
+    </div>
+
+    <div class="alert bg-dark">
+
+        <strong>Complete Flow</strong>
+
+<pre class="line-numbers"><code class="language-text">Model
+   ↓
+Model Form
+   ↓
+HTML Form
+   ↓
+request.POST
+   ↓
+Validation
+   ↓
+Save Record
+   ↓
+Success Message / Redirect</code></pre>
+
+    </div>
+
+</div>
+<div class="content-card" id="assignment">
+
+    <h2>
+        <i class="fa-solid fa-clipboard-check"></i>
+        Assignment
+    </h2>
+
+    <div class="assignment-box">
+
+        <strong>
+            Complete the following tasks:
+        </strong>
+
+        <ol>
+
+            <li>
+                Create a <strong>TagForm</strong> for the Tag Model.
+            </li>
+
+            <li>
+                Display only the <strong>Name</strong> field using a Model Form.
+            </li>
+
+            <li>
+                Create a View to display the Tag Form.
+            </li>
+
+            <li>
+                Save the submitted data using:
+<pre class="line-numbers"><code class="language-python">form.save()</code></pre>
+            </li>
+
+            <li>
+                Display the message:
+<pre class="line-numbers"><code class="language-text">Tag Added Successfully.</code></pre>
+            </li>
+
+            <li>
+                Clear the form after successfully saving the record.
+            </li>
+
+            <li>
+                Add a Submit button using Bootstrap.
+            </li>
+
+        </ol>
+
+    </div>
+
+</div>
+</div>
+
+
+    <footer class="footer">
+
+    <a href="https://www.revolutionit.in" target="_blank">
+        <img src="Images/whitelogo.png"
+             alt="Company Logo"
+             style="height:55px; margin-bottom:10px;">
+    </a>
+
+    <div>
+        Full Stack Development Training -  Python Django
+    </div>
+
+   
+
+</footer>
+<!-- JQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- Toastr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<!-- Prism Core -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/prism.min.js"></script>
+
+<!-- Python -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-python.min.js"></script>
+
+<!-- Bash -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-bash.min.js"></script>
+
+<!-- Line Numbers -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+
+<!-- Toolbar -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/toolbar/prism-toolbar.min.js"></script>
+
+<!-- Copy Button -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+
+<script>
+
+document.addEventListener("click", function(e){
+
+    if(e.target.innerText === "Copy")
+    {
+        toastr.success("Code copied successfully");
+    }
+
+});
+
+toastr.options = {
+    closeButton: true,
+    progressBar: true,
+    positionClass: "toast-bottom-right",
+    timeOut: "2000"
+};
+
+</script>
+</body>
+
+</html>

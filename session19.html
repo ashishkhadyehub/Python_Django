@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Django - Session 19</title>
+<link rel="icon"
+      type="image/png"
+      href="Images/djnago_icon.png">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+<!-- Prism Theme -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+
+<!-- Prism Line Numbers -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet"/>
+
+<!-- Prism Toolbar -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+<!-- Toastr -->
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-color: #161b22;
+            --border-color: #30363d;
+            --text-color: #e6edf3;
+            --heading-color: #58a6ff;
+            --accent-color: #7c3aed;
+        }
+
+        html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Poppins', sans-serif;
+    padding-top: 80px;
+}
+
+.navbar-custom {
+    background: #111827;
+    border-bottom: 1px solid var(--border-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+}
+
+
+
+        .session-title {
+            color: white;
+            font-weight: 600;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 90px;
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .sidebar h5 {
+            color: var(--heading-color);
+            margin-bottom: 20px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #c9d1d9;
+            text-decoration: none;
+            padding: 8px 0;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            color: var(--heading-color);
+            padding-left: 5px;
+        }
+
+        .content-card {
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        h2 {
+            color: var(--heading-color);
+            margin-bottom: 20px;
+        }
+
+        p,
+        li {
+            line-height: 1.9;
+        }
+
+        .overview-box {
+            background: #111827;
+            border-left: 4px solid var(--accent-color);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .footer {
+    background: #111827;
+    border-top: 1px solid var(--border-color);
+    padding: 30px 20px;
+    text-align: center;
+    margin-top: 50px;
+    color: #c9d1d9;
+}
+
+pre[class*="language-"] {
+    border-radius: 12px;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #30363d;
+}
+
+.code-title {
+    background: #21262d;
+    color: #58a6ff;
+    padding: 10px 15px;
+    border-radius: 10px 10px 0 0;
+    font-weight: 600;
+    border: 1px solid #30363d;
+    border-bottom: none;
+}
+
+.toolbar-item button {
+    background: #7c3aed !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 4px 12px !important;
+    font-size: 13px !important;
+}
+
+.toolbar-item button:hover {
+    background: #6d28d9 !important;
+}
+
+.table-dark {
+    border-color: #30363d;
+}
+
+.table-dark th {
+    color: #58a6ff;
+}
+
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    border-color: #58a6ff !important;
+}
+
+
+.assignment-box {
+    background: #172554;
+    border-left: 5px solid #3b82f6;
+    border-radius: 12px;
+    padding: 25px;
+    color: #e6edf3;
+}
+
+.assignment-box strong {
+    color: #93c5fd;
+    font-size: 1.1rem;
+}
+
+.assignment-box ol {
+    margin-top: 15px;
+}
+
+.assignment-box li {
+    margin-bottom: 12px;
+}
+
+.btn-success {
+    background: #238636;
+    border-color: #238636;
+}
+
+.btn-success:hover {
+    background: #2ea043;
+    border-color: #2ea043;
+}
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Navbar -->
+
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+        <div class="container">
+
+           <span class="navbar-brand session-title">
+    <i class="fa-brands fa-python"></i>
+    Django - Session 19
+</span>
+
+        <div class="d-flex gap-2">
+        
+           
+        
+            <a href="index.html" class="btn btn-outline-light">
+                <i class="fa-solid fa-list"></i>
+                All Sessions
+            </a>
+        
+        </div>
+
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+
+        <div class="row">
+
+            <!-- Sidebar -->
+
+            <div class="col-lg-3">
+
+              <div class="sidebar">
+
+    <h5>
+        <i class="fa-solid fa-book"></i>
+        Contents
+    </h5>
+
+    <a href="#editcategory">Edit Category</a>
+    <a href="#updaterecord">Updating Records</a>
+    <a href="#editpage">Edit Category Page</a>
+    <a href="#deletecategory">Delete Category</a>
+    <a href="#deleteconfirm">Delete Confirmation</a>
+    <a href="#crudpage">Category CRUD Page</a>
+    <a href="#revision">Quick Revision</a>
+    <a href="#assignment">Assignment</a>
+
+</div>
+
+            </div>
+
+            <!-- Main Content -->
+
+            <div class="col-lg-9">
+
+           <div class="content-card">
+
+    <h2>
+        <i class="fa-solid fa-graduation-cap"></i>
+        Session Overview
+    </h2>
+
+    <div class="overview-box">
+
+        <ul class="mb-0">
+
+            <li>Edit Category</li>
+            <li>Updating Records</li>
+            <li>Edit Category Page</li>
+            <li>Delete Category</li>
+            <li>Delete Confirmation</li>
+            <li>Category CRUD Page</li>
+
+        </ul>
+
+    </div>
+
+</div>
+
+
+
+<div class="content-card" id="editcategory">
+
+    <h2>
+        <i class="fa-solid fa-pen-to-square"></i>
+        Edit Category
+    </h2>
+
+    <p>
+        To edit a Category, we first retrieve the existing record from the database.
+    </p>
+
+    <h5>Retrieve Record</h5>
+
+<pre class="line-numbers"><code class="language-python">category = Category.objects.get(Id=id)</code></pre>
+
+    <p>
+        The retrieved object is passed to the Model Form using the
+        <strong>instance</strong> parameter.
+    </p>
+
+<pre class="line-numbers"><code class="language-python">form = CategoryForm(instance=category)</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Result:</strong>
+
+        The form displays the existing Category values, allowing the user to modify them.
+
+    </div>
+
+</div>
+<div class="alert bg-dark">
+
+    <strong>Understanding instance</strong>
+
+<pre class="line-numbers"><code class="language-python">instance = category</code></pre>
+
+    <p class="mt-2 mb-0">
+
+        The <strong>instance</strong> parameter tells Django which record should be edited.
+        Without it, Django creates a new record instead of updating the existing one.
+
+    </p>
+
+</div>
+<div class="content-card" id="updaterecord">
+
+    <h2>
+        <i class="fa-solid fa-arrows-rotate"></i>
+        Updating Records
+    </h2>
+
+    <p>
+        After submitting the edited form, Django updates the existing record in the database.
+    </p>
+
+    <h5>Update View</h5>
+
+<pre class="line-numbers"><code class="language-python">def editCategory(request,id):
+
+    category = Category.objects.get(Id=id)
+
+    if request.method == "POST":
+
+        form = CategoryForm(
+            request.POST,
+            instance=category
+        )
+
+        if form.is_valid():
+
+            form.save()
+
+            return redirect('categories')
+
+    else:
+
+        form = CategoryForm(
+            instance=category
+        )
+
+    return render(
+        request,
+        "editcategory.html",
+        {
+            "form":form
+        }
+    )</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Result:</strong>
+
+        The selected Category is updated instead of creating a new record.
+
+    </div>
+
+</div>
+<div class="content-card" id="editpage">
+
+    <h2>
+        <i class="fa-solid fa-file-pen"></i>
+        Edit Category Page
+    </h2>
+
+    <p>
+        Create a template to display the Category Form with the existing data.
+    </p>
+
+    <h5>File Location</h5>
+
+<pre class="line-numbers"><code class="language-bash">demo/templates/editcategory.html</code></pre>
+
+    <h5>editcategory.html</h5>
+
+<pre class="line-numbers"><code class="language-html">&#123;% extends 'base.html' %&#125;
+
+&#123;% block content %&#125;
+
+&lt;div class="container mt-4"&gt;
+
+    &lt;h2&gt;Edit Category&lt;/h2&gt;
+
+    &lt;form method="post"&gt;
+
+        &#123;% csrf_token %&#125;
+
+        &#123;&#123; form.as_p &#125;&#125;
+
+        &lt;button type="submit"
+                class="btn btn-warning"&gt;
+
+            Update
+
+        &lt;/button&gt;
+
+    &lt;/form&gt;
+
+&lt;/div&gt;
+
+&#123;% endblock %&#125;</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Result:</strong>
+
+        The form displays the existing Category details. After clicking the <strong>Update</strong> button, the changes are saved to the database.
+
+    </div>
+
+</div>
+<div class="content-card" id="deletecategory">
+
+    <h2>
+        <i class="fa-solid fa-trash"></i>
+        Delete Category
+    </h2>
+
+    <p>
+        Django allows us to delete a record using the <strong>delete()</strong> method.
+    </p>
+
+    <h5>File Location</h5>
+
+<pre class="line-numbers"><code class="language-bash">demo/views.py</code></pre>
+
+    <h5>Create Delete View</h5>
+
+<pre class="line-numbers"><code class="language-python">from django.shortcuts import redirect
+
+from .models import Category
+
+def deleteCategory(request,id):
+
+    category = Category.objects.get(Id=id)
+
+    category.delete()
+
+    return redirect('categories')</code></pre>
+
+    <h5>Understanding the Code</h5>
+
+    <table class="table table-dark table-bordered">
+
+        <thead>
+
+            <tr>
+                <th>Code</th>
+                <th>Purpose</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>Category.objects.get()</td>
+                <td>Retrieve Existing Record</td>
+            </tr>
+
+            <tr>
+                <td>delete()</td>
+                <td>Delete Record</td>
+            </tr>
+
+            <tr>
+                <td>redirect()</td>
+                <td>Return to Category List</td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+    <div class="alert bg-dark">
+
+        <strong>Result:</strong>
+
+        The selected Category is permanently removed from the database.
+
+    </div>
+
+</div>
+<div class="alert bg-dark">
+
+    <strong>Understanding delete()</strong>
+
+<pre class="line-numbers"><code class="language-python">category.delete()</code></pre>
+
+    <p class="mt-2 mb-0">
+
+        The <strong>delete()</strong> method permanently removes the selected record from the corresponding database table.
+
+    </p>
+
+</div>
+<div class="content-card" id="deleteconfirm">
+
+    <h2>
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        Delete Confirmation
+    </h2>
+
+    <p>
+        Before deleting a record, it is recommended to ask the user for confirmation.
+    </p>
+
+    <h5>Delete Link</h5>
+
+<pre class="line-numbers"><code class="language-html">&lt;a href="/deletecategory/&#123;&#123; item.Id &#125;&#125;"
+   onclick="return confirm('Are you sure you want to delete this category?')"
+   class="btn btn-danger"&gt;
+
+    Delete
+
+&lt;/a&gt;</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Result:</strong>
+
+        When the Delete button is clicked, a confirmation dialog is displayed.
+
+        The record is deleted only if the user clicks <strong>OK</strong>.
+
+    </div>
+
+</div>
+<div class="alert bg-dark">
+
+    <strong>Understanding confirm()</strong>
+
+<pre class="line-numbers"><code class="language-javascript">confirm("Are you sure?")</code></pre>
+
+    <p class="mt-2">
+
+        The JavaScript <strong>confirm()</strong> function displays a confirmation dialog.
+
+    </p>
+
+    <table class="table table-dark table-bordered mt-3">
+
+        <thead>
+            <tr>
+                <th>User Action</th>
+                <th>Result</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>OK</td>
+                <td>Delete the Record</td>
+            </tr>
+
+            <tr>
+                <td>Cancel</td>
+                <td>Stop the Delete Operation</td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+<div class="content-card" id="crudpage">
+
+    <h2>
+        <i class="fa-solid fa-table-list"></i>
+        Category CRUD Page
+    </h2>
+
+    <p>
+        Now let us create a Category Management page where users can view, edit and delete records.
+    </p>
+
+    <h5>File Location</h5>
+
+<pre class="line-numbers"><code class="language-bash">demo/templates/categories.html</code></pre>
+
+    <h5>categories.html</h5>
+
+<pre class="line-numbers"><code class="language-html">&#123;% extends 'base.html' %&#125;
+
+&#123;% block content %&#125;
+
+&lt;div class="container mt-4"&gt;
+
+    &lt;h2&gt;Category Management&lt;/h2&gt;
+
+    &lt;a href="/createcategory/"
+       class="btn btn-success mb-3"&gt;
+
+        Add Category
+
+    &lt;/a&gt;
+
+    &lt;table class="table table-bordered table-striped"&gt;
+
+        &lt;thead&gt;
+
+            &lt;tr&gt;
+
+                &lt;th&gt;Id&lt;/th&gt;
+
+                &lt;th&gt;Category Name&lt;/th&gt;
+
+                &lt;th width="180"&gt;Action&lt;/th&gt;
+
+            &lt;/tr&gt;
+
+        &lt;/thead&gt;
+
+        &lt;tbody&gt;
+
+        &#123;% for item in categories %&#125;
+
+            &lt;tr&gt;
+
+                &lt;td&gt;&#123;&#123; item.Id &#125;&#125;&lt;/td&gt;
+
+                &lt;td&gt;&#123;&#123; item.Name &#125;&#125;&lt;/td&gt;
+
+                &lt;td&gt;
+
+                    &lt;a href="/editcategory/&#123;&#123; item.Id &#125;&#125;"
+                       class="btn btn-warning btn-sm"&gt;
+
+                        Edit
+
+                    &lt;/a&gt;
+
+                    &lt;a href="&#123;% url 'deletecategory' item.Id %&#125;"
+                        class="btn btn-danger btn-sm"
+                        onclick="return confirm('Are you sure you want to delete this category?')"&gt;
+
+                            Delete
+
+                &lt;/a&gt;
+
+                &lt;/td&gt;
+
+            &lt;/tr&gt;
+
+        &#123;% endfor %&#125;
+
+        &lt;/tbody&gt;
+
+    &lt;/table&gt;
+
+&lt;/div&gt;
+
+&#123;% endblock %&#125;</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Result:</strong>
+
+        Users can now perform all Category operations from a single page.
+
+    </div>
+
+</div>
+<div class="alert bg-dark">
+
+    <strong>Best Practice</strong>
+
+    <p class="mt-2">
+
+        Instead of hardcoding URLs, Django provides the
+        <strong>{% url %}</strong> template tag.
+
+    </p>
+
+<pre class="line-numbers"><code class="language-html">&#123;% url 'deletecategory' item.Id %&#125;</code></pre>
+
+    <p class="mb-0">
+
+        If the URL pattern changes in the future, only <strong>urls.py</strong> needs to be updated. The template code remains unchanged.
+
+    </p>
+
+</div>
+<div class="alert bg-dark">
+
+    <strong>Note:</strong>
+
+    After creating new Views, we must register their URL patterns in
+    <strong>urls.py</strong>. Otherwise, Django will return a
+    <strong>404 - Page Not Found</strong> error.
+
+    <h6 class="mt-3">Example</h6>
+
+<pre class="line-numbers"><code class="language-python">path(
+    'editcategory/&lt;int:id&gt;',
+    views.editCategory,
+    name='editcategory'
+),
+
+path(
+    'deletecategory/&lt;int:id&gt;',
+    views.deleteCategory,
+    name='deletecategory'
+),</code></pre>
+
+</div>
+<div class="content-card" id="revision">
+
+    <h2>
+        <i class="fa-solid fa-bolt"></i>
+        Quick Revision
+    </h2>
+
+    <div class="row">
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Edit Record</h5>
+                    <ul class="mb-0 text-light">
+                        <li>get()</li>
+                        <li>instance</li>
+                        <li>Pre-filled Form</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Update Record</h5>
+                    <ul class="mb-0 text-light">
+                        <li>ModelForm</li>
+                        <li>form.save()</li>
+                        <li>redirect()</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Delete Record</h5>
+                    <ul class="mb-0 text-light">
+                        <li>delete()</li>
+                        <li>Confirmation</li>
+                        <li>Redirect</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">CRUD Page</h5>
+                    <ul class="mb-0 text-light">
+                        <li>List Records</li>
+                        <li>Edit Button</li>
+                        <li>Delete Button</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">URLs</h5>
+                    <ul class="mb-0 text-light">
+                        <li>path()</li>
+                        <li>Route Views</li>
+                        <li>Named URLs</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">CRUD Methods</h5>
+                    <ul class="mb-0 text-light">
+                        <li>get()</li>
+                        <li>save()</li>
+                        <li>delete()</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="alert bg-dark">
+
+        <strong>Important Methods</strong>
+
+<pre class="line-numbers"><code class="language-python">Category.objects.get()
+
+CategoryForm(instance=category)
+
+form.save()
+
+category.delete()
+
+redirect()</code></pre>
+
+    </div>
+
+    <div class="alert bg-dark">
+
+        <strong>CRUD Flow</strong>
+
+<pre class="line-numbers"><code class="language-text">Select Record
+      ↓
+Edit Form
+      ↓
+Update Record
+      ↓
+Delete Record
+      ↓
+Category Management</code></pre>
+
+    </div>
+
+</div>
+<div class="content-card" id="assignment">
+
+    <h2>
+        <i class="fa-solid fa-clipboard-check"></i>
+        Assignment
+    </h2>
+
+    <div class="assignment-box">
+
+        <strong>
+            Complete the following tasks:
+        </strong>
+
+        <ol>
+
+            <li>
+                Create a <strong>Product</strong> Model with the following fields:
+<pre class="line-numbers"><code class="language-text">Name
+Price
+Unit</code></pre>
+            </li>
+
+            <li>
+                Create and apply Migrations for the Product Model.
+            </li>
+
+            <li>
+                Register the Product Model in the Django Admin Panel.
+            </li>
+
+            <li>
+                Create a <strong>Model Form</strong> for the Product Model.
+            </li>
+
+            <li>
+                Complete all CRUD Operations for Products:
+                <ul>
+                    <li>Create Product</li>
+                    <li>Display Product List</li>
+                    <li>Edit Product</li>
+                    <li>Delete Product</li>
+                </ul>
+            </li>
+
+            <li>
+                Add Bootstrap styling to all Product pages.
+            </li>
+
+            <li>
+                Display a confirmation dialog before deleting a Product.
+            </li>
+
+            <li>
+                Register all required URL patterns in <strong>urls.py</strong>.
+            </li>
+
+        </ol>
+
+    </div>
+
+</div>
+  
+            </div>
+        </div>
+    </div>
+              <footer class="footer">
+
+    <a href="https://www.revolutionit.in" target="_blank">
+        <img src="Images/whitelogo.png"
+             alt="Company Logo"
+             style="height:55px; margin-bottom:10px;">
+    </a>
+
+    <div>
+        Full Stack Development Training -  Python Django
+    </div>
+
+   
+
+</footer>
+<!-- JQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- Toastr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<!-- Prism Core -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/prism.min.js"></script>
+
+<!-- Python -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-python.min.js"></script>
+
+<!-- Bash -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-bash.min.js"></script>
+
+<!-- Line Numbers -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+
+<!-- Toolbar -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/toolbar/prism-toolbar.min.js"></script>
+
+<!-- Copy Button -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+
+<script>
+
+document.addEventListener("click", function(e){
+
+    if(e.target.innerText === "Copy")
+    {
+        toastr.success("Code copied successfully");
+    }
+
+});
+
+toastr.options = {
+    closeButton: true,
+    progressBar: true,
+    positionClass: "toast-bottom-right",
+    timeOut: "2000"
+};
+
+</script>
+</body>
+
+</html>

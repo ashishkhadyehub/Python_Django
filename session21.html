@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Django - Session 21</title>
+<link rel="icon"
+      type="image/png"
+      href="Images/djnago_icon.png">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+<!-- Prism Theme -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+
+<!-- Prism Line Numbers -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet"/>
+
+<!-- Prism Toolbar -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+<!-- Toastr -->
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-color: #161b22;
+            --border-color: #30363d;
+            --text-color: #e6edf3;
+            --heading-color: #58a6ff;
+            --accent-color: #7c3aed;
+        }
+
+        html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Poppins', sans-serif;
+    padding-top: 80px;
+}
+
+.navbar-custom {
+    background: #111827;
+    border-bottom: 1px solid var(--border-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+}
+
+
+
+        .session-title {
+            color: white;
+            font-weight: 600;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 90px;
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .sidebar h5 {
+            color: var(--heading-color);
+            margin-bottom: 20px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #c9d1d9;
+            text-decoration: none;
+            padding: 8px 0;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            color: var(--heading-color);
+            padding-left: 5px;
+        }
+
+        .content-card {
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        h2 {
+            color: var(--heading-color);
+            margin-bottom: 20px;
+        }
+
+        p,
+        li {
+            line-height: 1.9;
+        }
+
+        .overview-box {
+            background: #111827;
+            border-left: 4px solid var(--accent-color);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .footer {
+    background: #111827;
+    border-top: 1px solid var(--border-color);
+    padding: 30px 20px;
+    text-align: center;
+    margin-top: 50px;
+    color: #c9d1d9;
+}
+
+pre[class*="language-"] {
+    border-radius: 12px;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #30363d;
+}
+
+.code-title {
+    background: #21262d;
+    color: #58a6ff;
+    padding: 10px 15px;
+    border-radius: 10px 10px 0 0;
+    font-weight: 600;
+    border: 1px solid #30363d;
+    border-bottom: none;
+}
+
+.toolbar-item button {
+    background: #7c3aed !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 4px 12px !important;
+    font-size: 13px !important;
+}
+
+.toolbar-item button:hover {
+    background: #6d28d9 !important;
+}
+
+.table-dark {
+    border-color: #30363d;
+}
+
+.table-dark th {
+    color: #58a6ff;
+}
+
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    border-color: #58a6ff !important;
+}
+
+
+.assignment-box {
+    background: #172554;
+    border-left: 5px solid #3b82f6;
+    border-radius: 12px;
+    padding: 25px;
+    color: #e6edf3;
+}
+
+.assignment-box strong {
+    color: #93c5fd;
+    font-size: 1.1rem;
+}
+
+.assignment-box ol {
+    margin-top: 15px;
+}
+
+.assignment-box li {
+    margin-bottom: 12px;
+}
+
+.btn-success {
+    background: #238636;
+    border-color: #238636;
+}
+
+.btn-success:hover {
+    background: #2ea043;
+    border-color: #2ea043;
+}
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Navbar -->
+
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+        <div class="container">
+
+           <span class="navbar-brand session-title">
+    <i class="fa-brands fa-python"></i>
+    Django - Session 21
+</span>
+
+        <div class="d-flex gap-2">
+        
+           
+        
+            <a href="index.html" class="btn btn-outline-light">
+                <i class="fa-solid fa-list"></i>
+                All Sessions
+            </a>
+        
+        </div>
+
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+
+        <div class="row">
+
+            <!-- Sidebar -->
+
+            <div class="col-lg-3">
+
+              <div class="sidebar">
+
+    <h5>
+        <i class="fa-solid fa-book"></i>
+        Contents
+    </h5>
+
+    <a href="#categorymodel">Category Model</a>
+    <a href="#migration">Create Migration</a>
+    <a href="#admin">Register Model in Admin</a>
+    <a href="#addcategory">Adding Categories</a>
+    <a href="#admincustomization">Customize Django Admin Panel</a>
+    <a href="#revision">Quick Revision</a>
+    <a href="#assignment">Assignment</a>
+
+</div>
+
+            </div>
+
+            <!-- Main Content -->
+
+            <div class="col-lg-9">
+
+           <div class="content-card">
+
+    <h2>
+        <i class="fa-solid fa-graduation-cap"></i>
+        Session Overview
+    </h2>
+
+    <div class="overview-box">
+
+        <ul class="mb-0">
+
+            <li>Category Model</li>
+            <li>Create Migration</li>
+            <li>Register Model in Admin</li>
+            <li>Adding Categories</li>
+            <li>Customize Django Admin Panel</li>
+
+        </ul>
+
+    </div>
+
+</div>
+
+
+
+<div class="content-card" id="categorymodel">
+
+    <h2>
+        <i class="fa-solid fa-folder-tree"></i>
+        Create Category Model
+    </h2>
+
+    <p>
+        Categories help organize Blog Posts into different sections such as Technology, Sports, Education and Travel.
+    </p>
+
+    <p>
+        Each Blog Post will belong to one Category.
+    </p>
+
+    <h5>Open models.py</h5>
+
+<pre class="line-numbers"><code class="language-bash">blog/models.py</code></pre>
+
+    <h5>Create Category Model</h5>
+
+<pre class="line-numbers"><code class="language-python">from django.db import models
+
+class Category(models.Model):
+
+    Id = models.AutoField(primary_key=True)
+
+    Name = models.CharField(max_length=100)
+
+    def __str__(self):
+
+        return self.Name
+
+    class Meta:
+
+        db_table = "BlogCategories"</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Explanation</strong>
+
+        <ul class="mb-0 mt-2">
+
+            <li><strong>Id</strong> - Unique identifier for each Category.</li>
+
+            <li><strong>Name</strong> - Stores the Category Name.</li>
+
+            <li><strong>__str__()</strong> - Displays the Category Name in the Django Admin Panel.</li>
+
+            <li><strong>db_table</strong> - property allows us to specify a custom table name in the database.</li>
+        </ul>
+
+    </div>
+
+</div>
+<div class="content-card" id="migration">
+
+    <h2>
+        <i class="fa-solid fa-database"></i>
+        Create Migration
+    </h2>
+
+    <p>
+        After creating or modifying a Model, Django must update the database structure.
+    </p>
+
+    <p>
+        This is done using Migrations.
+    </p>
+
+    <h5>Step 1 - Generate Migration</h5>
+
+<pre class="line-numbers"><code class="language-bash">python manage.py makemigrations</code></pre>
+
+    <p>
+        Django creates a migration file inside the
+        <strong>migrations</strong> folder.
+    </p>
+
+    <h5>Step 2 - Apply Migration</h5>
+
+<pre class="line-numbers"><code class="language-bash">python manage.py migrate</code></pre>
+
+    <p>
+        Django creates the <strong>blog_category</strong> table inside the MySQL database.
+    </p>
+
+    <h5>Verify Table</h5>
+
+    <p>
+        Refresh your MySQL database and verify that the table has been created successfully.
+    </p>
+
+    <div class="alert bg-dark">
+
+        <strong>Migration Flow</strong>
+
+<pre class="line-numbers"><code class="language-text">Create Model
+
+        ↓
+
+makemigrations
+
+        ↓
+
+Migration File
+
+        ↓
+
+migrate
+
+        ↓
+
+Database Table</code></pre>
+
+    </div>
+
+</div>
+<div class="alert bg-dark">
+
+<strong>Remember</strong>
+
+<p class="mt-2">
+
+Whenever you create a new Model or modify an existing Model, execute the following commands:
+
+</p>
+
+<pre class="line-numbers"><code class="language-bash">python manage.py makemigrations
+
+python manage.py migrate</code></pre>
+
+<p class="mb-0">
+
+Without these commands, the database will not reflect the changes made in your Model.
+
+</p>
+
+</div>
+<div class="content-card" id="admin">
+
+    <h2>
+        <i class="fa-solid fa-user-shield"></i>
+        Register Model in Admin
+    </h2>
+
+    <p>
+        By default, newly created Models do not appear in the Django Admin Panel.
+    </p>
+
+    <p>
+        We must register the Model before it can be managed through the Admin Panel.
+    </p>
+
+    <h5>Step 1 - Open admin.py</h5>
+
+<pre class="line-numbers"><code class="language-bash">blog/admin.py</code></pre>
+
+    <h5>Step 2 - Register Category Model</h5>
+
+<pre class="line-numbers"><code class="language-python">from django.contrib import admin
+
+from .models import Category
+
+admin.site.register(Category)</code></pre>
+
+    <h5>Step 3 - Create Admin User</h5>
+
+<pre class="line-numbers"><code class="language-bash">python manage.py createsuperuser</code></pre>
+
+    <p>
+        Enter the required details:
+    </p>
+
+<pre class="line-numbers"><code class="language-text">Username
+
+Email Address
+
+Password
+
+Confirm Password</code></pre>
+
+    <h5>Step 4 - Run Project</h5>
+
+<pre class="line-numbers"><code class="language-bash">python manage.py runserver</code></pre>
+
+    <h5>Step 5 - Open Admin Panel</h5>
+
+<pre class="line-numbers"><code class="language-text">http://127.0.0.1:8000/admin/</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Result:</strong>
+
+        After logging in, the <strong>Categories</strong> module will be displayed in the Django Admin Panel.
+
+    </div>
+
+</div>
+<div class="alert bg-dark">
+
+    <strong>Why do we register the Model?</strong>
+
+    <p class="mt-2">
+
+        Registering a Model tells Django that it should be displayed in the Admin Panel.
+
+    </p>
+
+    <p class="mb-0">
+
+        Without registration, the Model exists in the database but cannot be managed through the Admin Interface.
+
+    </p>
+
+</div>
+<div class="content-card" id="addcategory">
+
+    <h2>
+        <i class="fa-solid fa-folder-plus"></i>
+        Add Categories using Django Admin
+    </h2>
+
+    <p>
+        The Django Admin Panel provides an easy way to insert, update and delete records without creating custom pages.
+    </p>
+
+    <h5>Step 1 - Login to Admin Panel</h5>
+
+<pre class="line-numbers"><code class="language-text">http://127.0.0.1:8000/admin/</code></pre>
+
+    <h5>Step 2 - Open Categories</h5>
+
+    <p>
+        Click on the <strong>Categories</strong> module.
+    </p>
+
+    <h5>Step 3 - Click Add Category</h5>
+
+    <p>
+        Enter a Category Name and click <strong>Save</strong>.
+    </p>
+
+    <h5>Example Categories</h5>
+
+<pre class="line-numbers"><code class="language-text">Technology
+
+Education
+
+Sports
+
+Travel
+
+Health
+
+Business</code></pre>
+
+    <h5>Step 4 - Verify Database</h5>
+
+    <p>
+        Refresh the <strong>BlogCategories</strong> table in MySQL and verify that the records have been inserted successfully.
+    </p>
+
+    <div class="alert bg-dark">
+
+        <strong>Result:</strong>
+
+        The Category records are successfully stored in the MySQL database.
+
+    </div>
+
+</div>
+<div class="content-card" id="admincustomization">
+
+    <h2>
+        <i class="fa-solid fa-gear"></i>
+        Customize Django Admin Panel
+    </h2>
+
+    <p>
+        Django allows us to customize the Admin Panel to improve data management and branding.
+    </p>
+
+    <p>
+        In this section, we will customize the Category listing and change the Admin Panel title.
+    </p>
+
+    <h5>Step 1 - Customize Category Listing</h5>
+
+    <p>
+        Open <strong>blog/admin.py</strong>.
+    </p>
+
+<pre class="line-numbers"><code class="language-python">from django.contrib import admin
+
+from .models import Category
+
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+
+    list_display = ['Id', 'Name']</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Result:</strong>
+
+        The Category list now displays both the <strong>Id</strong> and <strong>Name</strong> columns.
+
+    </div>
+
+    <h5>Step 2 - Add Search Box</h5>
+
+<pre class="line-numbers"><code class="language-python">search_fields = ['Name']</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Result:</strong>
+
+        A Search Box is displayed at the top of the Category page.
+
+    </div>
+
+    <h5>Step 3 - Add Default Sorting</h5>
+
+<pre class="line-numbers"><code class="language-python">ordering = ['Name']</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Result:</strong>
+
+        Categories are displayed in alphabetical order.
+
+    </div>
+
+    <h5>Step 4 - Change Admin Panel Title</h5>
+
+    <p>
+        Open <strong>blogproject/urls.py</strong>.
+    </p>
+
+<pre class="line-numbers"><code class="language-python">from django.contrib import admin
+
+admin.site.site_header = "Blog CMS"
+
+admin.site.site_title = "Blog CMS"
+
+admin.site.index_title = "Welcome to Blog CMS"</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Result:</strong>
+
+        The default Django Administration title is replaced with our own Blog CMS branding.
+
+    </div>
+
+</div>
+<div class="alert bg-dark">
+
+<strong>Useful Admin Customizations</strong>
+
+<ul class="mb-0 mt-2">
+
+<li><strong>list_display</strong> - Display selected columns.</li>
+
+<li><strong>search_fields</strong> - Add a Search Box.</li>
+
+<li><strong>ordering</strong> - Sort records automatically.</li>
+
+</ul>
+
+</div>
+<div class="content-card" id="revision">
+
+    <h2>
+        <i class="fa-solid fa-bolt"></i>
+        Quick Revision
+    </h2>
+
+    <div class="row">
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Category Model</h5>
+                    <ul class="mb-0 text-light">
+                        <li>models.Model</li>
+                        <li>AutoField</li>
+                        <li>CharField</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Database</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Meta Class</li>
+                        <li>db_table</li>
+                        <li>Migrations</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Admin Panel</h5>
+                    <ul class="mb-0 text-light">
+                        <li>createsuperuser</li>
+                        <li>Register Model</li>
+                        <li>Manage Data</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Admin Customization</h5>
+                    <ul class="mb-0 text-light">
+                        <li>list_display</li>
+                        <li>search_fields</li>
+                        <li>ordering</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Admin Branding</h5>
+                    <ul class="mb-0 text-light">
+                        <li>site_header</li>
+                        <li>site_title</li>
+                        <li>index_title</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Commands</h5>
+                    <ul class="mb-0 text-light">
+                        <li>makemigrations</li>
+                        <li>migrate</li>
+                        <li>createsuperuser</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="alert bg-dark">
+
+        <strong>Commands Practiced Today</strong>
+
+<pre class="line-numbers"><code class="language-bash">python manage.py makemigrations
+
+python manage.py migrate
+
+python manage.py createsuperuser
+
+python manage.py runserver</code></pre>
+
+    </div>
+
+</div>
+<div class="content-card" id="assignment">
+
+    <h2>
+        <i class="fa-solid fa-clipboard-check"></i>
+        Assignment
+    </h2>
+
+    <div class="assignment-box">
+
+        <strong>
+            Continue Developing the News Portal
+        </strong>
+
+        <p class="mt-3">
+
+            Implement the same functionality covered in today's Blog Project using your <strong>News Portal</strong> project.
+
+        </p>
+
+        <ol>
+
+            <li>
+                Create a <strong>NewsCategory</strong> model with the following fields:
+                <ul>
+                    <li>Id</li>
+                    <li>Name</li>
+                </ul>
+            </li>
+
+            <li>
+                Use the <strong>Meta</strong> class to rename the database table to <strong>NewsCategories</strong>.
+            </li>
+
+            <li>
+                Generate and apply migrations.
+            </li>
+
+            <li>
+                Register the <strong>NewsCategory</strong> model in the Django Admin Panel.
+            </li>
+
+            <li>
+                Create an Administrator account using <strong>createsuperuser</strong>.
+            </li>
+
+            <li>
+                Add at least five News Categories through the Django Admin Panel.
+            </li>
+
+            <li>
+                Customize the Admin Panel by:
+                <ul>
+                    <li>Displaying Id and Name using <strong>list_display</strong>.</li>
+                    <li>Adding a Search Box using <strong>search_fields</strong>.</li>
+                    <li>Sorting records alphabetically using <strong>ordering</strong>.</li>
+                    <li>Changing the Admin Panel title to <strong>News CMS</strong>.</li>
+                </ul>
+            </li>
+
+            <li>
+                Verify that the <strong>NewsCategories</strong> table and all records are successfully created in the MySQL database.
+            </li>
+
+        </ol>
+
+    </div>
+
+</div>
+            </div>
+        </div>
+    </div>
+              <footer class="footer">
+
+    <a href="https://www.revolutionit.in" target="_blank">
+        <img src="Images/whitelogo.png"
+             alt="Company Logo"
+             style="height:55px; margin-bottom:10px;">
+    </a>
+
+    <div>
+        Full Stack Development Training -  Python Django
+    </div>
+
+   
+
+</footer>
+<!-- JQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- Toastr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<!-- Prism Core -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/prism.min.js"></script>
+
+<!-- Python -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-python.min.js"></script>
+
+<!-- Bash -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-bash.min.js"></script>
+
+<!-- Line Numbers -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+
+<!-- Toolbar -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/toolbar/prism-toolbar.min.js"></script>
+
+<!-- Copy Button -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+
+<script>
+
+document.addEventListener("click", function(e){
+
+    if(e.target.innerText === "Copy")
+    {
+        toastr.success("Code copied successfully");
+    }
+
+});
+
+toastr.options = {
+    closeButton: true,
+    progressBar: true,
+    positionClass: "toast-bottom-right",
+    timeOut: "2000"
+};
+
+</script>
+</body>
+
+</html>

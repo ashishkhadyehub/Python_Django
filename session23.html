@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Django - Session 23</title>
+<link rel="icon"
+      type="image/png"
+      href="Images/djnago_icon.png">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+<!-- Prism Theme -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+
+<!-- Prism Line Numbers -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet"/>
+
+<!-- Prism Toolbar -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+<!-- Toastr -->
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-color: #161b22;
+            --border-color: #30363d;
+            --text-color: #e6edf3;
+            --heading-color: #58a6ff;
+            --accent-color: #7c3aed;
+        }
+
+        html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Poppins', sans-serif;
+    padding-top: 80px;
+}
+
+.navbar-custom {
+    background: #111827;
+    border-bottom: 1px solid var(--border-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+}
+
+
+
+        .session-title {
+            color: white;
+            font-weight: 600;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 90px;
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .sidebar h5 {
+            color: var(--heading-color);
+            margin-bottom: 20px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #c9d1d9;
+            text-decoration: none;
+            padding: 8px 0;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            color: var(--heading-color);
+            padding-left: 5px;
+        }
+
+        .content-card {
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        h2 {
+            color: var(--heading-color);
+            margin-bottom: 20px;
+        }
+
+        p,
+        li {
+            line-height: 1.9;
+        }
+
+        .overview-box {
+            background: #111827;
+            border-left: 4px solid var(--accent-color);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .footer {
+    background: #111827;
+    border-top: 1px solid var(--border-color);
+    padding: 30px 20px;
+    text-align: center;
+    margin-top: 50px;
+    color: #c9d1d9;
+}
+
+pre[class*="language-"] {
+    border-radius: 12px;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #30363d;
+}
+
+.code-title {
+    background: #21262d;
+    color: #58a6ff;
+    padding: 10px 15px;
+    border-radius: 10px 10px 0 0;
+    font-weight: 600;
+    border: 1px solid #30363d;
+    border-bottom: none;
+}
+
+.toolbar-item button {
+    background: #7c3aed !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 4px 12px !important;
+    font-size: 13px !important;
+}
+
+.toolbar-item button:hover {
+    background: #6d28d9 !important;
+}
+
+.table-dark {
+    border-color: #30363d;
+}
+
+.table-dark th {
+    color: #58a6ff;
+}
+
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    border-color: #58a6ff !important;
+}
+
+
+.assignment-box {
+    background: #172554;
+    border-left: 5px solid #3b82f6;
+    border-radius: 12px;
+    padding: 25px;
+    color: #e6edf3;
+}
+
+.assignment-box strong {
+    color: #93c5fd;
+    font-size: 1.1rem;
+}
+
+.assignment-box ol {
+    margin-top: 15px;
+}
+
+.assignment-box li {
+    margin-bottom: 12px;
+}
+
+.btn-success {
+    background: #238636;
+    border-color: #238636;
+}
+
+.btn-success:hover {
+    background: #2ea043;
+    border-color: #2ea043;
+}
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Navbar -->
+
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+        <div class="container">
+
+           <span class="navbar-brand session-title">
+    <i class="fa-brands fa-python"></i>
+    Django - Session 23
+</span>
+
+        <div class="d-flex gap-2">
+        
+           
+        
+            <a href="index.html" class="btn btn-outline-light">
+                <i class="fa-solid fa-list"></i>
+                All Sessions
+            </a>
+        
+        </div>
+
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+
+        <div class="row">
+
+            <!-- Sidebar -->
+
+            <div class="col-lg-3">
+
+              <div class="sidebar">
+
+    <h5>
+        <i class="fa-solid fa-book"></i>
+        Contents
+    </h5>
+
+    <a href="#homepage">Home Page</a>
+    <a href="#latestposts">Display Latest Posts</a>
+    <a href="#blogdetails">Blog Details Page</a>
+    <a href="#safefilter">Render CKEditor Content</a>
+    <a href="#navigation">Dynamic Category Menu</a>
+    <a href="#revision">Quick Revision</a>
+    <a href="#assignment">Assignment</a>
+
+</div>
+
+            </div>
+
+            <!-- Main Content -->
+
+            <div class="col-lg-9">
+
+          <div class="content-card">
+
+    <h2>
+        <i class="fa-solid fa-graduation-cap"></i>
+        Session Overview
+    </h2>
+
+    <div class="overview-box">
+
+        <ul class="mb-0">
+
+            <li>Create Home Page</li>
+
+            <li>Display Latest Blog Posts</li>
+
+            <li>Blog Details Page</li>
+
+            <li>Render CKEditor Content</li>
+
+            <li>Dynamic Category Menu</li>
+
+        </ul>
+
+    </div>
+
+</div>
+
+
+<div class="content-card" id="homepage">
+
+    <h2>
+        <i class="fa-solid fa-house"></i>
+        Create Home Page
+    </h2>
+
+    <p>
+        The Home Page displays all published Blog Posts in a professional Bootstrap card layout.
+    </p>
+
+    <p>
+        Only posts marked as <strong>IsPublished=True</strong> should be visible on the website.
+    </p>
+
+    <h5>Step 1 - Update views.py</h5>
+
+<pre class="line-numbers"><code class="language-python">from django.shortcuts import render
+
+from .models import Post
+
+
+def home(request):
+
+    posts = Post.objects.filter(
+        IsPublished=True
+    ).order_by('-PublishDate')
+
+    return render(
+        request,
+        'home.html',
+        {
+            'posts': posts
+        }
+    )</code></pre>
+
+    <h5>Step 2 - Update blog/urls.py</h5>
+
+<pre class="line-numbers"><code class="language-python">from django.urls import path
+
+from . import views
+
+urlpatterns = [
+
+    path('', views.home, name='home'),
+
+]</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Explanation</strong>
+
+        <ul class="mt-2 mb-0">
+
+            <li><strong>filter()</strong> displays only published Blog Posts.</li>
+
+            <li><strong>order_by('-PublishDate')</strong> displays the latest posts first.</li>
+
+            <li>The QuerySet is passed to the template using the <strong>posts</strong> variable.</li>
+
+        </ul>
+
+    </div>
+
+</div>
+<div class="content-card" id="latestposts">
+
+    <h2>
+        <i class="fa-solid fa-newspaper"></i>
+        Display Latest Blog Posts
+    </h2>
+
+    <p>
+        We will display all published Blog Posts using a responsive Bootstrap Card layout.
+    </p>
+
+    <p>
+        Each card displays the Featured Image, Category, Title, Summary, Publish Date and a Read More button.
+    </p>
+
+    <h5>Update home.html</h5>
+
+<pre class="line-numbers"><code class="language-html">{% extends 'base.html' %}
+
+{% block content %}
+
+&lt;div class="container mt-5"&gt;
+
+    &lt;div class="text-center mb-5"&gt;
+
+        &lt;h1&gt;Django Blog Portal&lt;/h1&gt;
+
+        &lt;p class="text-muted"&gt;
+            Learn • Explore • Build with Django
+        &lt;/p&gt;
+
+    &lt;/div&gt;
+
+    &lt;div class="row"&gt;
+
+        {% for post in posts %}
+
+        &lt;div class="col-md-4 mb-4"&gt;
+
+            &lt;div class="card h-100 shadow-sm"&gt;
+
+                &lt;img src="{{ post.Image.url }}"
+                     class="card-img-top"
+                     alt="{{ post.Title }}"&gt;
+
+                &lt;div class="card-body"&gt;
+
+                    &lt;span class="badge bg-primary"&gt;
+                        {{ post.Category }}
+                    &lt;/span&gt;
+
+                    &lt;h5 class="card-title mt-3"&gt;
+                        {{ post.Title }}
+                    &lt;/h5&gt;
+
+                    &lt;p class="card-text"&gt;
+                        {{ post.Summary }}
+                    &lt;/p&gt;
+
+                &lt;/div&gt;
+
+                &lt;div class="card-footer bg-white border-0"&gt;
+
+                    &lt;small class="text-muted"&gt;
+
+                        {{ post.PublishDate }}
+
+                    &lt;/small&gt;
+
+                    &lt;a href="#"
+                       class="btn btn-primary btn-sm float-end"&gt;
+
+                        Read More
+
+                    &lt;/a&gt;
+
+                &lt;/div&gt;
+
+            &lt;/div&gt;
+
+        &lt;/div&gt;
+
+        {% empty %}
+
+        &lt;div class="col-12"&gt;
+
+            &lt;div class="alert alert-warning"&gt;
+
+                No Blog Posts Available.
+
+            &lt;/div&gt;
+
+        &lt;/div&gt;
+
+        {% endfor %}
+
+    &lt;/div&gt;
+
+&lt;/div&gt;
+
+{% endblock %}</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>New Template Tags</strong>
+
+        <table class="table table-dark table-bordered mt-3">
+
+            <thead>
+
+                <tr>
+
+                    <th>Tag</th>
+
+                    <th>Purpose</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr>
+
+                    <td>{% for %}</td>
+
+                    <td>Loops through all Blog Posts.</td>
+
+                </tr>
+
+                <tr>
+
+                    <td>{{ post.Image.url }}</td>
+
+                    <td>Displays the uploaded Featured Image.</td>
+
+                </tr>
+
+                <tr>
+
+                    <td>{{ post.Category }}</td>
+
+                    <td>Displays the Category Name.</td>
+
+                </tr>
+
+                <tr>
+
+                    <td>{% empty %}</td>
+
+                    <td>Displays a message when no Blog Posts are available.</td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+<div class="content-card" id="blogdetails">
+
+    <h2>
+        <i class="fa-solid fa-file-lines"></i>
+        Blog Details Page
+    </h2>
+
+    <p>
+        When a user clicks the <strong>Read More</strong> button, the complete Blog Article should be displayed.
+    </p>
+
+    <p>
+        We will use the <strong>Slug</strong> field to create SEO-friendly URLs.
+    </p>
+
+    <h5>Step 1 - Update blog/urls.py</h5>
+
+<pre class="line-numbers"><code class="language-python">from django.urls import path
+
+from . import views
+
+urlpatterns = [
+
+    path('', views.home, name='home'),
+
+    path(
+        'post/&lt;slug:slug&gt;/',
+        views.blogDetails,
+        name='blogdetails'
+    ),
+
+]</code></pre>
+
+    <h5>Step 2 - Update views.py</h5>
+
+<pre class="line-numbers"><code class="language-python">from django.shortcuts import (
+    render,
+    get_object_or_404
+)
+
+from .models import Post
+
+
+def blogDetails(request, slug):
+
+    post = get_object_or_404(
+        Post,
+        Slug=slug,
+        IsPublished=True
+    )
+
+    return render(
+        request,
+        'blogdetails.html',
+        {
+            'post': post
+        }
+    )</code></pre>
+
+    <h5>Step 3 - Update Read More Button</h5>
+
+<pre class="line-numbers"><code class="language-html">&lt;a href="{% url 'blogdetails' post.Slug %}"
+   class="btn btn-primary btn-sm float-end"&gt;
+
+    Read More
+
+&lt;/a&gt;</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Why do we use Slug?</strong>
+
+        <p class="mt-2 mb-0">
+
+            Instead of opening a Blog using an Id such as
+            <strong>/post/1</strong>,
+            Django generates a readable URL like
+            <strong>/post/learning-django-orm/</strong>.
+            This is easier to understand and is better for SEO.
+
+        </p>
+
+    </div>
+
+</div>
+<div class="content-card" id="safefilter">
+
+    <h2>
+        <i class="fa-solid fa-book-open"></i>
+        Display Complete Blog Article
+    </h2>
+
+    <p>
+        Create a new template named <strong>blogdetails.html</strong> to display the complete Blog Post.
+    </p>
+
+    <h5>Create blogdetails.html</h5>
+
+<pre class="line-numbers"><code class="language-html">{% extends 'base.html' %}
+
+{% block content %}
+
+&lt;div class="container mt-5"&gt;
+
+    &lt;img src="{{ post.Image.url }}"
+         class="img-fluid rounded mb-4"
+         alt="{{ post.Title }}"&gt;
+
+    &lt;span class="badge bg-primary"&gt;
+
+        {{ post.Category }}
+
+    &lt;/span&gt;
+
+    &lt;h2 class="mt-3"&gt;
+
+        {{ post.Title }}
+
+    &lt;/h2&gt;
+
+    &lt;p class="text-muted"&gt;
+
+        Published on {{ post.PublishDate }}
+
+    &lt;/p&gt;
+
+    &lt;hr&gt;
+
+    {{ post.Description|safe }}
+
+&lt;/div&gt;
+
+{% endblock %}</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Understanding the safe Filter</strong>
+
+<pre class="line-numbers"><code class="language-html">{{ post.Description|safe }}</code></pre>
+
+        <p class="mt-3">
+
+            CKEditor stores formatted HTML content in the database.
+
+        </p>
+
+        <p>
+
+            The <strong>safe</strong> filter tells Django to render the HTML instead of displaying it as plain text.
+
+        </p>
+
+    </div>
+
+   
+
+</div>
+<div class="content-card" id="navigation">
+
+    <h2>
+        <i class="fa-solid fa-folder-open"></i>
+        Dynamic Category Menu
+    </h2>
+
+    <p>
+        Instead of hardcoding Category names in the Navigation Bar, we can display them dynamically from the database.
+    </p>
+
+    <p>
+        Whenever a new Category is added through the Django Admin Panel, it automatically appears in the website menu.
+    </p>
+
+    <h5>Step 1 - Update views.py</h5>
+
+<pre class="line-numbers"><code class="language-python">from .models import Category
+
+
+def home(request):
+
+    posts = Post.objects.filter(
+        IsPublished=True
+    ).order_by('-PublishDate')
+
+    categories = Category.objects.all()
+
+    return render(
+        request,
+        'home.html',
+        {
+            'posts': posts,
+            'categories': categories
+        }
+    )</code></pre>
+
+    <h5>Step 2 - Update Navbar</h5>
+
+<pre class="line-numbers"><code class="language-html">&lt;li class="nav-item dropdown"&gt;
+
+    &lt;a class="nav-link dropdown-toggle"
+       href="#"
+       role="button"
+       data-bs-toggle="dropdown"&gt;
+
+        &lt;i class="fa-solid fa-folder"&gt;&lt;/i&gt;
+
+        Categories
+
+    &lt;/a&gt;
+
+    &lt;ul class="dropdown-menu"&gt;
+
+        {% for category in categories %}
+
+        &lt;li&gt;
+
+            &lt;a class="dropdown-item"
+               href="#"&gt;
+
+                {{ category.Name }}
+
+            &lt;/a&gt;
+
+        &lt;/li&gt;
+
+        {% endfor %}
+
+    &lt;/ul&gt;
+
+&lt;/li&gt;</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Result:</strong>
+
+        Every Category stored in the database is automatically displayed in the Navigation Menu.
+
+    </div>
+
+</div>
+<div class="content-card" id="revision">
+
+    <h2>
+        <i class="fa-solid fa-bolt"></i>
+        Quick Revision
+    </h2>
+
+    <div class="row">
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Home Page</h5>
+                    <ul class="mb-0 text-light">
+                        <li>QuerySet</li>
+                        <li>filter()</li>
+                        <li>order_by()</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Templates</h5>
+                    <ul class="mb-0 text-light">
+                        <li>for Loop</li>
+                        <li>empty</li>
+                        <li>Template Variables</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Blog Details</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Slug</li>
+                        <li>get_object_or_404()</li>
+                        <li>Named URL</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">CKEditor</h5>
+                    <ul class="mb-0 text-light">
+                        <li>RichTextField</li>
+                        <li>safe Filter</li>
+                        <li>Formatted Content</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Images</h5>
+                    <ul class="mb-0 text-light">
+                        <li>ImageField</li>
+                        <li>Image.url</li>
+                        <li>Media Folder</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Dynamic Content</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Category Menu</li>
+                        <li>Dynamic Navbar</li>
+                        <li>Database Driven UI</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="alert bg-dark">
+
+        <strong>Concepts Learned Today</strong>
+
+<pre class="line-numbers"><code class="language-text">✓ Display QuerySets
+
+✓ Bootstrap Card Layout
+
+✓ Dynamic URLs using Slug
+
+✓ get_object_or_404()
+
+✓ Render CKEditor Content
+
+✓ Dynamic Category Menu</code></pre>
+
+    </div>
+
+</div>
+<div class="content-card" id="assignment">
+
+    <h2>
+        <i class="fa-solid fa-clipboard-check"></i>
+        Assignment
+    </h2>
+
+    <div class="assignment-box">
+
+        <strong>
+            Continue Developing the News Portal
+        </strong>
+
+        <p class="mt-3">
+
+            Implement the same frontend functionality covered in today's Blog Project using your <strong>News Portal</strong>.
+
+        </p>
+
+        <ol>
+
+            <li>
+                Create a <strong>Home Page</strong> that displays all published News Articles.
+            </li>
+
+            <li>
+                Display News Articles using Bootstrap Cards showing:
+                <ul>
+                    <li>Featured Image</li>
+                    <li>Category</li>
+                    <li>Title</li>
+                    <li>Summary</li>
+                    <li>Publish Date</li>
+                    <li>Read More Button</li>
+                </ul>
+            </li>
+
+            <li>
+                Create a <strong>News Details</strong> page using the <strong>Slug</strong> field.
+            </li>
+
+            <li>
+                Display the complete News Article using the <strong>safe</strong> filter to render CKEditor content.
+            </li>
+
+            <li>
+                Handle invalid News URLs using <strong>get_object_or_404()</strong>.
+            </li>
+
+            <li>
+                Display all News Categories dynamically in the Navigation Menu.
+            </li>
+
+            <li>
+                Verify that only published News Articles are displayed on the Home Page.
+            </li>
+
+            <li>
+                Test the complete navigation:
+                <ul>
+                    <li>Home Page → Read More</li>
+                    <li>News Details → Back to Home</li>
+                </ul>
+            </li>
+
+        </ol>
+
+    </div>
+
+</div>
+            </div>
+        </div>
+    </div>
+              <footer class="footer">
+
+    <a href="https://www.revolutionit.in" target="_blank">
+        <img src="Images/whitelogo.png"
+             alt="Company Logo"
+             style="height:55px; margin-bottom:10px;">
+    </a>
+
+    <div>
+        Full Stack Development Training -  Python Django
+    </div>
+
+   
+
+</footer>
+<!-- JQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- Toastr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<!-- Prism Core -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/prism.min.js"></script>
+
+<!-- Python -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-python.min.js"></script>
+
+<!-- Bash -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-bash.min.js"></script>
+
+<!-- Line Numbers -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+
+<!-- Toolbar -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/toolbar/prism-toolbar.min.js"></script>
+
+<!-- Copy Button -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+
+<script>
+
+document.addEventListener("click", function(e){
+
+    if(e.target.innerText === "Copy")
+    {
+        toastr.success("Code copied successfully");
+    }
+
+});
+
+toastr.options = {
+    closeButton: true,
+    progressBar: true,
+    positionClass: "toast-bottom-right",
+    timeOut: "2000"
+};
+
+</script>
+</body>
+
+</html>

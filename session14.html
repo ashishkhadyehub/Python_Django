@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Django - Session 14</title>
+<link rel="icon"
+      type="image/png"
+      href="Images/djnago_icon.png">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+<!-- Prism Theme -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+
+<!-- Prism Line Numbers -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet"/>
+
+<!-- Prism Toolbar -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+<!-- Toastr -->
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-color: #161b22;
+            --border-color: #30363d;
+            --text-color: #e6edf3;
+            --heading-color: #58a6ff;
+            --accent-color: #7c3aed;
+        }
+
+        html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Poppins', sans-serif;
+    padding-top: 80px;
+}
+
+.navbar-custom {
+    background: #111827;
+    border-bottom: 1px solid var(--border-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+}
+
+
+
+        .session-title {
+            color: white;
+            font-weight: 600;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 90px;
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .sidebar h5 {
+            color: var(--heading-color);
+            margin-bottom: 20px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #c9d1d9;
+            text-decoration: none;
+            padding: 8px 0;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            color: var(--heading-color);
+            padding-left: 5px;
+        }
+
+        .content-card {
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        h2 {
+            color: var(--heading-color);
+            margin-bottom: 20px;
+        }
+
+        p,
+        li {
+            line-height: 1.9;
+        }
+
+        .overview-box {
+            background: #111827;
+            border-left: 4px solid var(--accent-color);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .footer {
+    background: #111827;
+    border-top: 1px solid var(--border-color);
+    padding: 30px 20px;
+    text-align: center;
+    margin-top: 50px;
+    color: #c9d1d9;
+}
+
+pre[class*="language-"] {
+    border-radius: 12px;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #30363d;
+}
+
+.code-title {
+    background: #21262d;
+    color: #58a6ff;
+    padding: 10px 15px;
+    border-radius: 10px 10px 0 0;
+    font-weight: 600;
+    border: 1px solid #30363d;
+    border-bottom: none;
+}
+
+.toolbar-item button {
+    background: #7c3aed !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 4px 12px !important;
+    font-size: 13px !important;
+}
+
+.toolbar-item button:hover {
+    background: #6d28d9 !important;
+}
+
+.table-dark {
+    border-color: #30363d;
+}
+
+.table-dark th {
+    color: #58a6ff;
+}
+
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    border-color: #58a6ff !important;
+}
+
+
+.assignment-box {
+    background: #172554;
+    border-left: 5px solid #3b82f6;
+    border-radius: 12px;
+    padding: 25px;
+    color: #e6edf3;
+}
+
+.assignment-box strong {
+    color: #93c5fd;
+    font-size: 1.1rem;
+}
+
+.assignment-box ol {
+    margin-top: 15px;
+}
+
+.assignment-box li {
+    margin-bottom: 12px;
+}
+
+.btn-success {
+    background: #238636;
+    border-color: #238636;
+}
+
+.btn-success:hover {
+    background: #2ea043;
+    border-color: #2ea043;
+}
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Navbar -->
+
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+        <div class="container">
+
+           <span class="navbar-brand session-title">
+    <i class="fa-brands fa-python"></i>
+    Django - Session 14
+</span>
+
+        <div class="d-flex gap-2">
+        
+           
+        
+            <a href="index.html" class="btn btn-outline-light">
+                <i class="fa-solid fa-list"></i>
+                All Sessions
+            </a>
+        
+        </div>
+
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+
+        <div class="row">
+
+            <!-- Sidebar -->
+
+            <div class="col-lg-3">
+
+              <div class="sidebar">
+
+    <h5>
+        <i class="fa-solid fa-book"></i>
+        Contents
+    </h5>
+
+    <a href="#routing">URL Routing</a>
+    <a href="#views">Views</a>
+    <a href="#httpresponse">HttpResponse</a>
+    <a href="#render">render() Function</a>
+    <a href="#pages">Multiple Pages Navigation</a>
+    <a href="#revision">Quick Revision</a>
+    <a href="#assignment">Assignment</a>
+
+</div>
+
+            </div>
+
+            <!-- Main Content -->
+
+            <div class="col-lg-9">
+
+            <div class="content-card">
+
+    <h2>
+        <i class="fa-solid fa-graduation-cap"></i>
+        Session Overview
+    </h2>
+
+    <div class="overview-box">
+
+        <ul class="mb-0">
+
+            <li>URL Routing</li>
+            <li>Views</li>
+            <li>HttpResponse</li>
+            <li>render() Function</li>
+            <li>Multiple Pages Navigation</li>
+
+        </ul>
+
+    </div>
+
+</div>
+<div class="alert bg-dark">
+
+    <strong>Important:</strong>
+
+    Django does not create the file <strong>blog/urls.py</strong> automatically.
+    We must create this file manually inside the blog application.
+
+</div>
+<div class="content-card" id="routing">
+
+    <h2>
+        <i class="fa-solid fa-route"></i>
+        URL Routing
+    </h2>
+
+    <p>
+        URL Routing maps a URL to a specific View function.
+    </p>
+
+    <p>
+        When a user visits a URL, Django checks the URL configuration and executes the corresponding View.
+    </p>
+
+    <h5>File Location</h5>
+
+<pre class="line-numbers"><code class="language-bash">blog/urls.py</code></pre>
+
+    <p>
+        Create a new file named <strong>urls.py</strong> inside the blog application.
+    </p>
+
+    <h5>Code: blog/urls.py</h5>
+
+<pre class="line-numbers"><code class="language-python">from django.urls import path
+from . import views
+
+urlpatterns = [
+
+]
+</code></pre>
+
+    <h5>Add URL Route</h5>
+
+<pre class="line-numbers"><code class="language-python">from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.home),
+]
+</code></pre>
+
+    <h5>Register Application URLs</h5>
+
+    <p>
+        Open the project's main URL file and include the blog application's URLs.
+    </p>
+
+<pre class="line-numbers"><code class="language-bash">BlogProject/urls.py</code></pre>
+
+    <h5>Code: BlogProject/urls.py</h5>
+
+<pre class="line-numbers"><code class="language-python">from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('blog.urls')),
+]
+</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Note:</strong>
+
+        BlogProject/urls.py forwards requests to blog/urls.py.
+
+    </div>
+
+</div>
+<div class="alert bg-dark">
+
+    <strong>Important:</strong>
+
+    Previously, Django was showing its default welcome page.
+
+    After adding the following route:
+
+<pre class="line-numbers"><code class="language-python">path('', include('blog.urls'))</code></pre>
+
+    the root URL (/) is now handled by our application.
+
+    Therefore, Django's default welcome page is replaced by our own Home Page.
+
+</div>
+<div class="content-card" id="views">
+
+    <h2>
+        <i class="fa-solid fa-eye"></i>
+        Views
+    </h2>
+
+    <p>
+        A View is a Python function that receives a request and returns a response.
+    </p>
+
+    <h5>File Location</h5>
+
+<pre class="line-numbers"><code class="language-bash">blog/views.py</code></pre>
+
+    <h5>Code: blog/views.py</h5>
+
+<pre class="line-numbers"><code class="language-python">from django.http import HttpResponse
+
+def home(request):
+    return HttpResponse("Welcome to Django")
+</code></pre>
+
+    <h5>Create Another View</h5>
+
+<pre class="line-numbers"><code class="language-python">from django.http import HttpResponse
+
+def home(request):
+    return HttpResponse("Welcome to Django")
+
+def about(request):
+    return HttpResponse("About Page")
+</code></pre>
+
+    <h5>Update URLs</h5>
+
+<pre class="line-numbers"><code class="language-python">from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.home),
+    path('about/', views.about),
+]
+</code></pre>
+
+    <h5>Test URLs</h5>
+
+<pre class="line-numbers"><code class="language-bash">http://127.0.0.1:8000/
+
+http://127.0.0.1:8000/about/</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Result:</strong>
+
+        Home URL displays "Welcome to Django"
+
+        About URL displays "About Page"
+
+    </div>
+
+</div>
+<div class="alert bg-dark">
+
+    <strong>Note:</strong>
+
+    Currently, our Views are returning plain text using HttpResponse().
+
+    In the next section, we will learn how to display HTML pages using the render() function.
+
+</div>
+<div class="content-card" id="httpresponse">
+
+    <h2>
+        <i class="fa-solid fa-reply"></i>
+        HttpResponse
+    </h2>
+
+    <p>
+        HttpResponse is used to send a response from a View to the browser.
+    </p>
+
+    <p>
+        It is useful when we want to display simple text content.
+    </p>
+
+    <h5>File Location</h5>
+
+<pre class="line-numbers"><code class="language-bash">blog/views.py</code></pre>
+
+    <h5>Example</h5>
+
+<pre class="line-numbers"><code class="language-python">from django.http import HttpResponse
+
+def home(request):
+    return HttpResponse("Welcome to Django")
+</code></pre>
+
+    <h5>HTML Content Using HttpResponse</h5>
+
+<pre class="line-numbers"><code class="language-python">from django.http import HttpResponse
+
+def about(request):
+    return HttpResponse("&lt;h1&gt;About Us&lt;/h1&gt;")
+</code></pre>
+
+    <div class="code-title">
+        Browser Output
+    </div>
+
+<pre class="line-numbers"><code class="language-html">About Us</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Limitation:</strong>
+
+        Writing large HTML code inside HttpResponse() is difficult and not recommended.
+
+    </div>
+
+</div>
+<div class="content-card" id="render">
+
+    <h2>
+        <i class="fa-solid fa-file-code"></i>
+        render() Function
+    </h2>
+
+    <p>
+        The render() function is used to display HTML pages from a View.
+    </p>
+
+    <p>
+        This is the most commonly used approach in Django applications.
+    </p>
+
+    <h5>Step 1 - Create Templates Folder</h5>
+
+<pre class="line-numbers"><code class="language-bash">blog
+│
+├── templates
+│
+└── views.py</code></pre>
+
+    <h5>Step 2 - Create HTML File</h5>
+
+<pre class="line-numbers"><code class="language-bash">blog/templates/home.html</code></pre>
+
+    <h5>Code: home.html</h5>
+
+<pre class="line-numbers"><code class="language-html">&lt;h1&gt;Welcome To Django&lt;/h1&gt;
+&lt;p&gt;This page is rendered using render().&lt;/p&gt;</code></pre>
+
+    <h5>Step 3 - Update View</h5>
+
+<pre class="line-numbers"><code class="language-python">from django.shortcuts import render
+
+def home(request):
+    return render(request,'home.html')
+</code></pre>
+
+    <h5>Step 4 - Open Browser</h5>
+
+<pre class="line-numbers"><code class="language-bash">http://127.0.0.1:8000/</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Result:</strong>
+
+        Django loads the home.html file and displays it in the browser.
+
+    </div>
+<div class="alert bg-dark">
+
+    <strong>What is request?</strong>
+
+    The <strong>request</strong> parameter contains information sent by the browser to the server.
+
+    Every Django View receives a request object automatically.
+
+    Examples of information available in request:
+
+    <ul class="mb-0 mt-2">
+        <li>URL requested by the user</li>
+        <li>Form data submitted by the user</li>
+        <li>Query string values</li>
+        <li>User information</li>
+    </ul>
+
+</div>
+<div class="alert bg-dark">
+
+    <strong>Note:</strong>
+
+    We have placed <strong>home.html</strong> inside the application's
+    <strong>templates</strong> folder.
+
+    Django automatically searches the templates folder for HTML files,
+    therefore we only write:
+
+<pre class="line-numbers"><code class="language-python">return render(request,'home.html')</code></pre>
+
+    We do not need to write:
+
+<pre class="line-numbers"><code class="language-python">return render(request,'templates/home.html')</code></pre>
+
+</div>
+</div>
+<div class="content-card" id="pages">
+
+    <h2>
+        <i class="fa-solid fa-globe"></i>
+        Multiple Pages Navigation
+    </h2>
+
+    <p>
+        A real website contains multiple pages such as Home, About and Contact.
+    </p>
+
+    <h5>Step 1 - Create About Page</h5>
+
+<pre class="line-numbers"><code class="language-bash">demo/templates/about.html</code></pre>
+
+<pre class="line-numbers"><code class="language-html">&lt;h1&gt;About Us&lt;/h1&gt;
+&lt;p&gt;Welcome to our About Page.&lt;/p&gt;</code></pre>
+
+    <h5>Step 2 - Create Contact Page</h5>
+
+<pre class="line-numbers"><code class="language-bash">demo/templates/contact.html</code></pre>
+
+<pre class="line-numbers"><code class="language-html">&lt;h1&gt;Contact Us&lt;/h1&gt;
+&lt;p&gt;Welcome to our Contact Page.&lt;/p&gt;</code></pre>
+
+    <h5>Step 3 - Update Views</h5>
+
+<pre class="line-numbers"><code class="language-python">from django.shortcuts import render
+
+def home(request):
+    return render(request,'home.html')
+
+def about(request):
+    return render(request,'about.html')
+
+def contact(request):
+    return render(request,'contact.html')</code></pre>
+
+    <h5>Step 4 - Update URLs</h5>
+
+<pre class="line-numbers"><code class="language-python">from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.home),
+    path('about/', views.about),
+    path('contact/', views.contact),
+]</code></pre>
+
+    <h5>Test URLs</h5>
+
+<pre class="line-numbers"><code class="language-bash">http://127.0.0.1:8000/
+
+http://127.0.0.1:8000/about/
+
+http://127.0.0.1:8000/contact/</code></pre>
+
+    
+</div>
+<div class="content-card" id="revision">
+
+    <h2>
+        <i class="fa-solid fa-bolt"></i>
+        Quick Revision
+    </h2>
+
+    <div class="row">
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">URL Routing</h5>
+                    <ul class="mb-0 text-light">
+                        <li>path()</li>
+                        <li>Connect URL to View</li>
+                        <li>urls.py</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Views</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Python Function</li>
+                        <li>Receives Request</li>
+                        <li>Returns Response</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">HttpResponse</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Simple Text Output</li>
+                        <li>Quick Testing</li>
+                        <li>Returns Response</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">render()</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Display HTML Pages</li>
+                        <li>Uses Templates</li>
+                        <li>Most Common Method</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Templates</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Create templates Folder</li>
+                        <li>Store HTML Files</li>
+                        <li>home.html, about.html</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Project Flow</h5>
+                    <ul class="mb-0 text-light">
+                        <li>URL → View</li>
+                        <li>View → Template</li>
+                        <li>Template → Browser</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <h5 class="mt-3">Common Mistakes</h5>
+
+    <div class="alert bg-dark">
+
+        <ul class="mb-0">
+
+            <li>
+                Create <strong>urls.py</strong> manually inside the application.
+            </li>
+
+            <li>
+                Register application URLs in the project's main <strong>urls.py</strong>.
+            </li>
+
+            <li>
+                Add the application name to <strong>INSTALLED_APPS</strong>.
+            </li>
+
+            <li>
+                Create a folder named <strong>templates</strong> (not template).
+            </li>
+
+            <li>
+                Select the correct Virtual Environment Interpreter in VS Code.
+            </li>
+
+            <li>
+                Restart the server after making major configuration changes.
+            </li>
+
+        </ul>
+
+    </div>
+
+</div>
+<div class="content-card" id="assignment">
+
+    <h2>
+        <i class="fa-solid fa-clipboard-check"></i>
+        Assignment
+    </h2>
+
+    <div class="assignment-box">
+
+        <strong>
+            Complete the following tasks:
+        </strong>
+
+        <ol>
+
+            <li>
+                Create an application named <strong>student</strong>.
+            </li>
+
+            <li>
+                Register the application in <strong>INSTALLED_APPS</strong>.
+            </li>
+
+            <li>
+                Create a <strong>student/urls.py</strong> file and configure URL routing.
+            </li>
+
+            <li>
+                Create three pages:
+                <strong>Home</strong>,
+                <strong>Courses</strong> and
+                <strong>Contact</strong>.
+            </li>
+
+            <li>
+                Use <strong>render()</strong> to display all three HTML pages and verify navigation using URLs.
+            </li>
+
+        </ol>
+
+    </div>
+
+</div>
+</div>
+
+        </div>
+
+    </div>
+
+    <footer class="footer">
+
+    <a href="https://www.revolutionit.in" target="_blank">
+        <img src="Images/whitelogo.png"
+             alt="Company Logo"
+             style="height:55px; margin-bottom:10px;">
+    </a>
+
+    <div>
+        Full Stack Development Training -  Python Django
+    </div>
+
+   
+
+</footer>
+<!-- JQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- Toastr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<!-- Prism Core -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/prism.min.js"></script>
+
+<!-- Python -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-python.min.js"></script>
+
+<!-- Bash -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-bash.min.js"></script>
+
+<!-- Line Numbers -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+
+<!-- Toolbar -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/toolbar/prism-toolbar.min.js"></script>
+
+<!-- Copy Button -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+
+<script>
+
+document.addEventListener("click", function(e){
+
+    if(e.target.innerText === "Copy")
+    {
+        toastr.success("Code copied successfully");
+    }
+
+});
+
+toastr.options = {
+    closeButton: true,
+    progressBar: true,
+    positionClass: "toast-bottom-right",
+    timeOut: "2000"
+};
+
+</script>
+</body>
+
+</html>

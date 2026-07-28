@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Django - Session 22</title>
+<link rel="icon"
+      type="image/png"
+      href="Images/djnago_icon.png">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+<!-- Prism Theme -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+
+<!-- Prism Line Numbers -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet"/>
+
+<!-- Prism Toolbar -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+<!-- Toastr -->
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-color: #161b22;
+            --border-color: #30363d;
+            --text-color: #e6edf3;
+            --heading-color: #58a6ff;
+            --accent-color: #7c3aed;
+        }
+
+        html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Poppins', sans-serif;
+    padding-top: 80px;
+}
+
+.navbar-custom {
+    background: #111827;
+    border-bottom: 1px solid var(--border-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+}
+
+
+
+        .session-title {
+            color: white;
+            font-weight: 600;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 90px;
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .sidebar h5 {
+            color: var(--heading-color);
+            margin-bottom: 20px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #c9d1d9;
+            text-decoration: none;
+            padding: 8px 0;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            color: var(--heading-color);
+            padding-left: 5px;
+        }
+
+        .content-card {
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        h2 {
+            color: var(--heading-color);
+            margin-bottom: 20px;
+        }
+
+        p,
+        li {
+            line-height: 1.9;
+        }
+
+        .overview-box {
+            background: #111827;
+            border-left: 4px solid var(--accent-color);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .footer {
+    background: #111827;
+    border-top: 1px solid var(--border-color);
+    padding: 30px 20px;
+    text-align: center;
+    margin-top: 50px;
+    color: #c9d1d9;
+}
+
+pre[class*="language-"] {
+    border-radius: 12px;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #30363d;
+}
+
+.code-title {
+    background: #21262d;
+    color: #58a6ff;
+    padding: 10px 15px;
+    border-radius: 10px 10px 0 0;
+    font-weight: 600;
+    border: 1px solid #30363d;
+    border-bottom: none;
+}
+
+.toolbar-item button {
+    background: #7c3aed !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 4px 12px !important;
+    font-size: 13px !important;
+}
+
+.toolbar-item button:hover {
+    background: #6d28d9 !important;
+}
+
+.table-dark {
+    border-color: #30363d;
+}
+
+.table-dark th {
+    color: #58a6ff;
+}
+
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    border-color: #58a6ff !important;
+}
+
+
+.assignment-box {
+    background: #172554;
+    border-left: 5px solid #3b82f6;
+    border-radius: 12px;
+    padding: 25px;
+    color: #e6edf3;
+}
+
+.assignment-box strong {
+    color: #93c5fd;
+    font-size: 1.1rem;
+}
+
+.assignment-box ol {
+    margin-top: 15px;
+}
+
+.assignment-box li {
+    margin-bottom: 12px;
+}
+
+.btn-success {
+    background: #238636;
+    border-color: #238636;
+}
+
+.btn-success:hover {
+    background: #2ea043;
+    border-color: #2ea043;
+}
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Navbar -->
+
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+        <div class="container">
+
+           <span class="navbar-brand session-title">
+    <i class="fa-brands fa-python"></i>
+    Django - Session 22
+</span>
+
+        <div class="d-flex gap-2">
+        
+           
+        
+            <a href="index.html" class="btn btn-outline-light">
+                <i class="fa-solid fa-list"></i>
+                All Sessions
+            </a>
+        
+        </div>
+
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+
+        <div class="row">
+
+            <!-- Sidebar -->
+
+            <div class="col-lg-3">
+
+              <div class="sidebar">
+
+    <h5>
+        <i class="fa-solid fa-book"></i>
+        Contents
+    </h5>
+
+    <a href="#postmodel">Post Model</a>
+    <a href="#foreignkey">Foreign Key</a>
+    <a href="#migration">Create Migration</a>
+    <a href="#registerpost">Register Post Model</a>
+    <a href="#imageupload">Image Upload</a>
+    <a href="#ckeditor">CKEditor Integration</a>
+    
+    <a href="#revision">Quick Revision</a>
+    <a href="#assignment">Assignment</a>
+
+</div>
+
+            </div>
+
+            <!-- Main Content -->
+
+            <div class="col-lg-9">
+
+          <div class="content-card">
+
+    <h2>
+        <i class="fa-solid fa-graduation-cap"></i>
+        Session Overview
+    </h2>
+
+    <div class="overview-box">
+
+        <ul class="mb-0">
+
+            <li>Post Model</li>
+
+            <li>Foreign Key Relationship</li>
+
+            <li>Image Upload</li>
+
+            <li>CKEditor Integration</li>
+
+            <li>Blog Post CRUD </li>
+
+        </ul>
+
+    </div>
+
+</div>
+
+
+<div class="content-card" id="postmodel">
+
+    <h2>
+        <i class="fa-solid fa-file-lines"></i>
+        Create Post Model
+    </h2>
+
+    <p>
+        The Post Model stores all Blog Articles published on the website.
+    </p>
+
+    <p>
+        Each Post belongs to one Category and contains the Title, Summary, Image, Description and Publishing Information.
+    </p>
+
+    <h5>Step 1 - Import RichTextField</h5>
+
+<pre class="line-numbers"><code class="language-python">from ckeditor.fields import RichTextField</code></pre>
+
+    <h5>Step 2 - Create Post Model</h5>
+
+<pre class="line-numbers"><code class="language-python">class Post(models.Model):
+
+    Id = models.AutoField(primary_key=True)
+
+    Category = models.ForeignKey(
+        Category,
+        on_delete=models.CASCADE
+    )
+
+    Title = models.CharField(max_length=200)
+
+    Slug = models.SlugField(unique=True)
+
+    Summary = models.CharField(max_length=300)
+
+    Image = models.ImageField(upload_to='uploads/')
+
+    Description = RichTextField()
+
+    PublishDate = models.DateField()
+
+    IsPublished = models.BooleanField(default=True)
+
+    def __str__(self):
+
+        return self.Title
+
+    class Meta:
+
+        db_table = "BlogPosts"</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Explanation</strong>
+
+        <table class="table table-dark table-bordered mt-3">
+
+            <thead>
+
+                <tr>
+
+                    <th>Field</th>
+
+                    <th>Purpose</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr>
+
+                    <td>Category</td>
+
+                    <td>Links the Post to a Category.</td>
+
+                </tr>
+
+                <tr>
+
+                    <td>Title</td>
+
+                    <td>Stores the Blog Title.</td>
+
+                </tr>
+
+                <tr>
+
+                    <td>Slug</td>
+
+                    <td>Creates SEO-friendly URLs.</td>
+
+                </tr>
+
+                <tr>
+
+                    <td>Summary</td>
+
+                    <td>Short description displayed on the Home Page.</td>
+
+                </tr>
+
+                <tr>
+
+                    <td>Image</td>
+
+                    <td>Stores the Featured Image.</td>
+
+                </tr>
+
+                <tr>
+
+                    <td>Description</td>
+
+                    <td>Stores the complete Blog Content.</td>
+
+                </tr>
+
+                <tr>
+
+                    <td>PublishDate</td>
+
+                    <td>Date on which the article is published.</td>
+
+                </tr>
+
+                <tr>
+
+                    <td>IsPublished</td>
+
+                    <td>Controls whether the Blog is visible on the website.</td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+<div class="alert bg-dark">
+
+<strong>Why are we using RichTextField?</strong>
+
+<p class="mt-2">
+
+The <strong>RichTextField</strong> provided by CKEditor allows users to write formatted content instead of plain text.
+
+</p>
+
+<p>
+
+It supports features such as:
+
+</p>
+
+<ul class="mb-0">
+
+<li>Bold and Italic Text</li>
+
+<li>Headings</li>
+
+<li>Lists</li>
+
+<li>Hyperlinks</li>
+
+<li>Text Formatting</li>
+
+</ul>
+
+</div>
+
+<div class="content-card" id="foreignkey">
+
+    <h2>
+        <i class="fa-solid fa-diagram-project"></i>
+        Understanding the Post Model
+    </h2>
+
+    <p>
+
+        The Post Model combines multiple Django Field Types to represent a complete Blog Article.
+
+    </p>
+
+    <h5>Relationship Between Tables</h5>
+
+<pre class="line-numbers"><code class="language-text">BlogCategories
+
+Id      Name
+
+1       Technology
+
+2       Sports
+
+3       Travel
+
+
+        │
+
+        │ Foreign Key
+
+        ▼
+
+
+BlogPosts
+
+Title : Django ORM
+
+Category : Technology
+
+Image : django.jpg
+
+Summary : Learn Django ORM
+
+Description : Rich Text Content
+
+Publish Date : 01/07/2026
+
+Published : Yes</code></pre>
+
+    <h5>Understanding on_delete=models.CASCADE</h5>
+
+<pre class="line-numbers"><code class="language-python">Category = models.ForeignKey(
+
+    Category,
+
+    on_delete=models.CASCADE
+
+)</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Meaning</strong>
+
+        If a Category is deleted, Django automatically deletes all Blog Posts belonging to that Category.
+
+    </div>
+
+    <h5>Why do we use these additional fields?</h5>
+
+    <table class="table table-dark table-bordered">
+
+        <thead>
+
+            <tr>
+
+                <th>Field</th>
+
+                <th>Usage</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+
+                <td>Slug</td>
+
+                <td>Creates user-friendly URLs such as <strong>/post/django-orm</strong>.</td>
+
+            </tr>
+
+            <tr>
+
+                <td>Summary</td>
+
+                <td>Displayed on the Blog Listing page before opening the full article.</td>
+
+            </tr>
+
+            <tr>
+
+                <td>IsPublished</td>
+
+                <td>Allows administrators to hide or publish Blog Posts without deleting them.</td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+   
+
+</div>
+<div class="content-card" id="migration">
+
+    <h2>
+        <i class="fa-solid fa-database"></i>
+        Create Migration
+    </h2>
+
+    <p>
+        After creating the <strong>Post</strong> Model, we must update the database by generating and applying migrations.
+    </p>
+
+    <h5>Step 1 - Generate Migration</h5>
+
+<pre class="line-numbers"><code class="language-bash">python manage.py makemigrations</code></pre>
+
+    <p>
+        Django creates a new migration file inside the <strong>migrations</strong> folder.
+    </p>
+
+    <h5>Step 2 - Apply Migration</h5>
+
+<pre class="line-numbers"><code class="language-bash">python manage.py migrate</code></pre>
+
+    <p>
+        Django creates the <strong>BlogPosts</strong> table in the MySQL database.
+    </p>
+
+    <h5>Verify Database</h5>
+
+    <p>
+        Refresh your MySQL database and verify that the <strong>BlogPosts</strong> table has been created successfully.
+    </p>
+
+    <div class="alert bg-dark">
+
+        <strong>Migration Flow</strong>
+
+<pre class="line-numbers"><code class="language-text">Create Model
+
+      ↓
+
+makemigrations
+
+      ↓
+
+Migration File
+
+      ↓
+
+migrate
+
+      ↓
+
+BlogPosts Table</code></pre>
+
+    </div>
+
+</div>
+<div class="content-card" id="registerpost">
+
+    <h2>
+        <i class="fa-solid fa-user-shield"></i>
+        Register Post Model in Admin
+    </h2>
+
+    <p>
+        Register the <strong>Post</strong> Model to manage Blog Posts through the Django Admin Panel.
+    </p>
+
+    <h5>Open admin.py</h5>
+
+<pre class="line-numbers"><code class="language-bash">blog/admin.py</code></pre>
+
+    <h5>Register Post Model</h5>
+
+<pre class="line-numbers"><code class="language-python">from django.contrib import admin
+
+from .models import Category, Post
+
+
+@admin.register(Post)
+class PostAdmin(admin.ModelAdmin):
+
+    list_display = [
+
+        'Id',
+
+        'Title',
+
+        'Category',
+
+        'PublishDate',
+
+        'IsPublished'
+
+    ]
+
+    search_fields = [
+
+        'Title',
+
+        'Summary'
+
+    ]
+
+    list_filter = [
+
+        'Category',
+
+        'IsPublished',
+
+        'PublishDate'
+
+    ]
+
+    ordering = [
+
+        '-PublishDate'
+
+    ]</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Result:</strong>
+
+        The <strong>Posts</strong> module is now available in the Django Admin Panel with search, filtering and sorting features.
+
+    </div>
+
+</div>
+<div class="content-card" id="ckeditor">
+
+    <h2>
+        <i class="fa-solid fa-file-pen"></i>
+        CKEditor Integration
+    </h2>
+
+    <p>
+        CKEditor is a Rich Text Editor that allows users to create formatted Blog content without writing HTML code.
+    </p>
+
+    <p>
+        It provides features such as headings, bold text, lists, tables and hyperlinks.
+    </p>
+
+    <h5>Step 1 - Install CKEditor</h5>
+
+<pre class="line-numbers"><code class="language-bash">pip install django-ckeditor</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Note:</strong>
+
+        This package was already installed during the Blog Project Setup.
+
+    </div>
+
+    <h5>Step 2 - Register CKEditor Application</h5>
+
+    <p>
+        Open <strong>blogproject/settings.py</strong> and add
+        <strong>'ckeditor'</strong> inside the <strong>INSTALLED_APPS</strong> list.
+    </p>
+
+<pre class="line-numbers"><code class="language-python">INSTALLED_APPS = [
+
+    ...
+
+    'ckeditor',
+
+]</code></pre>
+
+    <h5>Step 3 - Import RichTextField</h5>
+
+<pre class="line-numbers"><code class="language-python">from ckeditor.fields import RichTextField</code></pre>
+
+    <h5>Step 4 - Update Description Field</h5>
+
+<pre class="line-numbers"><code class="language-python">Description = RichTextField()</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Result:</strong>
+
+        The Description field now displays the CKEditor Rich Text Editor in the Django Admin Panel, allowing users to create professionally formatted Blog content.
+
+    </div>
+
+</div>
+<div class="content-card" id="imageupload">
+
+    <h2>
+        <i class="fa-solid fa-image"></i>
+        Image Upload
+    </h2>
+
+    <p>
+        Every Blog Post contains a Featured Image displayed on the Home Page and Blog Details page.
+    </p>
+
+    <p>
+        Django stores uploaded images inside the <strong>media</strong> folder.
+    </p>
+
+    <h5>Step 1 - Install Pillow</h5>
+
+<pre class="line-numbers"><code class="language-bash">pip install pillow</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Note:</strong>
+
+        Pillow was installed during the Blog Project Setup.
+
+    </div>
+
+    <h5>Step 2 - Create Image Field</h5>
+
+<pre class="line-numbers"><code class="language-python">Image = models.ImageField(
+
+    upload_to='uploads/'
+
+)</code></pre>
+
+    <h5>Step 3 - Verify Media Configuration</h5>
+
+<pre class="line-numbers"><code class="language-python">MEDIA_URL = '/media/'
+
+MEDIA_ROOT = BASE_DIR / 'media'</code></pre>
+
+    <h5>Step 4 - Verify urls.py</h5>
+
+<pre class="line-numbers"><code class="language-python">if settings.DEBUG:
+
+    urlpatterns += static(
+
+        settings.MEDIA_URL,
+
+        document_root=settings.MEDIA_ROOT
+
+    )</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Result:</strong>
+
+        Uploaded Blog Images will be stored inside:
+
+<pre class="line-numbers"><code class="language-text">media/uploads</code></pre>
+
+    </div>
+
+</div>
+<div class="content-card" id="revision">
+
+    <h2>
+        <i class="fa-solid fa-bolt"></i>
+        Quick Revision
+    </h2>
+
+    <div class="row">
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Post Model</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Title</li>
+                        <li>Slug</li>
+                        <li>Summary</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Relationships</h5>
+                    <ul class="mb-0 text-light">
+                        <li>ForeignKey</li>
+                        <li>Category</li>
+                        <li>CASCADE</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Database</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Meta Class</li>
+                        <li>db_table</li>
+                        <li>Migrations</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Image Upload</h5>
+                    <ul class="mb-0 text-light">
+                        <li>ImageField</li>
+                        <li>Pillow</li>
+                        <li>Media Folder</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">CKEditor</h5>
+                    <ul class="mb-0 text-light">
+                        <li>RichTextField</li>
+                        <li>Formatted Content</li>
+                        <li>ckeditor App</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Admin Panel</h5>
+                    <ul class="mb-0 text-light">
+                        <li>list_display</li>
+                        <li>list_filter</li>
+                        <li>search_fields</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="alert bg-dark">
+
+        <strong>Commands Practiced Today</strong>
+
+<pre class="line-numbers"><code class="language-bash">python manage.py makemigrations
+
+python manage.py migrate
+
+python manage.py runserver</code></pre>
+
+    </div>
+
+</div>
+<div class="content-card" id="assignment">
+
+    <h2>
+        <i class="fa-solid fa-clipboard-check"></i>
+        Assignment
+    </h2>
+
+    <div class="assignment-box">
+
+        <strong>
+            Continue Developing the News Portal
+        </strong>
+
+        <p class="mt-3">
+
+            Implement the same functionality covered in today's Blog Project using your <strong>News Portal</strong>.
+
+        </p>
+
+        <ol>
+
+            <li>
+                Create a <strong>NewsPost</strong> model with the following fields:
+                <ul>
+                    <li>Id</li>
+                    <li>NewsCategory (Foreign Key)</li>
+                    <li>Title</li>
+                    <li>Slug</li>
+                    <li>Summary</li>
+                    <li>Image</li>
+                    <li>Description (RichTextField)</li>
+                    <li>PublishDate</li>
+                    <li>IsPublished</li>
+                </ul>
+            </li>
+
+            <li>
+                Rename the database table to <strong>NewsPosts</strong> using the <strong>Meta</strong> class.
+            </li>
+
+            <li>
+                Generate and apply migrations.
+            </li>
+
+            <li>
+                Register the <strong>NewsPost</strong> model in the Django Admin Panel.
+            </li>
+
+            <li>
+                Configure the Admin Panel with:
+                <ul>
+                    <li>list_display</li>
+                    <li>search_fields</li>
+                    <li>list_filter</li>
+                    <li>ordering</li>
+                </ul>
+            </li>
+
+            <li>
+                Integrate CKEditor and use <strong>RichTextField</strong> for the Description field.
+            </li>
+
+            <li>
+                Add at least five News Posts using the Django Admin Panel with images and formatted descriptions.
+            </li>
+
+            <li>
+                Verify that uploaded images are stored inside the <strong>media/uploads</strong> folder and all records are successfully saved in the <strong>NewsPosts</strong> table.
+
+            </li>
+
+        </ol>
+
+    </div>
+
+</div>
+
+            </div>
+        </div>
+    </div>
+              <footer class="footer">
+
+    <a href="https://www.revolutionit.in" target="_blank">
+        <img src="Images/whitelogo.png"
+             alt="Company Logo"
+             style="height:55px; margin-bottom:10px;">
+    </a>
+
+    <div>
+        Full Stack Development Training -  Python Django
+    </div>
+
+   
+
+</footer>
+<!-- JQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- Toastr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<!-- Prism Core -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/prism.min.js"></script>
+
+<!-- Python -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-python.min.js"></script>
+
+<!-- Bash -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-bash.min.js"></script>
+
+<!-- Line Numbers -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+
+<!-- Toolbar -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/toolbar/prism-toolbar.min.js"></script>
+
+<!-- Copy Button -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+
+<script>
+
+document.addEventListener("click", function(e){
+
+    if(e.target.innerText === "Copy")
+    {
+        toastr.success("Code copied successfully");
+    }
+
+});
+
+toastr.options = {
+    closeButton: true,
+    progressBar: true,
+    positionClass: "toast-bottom-right",
+    timeOut: "2000"
+};
+
+</script>
+</body>
+
+</html>

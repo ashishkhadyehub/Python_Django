@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Django - Session 16</title>
+<link rel="icon"
+      type="image/png"
+      href="Images/djnago_icon.png">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+<!-- Prism Theme -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+
+<!-- Prism Line Numbers -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet"/>
+
+<!-- Prism Toolbar -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+<!-- Toastr -->
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-color: #161b22;
+            --border-color: #30363d;
+            --text-color: #e6edf3;
+            --heading-color: #58a6ff;
+            --accent-color: #7c3aed;
+        }
+
+        html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Poppins', sans-serif;
+    padding-top: 80px;
+}
+
+.navbar-custom {
+    background: #111827;
+    border-bottom: 1px solid var(--border-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+}
+
+
+
+        .session-title {
+            color: white;
+            font-weight: 600;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 90px;
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .sidebar h5 {
+            color: var(--heading-color);
+            margin-bottom: 20px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #c9d1d9;
+            text-decoration: none;
+            padding: 8px 0;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            color: var(--heading-color);
+            padding-left: 5px;
+        }
+
+        .content-card {
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        h2 {
+            color: var(--heading-color);
+            margin-bottom: 20px;
+        }
+
+        p,
+        li {
+            line-height: 1.9;
+        }
+
+        .overview-box {
+            background: #111827;
+            border-left: 4px solid var(--accent-color);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .footer {
+    background: #111827;
+    border-top: 1px solid var(--border-color);
+    padding: 30px 20px;
+    text-align: center;
+    margin-top: 50px;
+    color: #c9d1d9;
+}
+
+pre[class*="language-"] {
+    border-radius: 12px;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #30363d;
+}
+
+.code-title {
+    background: #21262d;
+    color: #58a6ff;
+    padding: 10px 15px;
+    border-radius: 10px 10px 0 0;
+    font-weight: 600;
+    border: 1px solid #30363d;
+    border-bottom: none;
+}
+
+.toolbar-item button {
+    background: #7c3aed !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 4px 12px !important;
+    font-size: 13px !important;
+}
+
+.toolbar-item button:hover {
+    background: #6d28d9 !important;
+}
+
+.table-dark {
+    border-color: #30363d;
+}
+
+.table-dark th {
+    color: #58a6ff;
+}
+
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    border-color: #58a6ff !important;
+}
+
+
+.assignment-box {
+    background: #172554;
+    border-left: 5px solid #3b82f6;
+    border-radius: 12px;
+    padding: 25px;
+    color: #e6edf3;
+}
+
+.assignment-box strong {
+    color: #93c5fd;
+    font-size: 1.1rem;
+}
+
+.assignment-box ol {
+    margin-top: 15px;
+}
+
+.assignment-box li {
+    margin-bottom: 12px;
+}
+
+.btn-success {
+    background: #238636;
+    border-color: #238636;
+}
+
+.btn-success:hover {
+    background: #2ea043;
+    border-color: #2ea043;
+}
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Navbar -->
+
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+        <div class="container">
+
+           <span class="navbar-brand session-title">
+    <i class="fa-brands fa-python"></i>
+    Django - Session 16
+</span>
+
+        <div class="d-flex gap-2">
+        
+           
+        
+            <a href="index.html" class="btn btn-outline-light">
+                <i class="fa-solid fa-list"></i>
+                All Sessions
+            </a>
+        
+        </div>
+
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+
+        <div class="row">
+
+            <!-- Sidebar -->
+
+            <div class="col-lg-3">
+
+              <div class="sidebar">
+
+    <h5>
+        <i class="fa-solid fa-book"></i>
+        Contents
+    </h5>
+
+    <a href="#models">Models Introduction</a>
+    <a href="#firstmodel">Creating First Model</a>
+    <a href="#migrations">Migrations</a>
+    <a href="#adminpanel">Django Admin Panel</a>
+    <a href="#registermodel">Register Model in Admin</a>
+    <a href="#adddata">Adding Data from Admin</a>
+    <a href="#revision">Quick Revision</a>
+    <a href="#assignment">Assignment</a>
+
+</div>
+
+            </div>
+
+            <!-- Main Content -->
+
+            <div class="col-lg-9">
+
+            <div class="content-card">
+
+    <h2>
+        <i class="fa-solid fa-graduation-cap"></i>
+        Session Overview
+    </h2>
+
+    <div class="overview-box">
+
+        <ul class="mb-0">
+
+            <li>Models Introduction</li>
+            <li>Creating First Model</li>
+            <li>Migrations</li>
+            <li>Django Admin Panel</li>
+            <li>Registering Models in Admin</li>
+            <li>Adding Data from Admin Panel</li>
+
+        </ul>
+
+    </div>
+
+</div>
+<div class="content-card" id="models">
+
+    <h2>
+        <i class="fa-solid fa-database"></i>
+        Models Introduction
+    </h2>
+
+    <p>
+        A Model is a Python class used to represent a database table.
+    </p>
+
+    <p>
+        Django automatically creates database tables based on Model definitions.
+    </p>
+
+    <h5>Real World Example</h5>
+
+    <table class="table table-dark table-bordered">
+
+        <thead>
+            <tr>
+                <th>Model</th>
+                <th>Database Table</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>Category</td>
+                <td>Category Table</td>
+            </tr>
+
+            <tr>
+                <td>Post</td>
+                <td>Post Table</td>
+            </tr>
+
+            <tr>
+                <td>Comment</td>
+                <td>Comment Table</td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+    <div class="alert bg-dark">
+
+        <strong>Important:</strong>
+
+        Every Model becomes a database table after running migrations.
+
+    </div>
+
+</div>
+<div class="alert bg-dark">
+
+    <strong>Think Like This:</strong>
+
+<pre class="line-numbers"><code class="language-text">Model
+   ↓
+Migration
+   ↓
+Database Table
+   ↓
+Store Data</code></pre>
+
+</div>
+<div class="content-card" id="firstmodel">
+
+    <h2>
+        <i class="fa-solid fa-table"></i>
+        Creating First Model
+    </h2>
+
+    <p>
+        We will create a Category model for our Blog Project.
+    </p>
+
+    <h5>File Location</h5>
+
+<pre class="line-numbers"><code class="language-bash">demo/models.py</code></pre>
+
+    <h5>Create Category Model</h5>
+
+<pre class="line-numbers"><code class="language-python">from django.db import models
+
+class Category(models.Model):
+
+    Id = models.AutoField(primary_key=True)
+
+    Name = models.CharField(max_length=100)</code></pre>
+
+    <h5>Understanding the Code</h5>
+
+    <table class="table table-dark table-bordered">
+
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Purpose</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>models.Model</td>
+                <td>Base class for all Models</td>
+            </tr>
+
+            <tr>
+                <td>Category</td>
+                <td>Model Name</td>
+            </tr>
+
+            <tr>
+                <td>CharField</td>
+                <td>Stores Text Data</td>
+            </tr>
+
+            <tr>
+                <td>max_length=100</td>
+                <td>Maximum 100 Characters</td>
+            </tr>
+            <tr>
+                <td>AutoField</td>
+                <td>Auto Increment Primary Key</td>
+            </tr>
+        </tbody>
+
+    </table>
+
+</div>
+<div class="alert bg-dark">
+
+    <strong>Primary Key</strong>
+
+    <p class="mt-2 mb-0">
+
+        The <strong>Id</strong> field is the Primary Key of the Category table.
+
+        AutoField automatically generates sequential values such as:
+
+        1, 2, 3, 4, ...
+
+    </p>
+
+</div>
+<div class="alert bg-dark">
+
+    <strong>Note:</strong>
+
+    Django automatically creates an Id field if we do not define one manually.
+
+    In this training we are creating it explicitly so the table structure is easy to understand.
+
+</div>
+<div class="content-card" id="migrations">
+
+    <h2>
+        <i class="fa-solid fa-gears"></i>
+        Migrations
+    </h2>
+
+    <p>
+        Migrations are used to create or update database tables based on Model changes.
+    </p>
+
+    <p>
+        Whenever a Model is added or modified, migrations must be executed.
+    </p>
+
+    <h5>Step 1 - Create Migration File</h5>
+
+<pre class="line-numbers"><code class="language-bash">python manage.py makemigrations</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-bash">Migrations for 'demo':
+
+demo\migrations\0001_initial.py
+
++ Create model Category</code></pre>
+
+    <h5>Step 2 - Apply Migration</h5>
+
+<pre class="line-numbers"><code class="language-bash">python manage.py migrate</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-bash">Applying demo.0001_initial... OK</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Result:</strong>
+
+        Django creates the Category table inside the database.
+
+    </div>
+
+</div>
+<div class="alert bg-dark">
+
+    <strong>Important:</strong>
+
+    During the first migration, Django creates several system tables automatically.
+
+    <h6 class="mt-3">Examples</h6>
+
+    <ul class="mb-0">
+
+        <li>auth_user</li>
+
+        <li>auth_group</li>
+
+        <li>django_admin_log</li>
+
+        <li>django_session</li>
+
+        <li>django_content_type</li>
+
+    </ul>
+
+    <p class="mt-2 mb-0">
+        These tables are required for Login, Admin Panel, Permissions and Session Management.
+    </p>
+
+</div>
+<div class="alert bg-dark">
+
+    <strong>Default Table Naming Convention</strong>
+
+    <p class="mt-2">
+
+        Django automatically creates table names using:
+
+    </p>
+
+<pre class="line-numbers"><code class="language-text">AppName_ModelName</code></pre>
+
+    <h6>Example</h6>
+
+<pre class="line-numbers"><code class="language-text">App Name  : demo
+
+Model Name : Category
+
+Table Name : demo_category</code></pre>
+
+</div>
+<div class="alert bg-dark">
+
+    <strong>Custom Table Name</strong>
+
+    <p class="mt-2">
+        We can specify our own table name using Meta class.
+    </p>
+
+<pre class="line-numbers"><code class="language-python">from django.db import models
+
+class Category(models.Model):
+
+    Id = models.AutoField(primary_key=True)
+
+    Name = models.CharField(max_length=100)
+
+    class Meta:
+
+        db_table = 'Category'</code></pre>
+
+    <h6>Result</h6>
+
+<pre class="line-numbers"><code class="language-text">Category</code></pre>
+
+    <p class="mb-0">
+        Django will create the table with the exact name specified in db_table.
+    </p>
+
+</div>
+<div class="alert bg-dark">
+
+    <strong>Remember:</strong>
+
+<pre class="line-numbers"><code class="language-text">Create Model
+      ↓
+makemigrations
+      ↓
+migrate
+      ↓
+Database Table Created</code></pre>
+
+    Missing any step will prevent the table from being created.
+
+</div>
+<div class="alert bg-dark">
+
+    <strong>Viewing SQLite Database</strong>
+
+    <p class="mt-2">
+        Django uses SQLite by default and stores data in:
+    </p>
+
+<pre class="line-numbers"><code class="language-bash">db.sqlite3</code></pre>
+
+    <p>
+        To view tables and data inside VS Code, install:
+    </p>
+
+<pre class="line-numbers"><code class="language-text">SQLite Viewer</code></pre>
+
+    <p class="mb-0">
+        After installation, open <strong>db.sqlite3</strong> and browse tables directly from VS Code.
+    </p>
+
+</div>
+<div class="content-card" id="adminpanel">
+
+    <h2>
+        <i class="fa-solid fa-user-shield"></i>
+        Django Admin Panel
+    </h2>
+
+    <p>
+        Django provides a built-in Administration Panel for managing application data.
+    </p>
+
+    <p>
+        Administrators can add, edit and delete records without writing additional code.
+    </p>
+
+    <h5>Step 1 - Create Super User</h5>
+
+<pre class="line-numbers"><code class="language-bash">python manage.py createsuperuser</code></pre>
+
+    <h5>Example</h5>
+
+<pre class="line-numbers"><code class="language-bash">Username : admin
+
+Email : admin@gmail.com
+
+Password : ********</code></pre>
+
+    <h5>Step 2 - Start Server</h5>
+
+<pre class="line-numbers"><code class="language-bash">python manage.py runserver</code></pre>
+
+    <h5>Step 3 - Open Admin Panel</h5>
+
+<pre class="line-numbers"><code class="language-bash">http://127.0.0.1:8000/admin/</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Result:</strong>
+
+        Django displays the Admin Login page.
+
+    </div>
+
+</div>
+<div class="alert bg-dark">
+
+    <strong>Why Admin Panel?</strong>
+
+    <ul class="mb-0 mt-2">
+
+        <li>Add Records</li>
+
+        <li>Edit Records</li>
+
+        <li>Delete Records</li>
+
+        <li>Manage Website Data</li>
+
+    </ul>
+
+</div>
+<div class="content-card" id="registermodel">
+
+    <h2>
+        <i class="fa-solid fa-user-gear"></i>
+        Register Model in Admin
+    </h2>
+
+    <p>
+        Creating a Model and running migrations creates the database table.
+    </p>
+
+    <p>
+        However, the Model will not appear in the Django Admin Panel until it is registered.
+    </p>
+
+    <h5>File Location</h5>
+
+<pre class="line-numbers"><code class="language-bash">demo/admin.py</code></pre>
+
+    <h5>Register Category Model</h5>
+
+<pre class="line-numbers"><code class="language-python">from django.contrib import admin
+
+from .models import Category
+
+admin.site.register(Category)</code></pre>
+
+    <h5>Start Server</h5>
+
+<pre class="line-numbers"><code class="language-bash">python manage.py runserver</code></pre>
+
+    <h5>Open Admin Panel</h5>
+
+<pre class="line-numbers"><code class="language-bash">http://127.0.0.1:8000/admin/</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Result:</strong>
+
+        After login, the Category Model will appear in the Admin Panel.
+
+    </div>
+
+</div>
+<div class="content-card" id="adddata">
+
+    <h2>
+        <i class="fa-solid fa-circle-plus"></i>
+        Adding Data from Admin Panel
+    </h2>
+
+    <p>
+        After registering the Model, records can be inserted directly from the Admin Panel.
+    </p>
+
+    <h5>Login To Admin Panel</h5>
+
+<pre class="line-numbers"><code class="language-bash">http://127.0.0.1:8000/admin/</code></pre>
+
+    <h5>Open Category Section</h5>
+
+    <p>
+        Click on Category and then click the Add button.
+    </p>
+
+    <h5>Example Record</h5>
+
+    <table class="table table-dark table-bordered">
+
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>1</td>
+                <td>Technology</td>
+            </tr>
+
+            <tr>
+                <td>2</td>
+                <td>Travel</td>
+            </tr>
+
+            <tr>
+                <td>3</td>
+                <td>Food</td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+    <h5>Database Table</h5>
+
+    <p>
+        The records entered through the Admin Panel are stored in the Category table.
+    </p>
+
+    <div class="alert bg-dark">
+
+        <strong>Result:</strong>
+
+        Data can now be added, updated and deleted without writing SQL queries.
+
+    </div>
+<div class="alert bg-dark">
+
+    <strong>Improving Display Name</strong>
+
+    <p class="mt-2">
+        By default, Django displays:
+    </p>
+
+<pre class="line-numbers"><code class="language-text">Category object (1)</code></pre>
+
+    <p>
+        To display the Category Name instead:
+    </p>
+
+<pre class="line-numbers"><code class="language-python">from django.db import models
+
+class Category(models.Model):
+
+    Id = models.AutoField(primary_key=True)
+
+    Name = models.CharField(max_length=100)
+
+    class Meta:
+        db_table = 'Category'
+
+    def __str__(self):
+        return self.Name</code></pre>
+
+    <p class="mb-0">
+        Now the Admin Panel will display the actual Category Name.
+    </p>
+
+</div>
+<div class="alert bg-dark">
+
+    <strong>Understanding __str__()</strong>
+
+    <p class="mt-2">
+        The <strong>__str__()</strong> method specifies what should be displayed when an object is converted to text.
+    </p>
+
+    <p>
+        Without __str__(), Django Admin displays:
+    </p>
+
+<pre class="line-numbers"><code class="language-text">Category object (1)
+
+Category object (2)</code></pre>
+
+    <p>
+        After adding:
+    </p>
+
+<pre class="line-numbers"><code class="language-python">def __str__(self):
+    return self.Name</code></pre>
+
+    <p>
+        Django Admin displays:
+    </p>
+
+<pre class="line-numbers"><code class="language-text">Technology
+
+Travel
+
+Food</code></pre>
+
+    <p class="mb-0">
+        In simple words, __str__() tells Django which field should be shown as the display name of the object.
+    </p>
+
+</div>
+</div>
+<div class="content-card" id="revision">
+
+    <h2>
+        <i class="fa-solid fa-bolt"></i>
+        Quick Revision
+    </h2>
+
+    <div class="row">
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Models</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Represents Table</li>
+                        <li>Python Class</li>
+                        <li>Stores Data Structure</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Fields</h5>
+                    <ul class="mb-0 text-light">
+                        <li>AutoField</li>
+                        <li>CharField</li>
+                        <li>Primary Key</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Migrations</h5>
+                    <ul class="mb-0 text-light">
+                        <li>makemigrations</li>
+                        <li>migrate</li>
+                        <li>Create Tables</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Admin Panel</h5>
+                    <ul class="mb-0 text-light">
+                        <li>createsuperuser</li>
+                        <li>Login</li>
+                        <li>Manage Data</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Model Registration</h5>
+                    <ul class="mb-0 text-light">
+                        <li>admin.py</li>
+                        <li>site.register()</li>
+                        <li>Visible In Admin</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Useful Concepts</h5>
+                    <ul class="mb-0 text-light">
+                        <li>db_table</li>
+                        <li>__str__()</li>
+                        <li>SQLite Viewer</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="alert bg-dark">
+
+        <strong>Important Commands</strong>
+
+<pre class="line-numbers"><code class="language-bash">python manage.py makemigrations
+
+python manage.py migrate
+
+python manage.py createsuperuser
+
+python manage.py runserver</code></pre>
+
+    </div>
+
+    <div class="alert bg-dark">
+
+        <strong>Complete Flow</strong>
+
+<pre class="line-numbers"><code class="language-text">Create Model
+      ↓
+makemigrations
+      ↓
+migrate
+      ↓
+Register Model
+      ↓
+Admin Panel
+      ↓
+Add Records</code></pre>
+
+    </div>
+
+</div>
+<div class="content-card" id="assignment">
+
+    <h2>
+        <i class="fa-solid fa-clipboard-check"></i>
+        Assignment
+    </h2>
+
+    <div class="assignment-box">
+
+        <strong>
+            Complete the following tasks:
+        </strong>
+
+        <ol>
+
+            <li>
+                Create a Model named <strong>Tag</strong>.
+            </li>
+
+            <li>
+                Add the following fields:
+<pre class="line-numbers"><code class="language-python">Id = models.AutoField(primary_key=True)
+
+Name = models.CharField(max_length=100)</code></pre>
+            </li>
+
+            <li>
+                Configure a custom table name using:
+<pre class="line-numbers"><code class="language-python">class Meta:
+
+    db_table = 'Tag'</code></pre>
+            </li>
+
+            <li>
+                Implement:
+<pre class="line-numbers"><code class="language-python">def __str__(self):
+    return self.Name</code></pre>
+            </li>
+
+            <li>
+                Run migrations, register the Model in Admin Panel and add at least 3 records.
+            </li>
+
+        </ol>
+
+    </div>
+
+</div>
+</div>
+
+
+    <footer class="footer">
+
+    <a href="https://www.revolutionit.in" target="_blank">
+        <img src="Images/whitelogo.png"
+             alt="Company Logo"
+             style="height:55px; margin-bottom:10px;">
+    </a>
+
+    <div>
+        Full Stack Development Training -  Python Django
+    </div>
+
+   
+
+</footer>
+<!-- JQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- Toastr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<!-- Prism Core -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/prism.min.js"></script>
+
+<!-- Python -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-python.min.js"></script>
+
+<!-- Bash -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-bash.min.js"></script>
+
+<!-- Line Numbers -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+
+<!-- Toolbar -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/toolbar/prism-toolbar.min.js"></script>
+
+<!-- Copy Button -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+
+<script>
+
+document.addEventListener("click", function(e){
+
+    if(e.target.innerText === "Copy")
+    {
+        toastr.success("Code copied successfully");
+    }
+
+});
+
+toastr.options = {
+    closeButton: true,
+    progressBar: true,
+    positionClass: "toast-bottom-right",
+    timeOut: "2000"
+};
+
+</script>
+</body>
+
+</html>

@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Django - Session 17</title>
+<link rel="icon"
+      type="image/png"
+      href="Images/djnago_icon.png">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+<!-- Prism Theme -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+
+<!-- Prism Line Numbers -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet"/>
+
+<!-- Prism Toolbar -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+<!-- Toastr -->
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-color: #161b22;
+            --border-color: #30363d;
+            --text-color: #e6edf3;
+            --heading-color: #58a6ff;
+            --accent-color: #7c3aed;
+        }
+
+        html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Poppins', sans-serif;
+    padding-top: 80px;
+}
+
+.navbar-custom {
+    background: #111827;
+    border-bottom: 1px solid var(--border-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+}
+
+
+
+        .session-title {
+            color: white;
+            font-weight: 600;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 90px;
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .sidebar h5 {
+            color: var(--heading-color);
+            margin-bottom: 20px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #c9d1d9;
+            text-decoration: none;
+            padding: 8px 0;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            color: var(--heading-color);
+            padding-left: 5px;
+        }
+
+        .content-card {
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        h2 {
+            color: var(--heading-color);
+            margin-bottom: 20px;
+        }
+
+        p,
+        li {
+            line-height: 1.9;
+        }
+
+        .overview-box {
+            background: #111827;
+            border-left: 4px solid var(--accent-color);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .footer {
+    background: #111827;
+    border-top: 1px solid var(--border-color);
+    padding: 30px 20px;
+    text-align: center;
+    margin-top: 50px;
+    color: #c9d1d9;
+}
+
+pre[class*="language-"] {
+    border-radius: 12px;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #30363d;
+}
+
+.code-title {
+    background: #21262d;
+    color: #58a6ff;
+    padding: 10px 15px;
+    border-radius: 10px 10px 0 0;
+    font-weight: 600;
+    border: 1px solid #30363d;
+    border-bottom: none;
+}
+
+.toolbar-item button {
+    background: #7c3aed !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 4px 12px !important;
+    font-size: 13px !important;
+}
+
+.toolbar-item button:hover {
+    background: #6d28d9 !important;
+}
+
+.table-dark {
+    border-color: #30363d;
+}
+
+.table-dark th {
+    color: #58a6ff;
+}
+
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    border-color: #58a6ff !important;
+}
+
+
+.assignment-box {
+    background: #172554;
+    border-left: 5px solid #3b82f6;
+    border-radius: 12px;
+    padding: 25px;
+    color: #e6edf3;
+}
+
+.assignment-box strong {
+    color: #93c5fd;
+    font-size: 1.1rem;
+}
+
+.assignment-box ol {
+    margin-top: 15px;
+}
+
+.assignment-box li {
+    margin-bottom: 12px;
+}
+
+.btn-success {
+    background: #238636;
+    border-color: #238636;
+}
+
+.btn-success:hover {
+    background: #2ea043;
+    border-color: #2ea043;
+}
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Navbar -->
+
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+        <div class="container">
+
+           <span class="navbar-brand session-title">
+    <i class="fa-brands fa-python"></i>
+    Django - Session 17
+</span>
+
+        <div class="d-flex gap-2">
+        
+           
+        
+            <a href="index.html" class="btn btn-outline-light">
+                <i class="fa-solid fa-list"></i>
+                All Sessions
+            </a>
+        
+        </div>
+
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+
+        <div class="row">
+
+            <!-- Sidebar -->
+
+            <div class="col-lg-3">
+
+              <div class="sidebar">
+
+    <h5>
+        <i class="fa-solid fa-book"></i>
+        Contents
+    </h5>
+
+    <a href="#queryset">QuerySets Introduction</a>
+    <a href="#fetchdata">Fetching Data from Database</a>
+    <a href="#passdata">Passing Data to Template</a>
+    <a href="#forloop">Displaying Records Using for Loop</a>
+    <a href="#emptydata">Empty Data Handling</a>
+    <a href="#filterdata">Filtering and Ordering Data</a>
+    <a href="#revision">Quick Revision</a>
+    <a href="#assignment">Assignment</a>
+
+</div>
+
+            </div>
+
+            <!-- Main Content -->
+
+            <div class="col-lg-9">
+
+            <div class="content-card">
+
+    <h2>
+        <i class="fa-solid fa-graduation-cap"></i>
+        Session Overview
+    </h2>
+
+    <div class="overview-box">
+
+        <ul class="mb-0">
+
+            <li>QuerySets Introduction</li>
+            <li>Fetching Data from Database</li>
+            <li>Passing Data to Template</li>
+            <li>Displaying Records Using for Loop</li>
+            <li>Empty Data Handling</li>
+            <li>Filtering and Ordering Data</li>
+
+        </ul>
+
+    </div>
+
+</div>
+<div class="content-card" id="queryset">
+
+    <h2>
+        <i class="fa-solid fa-database"></i>
+        QuerySets Introduction
+    </h2>
+
+    <p>
+        A QuerySet is a collection of records retrieved from a database table.
+    </p>
+
+    <p>
+        Django uses QuerySets to read data from database tables.
+    </p>
+
+    <h5>Example</h5>
+
+<pre class="line-numbers"><code class="language-python">Category.objects.all()</code></pre>
+
+    <p>
+        The above statement retrieves all records from the Category table.
+    </p>
+
+    <div class="alert bg-dark">
+
+        <strong>Think Like This:</strong>
+
+<pre class="line-numbers"><code class="language-text">Category Table
+       ↓
+QuerySet
+       ↓
+Python Object
+       ↓
+Template</code></pre>
+
+    </div>
+
+</div>
+<div class="alert bg-dark">
+
+    <strong>SQL Equivalent</strong>
+
+<pre class="line-numbers"><code class="language-sql">SELECT * FROM Category;</code></pre>
+
+    <p class="mb-0">
+
+        Django converts:
+
+<pre class="line-numbers"><code class="language-python">Category.objects.all()</code></pre>
+
+        into an SQL query internally.
+
+    </p>
+
+</div>
+<div class="content-card" id="fetchdata">
+
+    <h2>
+        <i class="fa-solid fa-download"></i>
+        Fetching Data from Database
+    </h2>
+
+    <p>
+        We can retrieve records from the Category table using QuerySets.
+    </p>
+
+    <h5>File Location</h5>
+
+<pre class="line-numbers"><code class="language-bash">demo/views.py</code></pre>
+
+    <h5>Import Category Model</h5>
+
+<pre class="line-numbers"><code class="language-python">from .models import Category</code></pre>
+
+    <h5>Fetch Records</h5>
+
+<pre class="line-numbers"><code class="language-python">from django.shortcuts import render
+
+from .models import Category
+
+def categories(request):
+
+    categories = Category.objects.all()
+
+    return render(
+        request,
+        'categories.html'
+    )</code></pre>
+
+   
+
+</div>
+<div class="content-card" id="passdata">
+
+    <h2>
+        <i class="fa-solid fa-share-nodes"></i>
+        Passing Data to Template
+    </h2>
+
+    <p>
+        After retrieving records from the database, we must send them to the Template.
+    </p>
+
+    <h5>Update View</h5>
+
+<pre class="line-numbers"><code class="language-python">from django.shortcuts import render
+
+from .models import Category
+
+def categories(request):
+
+    categories = Category.objects.all()
+
+    return render(
+        request,
+        'categories.html',
+        {
+            'categories': categories
+        }
+    )</code></pre>
+
+    <h5>Understanding the Code</h5>
+
+    <table class="table table-dark table-bordered">
+
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Purpose</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>Category.objects.all()</td>
+                <td>Fetch All Records</td>
+            </tr>
+
+            <tr>
+                <td>categories</td>
+                <td>Stores QuerySet</td>
+            </tr>
+
+            <tr>
+                <td>'categories':categories</td>
+                <td>Send Data To Template</td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+<div class="alert bg-dark">
+
+    <strong>Remember</strong>
+
+<pre class="line-numbers"><code class="language-text">Database
+    ↓
+QuerySet
+    ↓
+View
+    ↓
+Template</code></pre>
+
+    The View acts as a bridge between the Database and the Template.
+
+</div>
+<div class="content-card" id="forloop">
+
+    <h2>
+        <i class="fa-solid fa-list"></i>
+        Displaying Records Using for Loop
+    </h2>
+
+    <p>
+        Django Templates use the for tag to display multiple records.
+    </p>
+
+    <h5>File Location</h5>
+
+<pre class="line-numbers"><code class="language-bash">demo/templates/categories.html</code></pre>
+
+    <h5>Display Records</h5>
+
+<pre class="line-numbers"><code class="language-html">&#123;% extends 'base.html' %&#125;
+
+&#123;% block content %&#125;
+
+&lt;h2&gt;Categories&lt;/h2&gt;
+
+&lt;ul&gt;
+
+    &#123;% for item in categories %&#125;
+
+        &lt;li&gt;&#123;&#123; item.Name &#125;&#125;&lt;/li&gt;
+
+    &#123;% endfor %&#125;
+
+&lt;/ul&gt;
+
+&#123;% endblock %&#125;</code></pre>
+
+    <h5>Output</h5>
+
+<pre class="line-numbers"><code class="language-text">Technology
+
+Travel
+
+Food</code></pre>
+
+</div>
+<div class="content-card" id="emptydata">
+
+    <h2>
+        <i class="fa-solid fa-circle-exclamation"></i>
+        Empty Data Handling
+    </h2>
+
+    <p>
+        Sometimes a database table may not contain any records.
+    </p>
+
+    <p>
+        Instead of displaying a blank page, we should show a meaningful message.
+    </p>
+
+    <h5>Example</h5>
+
+<pre class="line-numbers"><code class="language-html">&#123;% extends 'base.html' %&#125;
+
+&#123;% block content %&#125;
+
+&lt;h2&gt;Categories&lt;/h2&gt;
+
+&#123;% if categories %&#125;
+
+    &lt;ul&gt;
+
+        &#123;% for item in categories %&#125;
+
+            &lt;li&gt;&#123;&#123; item.Name &#125;&#125;&lt;/li&gt;
+
+        &#123;% endfor %&#125;
+
+    &lt;/ul&gt;
+
+&#123;% else %&#125;
+
+    &lt;p&gt;No Categories Available&lt;/p&gt;
+
+&#123;% endif %&#125;
+
+&#123;% endblock %&#125;</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Result:</strong>
+
+        If records exist, they will be displayed.
+
+        If no records exist, "No Categories Available" will be shown.
+
+    </div>
+
+</div>
+<div class="content-card" id="filterdata">
+
+    <h2>
+        <i class="fa-solid fa-filter"></i>
+        Filtering Data
+    </h2>
+
+    <p>
+        Django allows us to retrieve specific records using filters.
+    </p>
+
+    <p>
+        Instead of fetching all records, we can fetch only the records that match a condition.
+    </p>
+
+    <h5>Example</h5>
+
+<pre class="line-numbers"><code class="language-python">Category.objects.filter(Name='Technology')</code></pre>
+
+    <h5>SQL Equivalent</h5>
+
+<pre class="line-numbers"><code class="language-sql">SELECT *
+FROM Category
+WHERE Name='Technology';</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Result:</strong>
+
+        Only categories having the name Technology will be returned.
+
+    </div>
+<h5>Fetch Single Record</h5>
+
+<pre class="line-numbers"><code class="language-python">Category.objects.get(Id=1)</code></pre>
+
+<h5>SQL Equivalent</h5>
+
+<pre class="line-numbers"><code class="language-sql">SELECT *
+FROM Category
+WHERE Id = 1;</code></pre>
+</div>
+
+<div class="alert bg-dark">
+
+    <strong>Common QuerySet Methods</strong>
+
+    <table class="table table-dark table-bordered mt-3">
+
+        <thead>
+            <tr>
+                <th>Method</th>
+                <th>Purpose</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>all()</td>
+                <td>Retrieve All Records</td>
+            </tr>
+
+            <tr>
+                <td>filter()</td>
+                <td>Retrieve Matching Records</td>
+            </tr>
+
+            <tr>
+                <td>get()</td>
+                <td>Retrieve Single Record</td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+<div class="content-card" id="orderby">
+
+    <h2>
+        <i class="fa-solid fa-arrow-down-wide-short"></i>
+        Ordering Data
+    </h2>
+
+    <p>
+        Django allows records to be sorted in ascending or descending order.
+    </p>
+
+    <h5>Ascending Order</h5>
+
+<pre class="line-numbers"><code class="language-python">Category.objects.all().order_by('Name')</code></pre>
+
+    <h5>Descending Order</h5>
+
+<pre class="line-numbers"><code class="language-python">Category.objects.all().order_by('-Name')</code></pre>
+
+    <h5>SQL Equivalent</h5>
+
+<pre class="line-numbers"><code class="language-sql">SELECT *
+FROM Category
+ORDER BY Name ASC;</code></pre>
+
+<pre class="line-numbers"><code class="language-sql">SELECT *
+FROM Category
+ORDER BY Name DESC;</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Note:</strong>
+
+        Prefixing a field with '-' sorts the records in descending order.
+
+    </div>
+
+</div>
+<div class="content-card" id="revision">
+
+    <h2>
+        <i class="fa-solid fa-bolt"></i>
+        Quick Revision
+    </h2>
+
+    <div class="row">
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">QuerySets</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Retrieve Data</li>
+                        <li>Database Access</li>
+                        <li>Model Objects</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">all()</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Fetch All Records</li>
+                        <li>Returns QuerySet</li>
+                        <li>Most Common Method</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Passing Data</h5>
+                    <ul class="mb-0 text-light">
+                        <li>View To Template</li>
+                        <li>Dictionary</li>
+                        <li>Dynamic Content</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Template Loop</h5>
+                    <ul class="mb-0 text-light">
+                        <li>for Tag</li>
+                        <li>Display Records</li>
+                        <li>Repeat Content</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Conditional Display</h5>
+                    <ul class="mb-0 text-light">
+                        <li>if</li>
+                        <li>else</li>
+                        <li>Empty Data Handling</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Filtering</h5>
+                    <ul class="mb-0 text-light">
+                        <li>filter()</li>
+                        <li>get()</li>
+                        <li>order_by()</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="alert bg-dark">
+
+        <strong>Most Important QuerySet Methods</strong>
+
+<pre class="line-numbers"><code class="language-python">Category.objects.all()
+
+Category.objects.filter(Name='Technology')
+
+Category.objects.get(Id=1)
+
+Category.objects.order_by('Name')</code></pre>
+
+    </div>
+
+    <div class="alert bg-dark">
+
+        <strong>Complete Flow</strong>
+
+<pre class="line-numbers"><code class="language-text">Database Table
+       ↓
+QuerySet
+       ↓
+View
+       ↓
+Template
+       ↓
+Web Page</code></pre>
+
+    </div>
+
+</div>
+<div class="content-card" id="assignment">
+
+    <h2>
+        <i class="fa-solid fa-clipboard-check"></i>
+        Assignment
+    </h2>
+
+    <div class="assignment-box">
+
+        <strong>
+            Complete the following tasks:
+        </strong>
+
+        <ol>
+
+            <li>
+                Add at least 5 Category records using the Django Admin Panel.
+            </li>
+
+            <li>
+                Create a new View named:
+<pre class="line-numbers"><code class="language-python">categories</code></pre>
+            </li>
+
+            <li>
+                Retrieve all Category records using:
+<pre class="line-numbers"><code class="language-python">Category.objects.all()</code></pre>
+            </li>
+
+            <li>
+                Pass the QuerySet to a Template.
+            </li>
+
+            <li>
+                Display all Categories using a Django for loop.
+            </li>
+
+            <li>
+                Show the message:
+<pre class="line-numbers"><code class="language-text">No Categories Available</code></pre>
+
+                when the table contains no records.
+            </li>
+
+            <li>
+                Display Categories using Bootstrap List Group.
+            </li>
+
+            <li>
+                Sort Categories alphabetically using:
+<pre class="line-numbers"><code class="language-python">Category.objects.order_by('Name')</code></pre>
+            </li>
+
+        </ol>
+
+    </div>
+
+</div>
+</div>
+
+
+    <footer class="footer">
+
+    <a href="https://www.revolutionit.in" target="_blank">
+        <img src="Images/whitelogo.png"
+             alt="Company Logo"
+             style="height:55px; margin-bottom:10px;">
+    </a>
+
+    <div>
+        Full Stack Development Training -  Python Django
+    </div>
+
+   
+
+</footer>
+<!-- JQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- Toastr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<!-- Prism Core -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/prism.min.js"></script>
+
+<!-- Python -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-python.min.js"></script>
+
+<!-- Bash -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-bash.min.js"></script>
+
+<!-- Line Numbers -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+
+<!-- Toolbar -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/toolbar/prism-toolbar.min.js"></script>
+
+<!-- Copy Button -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+
+<script>
+
+document.addEventListener("click", function(e){
+
+    if(e.target.innerText === "Copy")
+    {
+        toastr.success("Code copied successfully");
+    }
+
+});
+
+toastr.options = {
+    closeButton: true,
+    progressBar: true,
+    positionClass: "toast-bottom-right",
+    timeOut: "2000"
+};
+
+</script>
+</body>
+
+</html>

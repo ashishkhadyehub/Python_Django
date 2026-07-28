@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MySql - Session 12</title>
+<link rel="icon"
+      type="image/png"
+      href="Images/mysql.png">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+<!-- Prism Theme -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+
+<!-- Prism Line Numbers -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet"/>
+
+<!-- Prism Toolbar -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+<!-- Toastr -->
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-color: #161b22;
+            --border-color: #30363d;
+            --text-color: #e6edf3;
+            --heading-color: #58a6ff;
+            --accent-color: #7c3aed;
+        }
+
+        html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Poppins', sans-serif;
+    padding-top: 80px;
+}
+
+.navbar-custom {
+    background: #111827;
+    border-bottom: 1px solid var(--border-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+}
+
+
+
+        .session-title {
+            color: white;
+            font-weight: 600;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 90px;
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .sidebar h5 {
+            color: var(--heading-color);
+            margin-bottom: 20px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #c9d1d9;
+            text-decoration: none;
+            padding: 8px 0;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            color: var(--heading-color);
+            padding-left: 5px;
+        }
+
+        .content-card {
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        h2 {
+            color: var(--heading-color);
+            margin-bottom: 20px;
+        }
+
+        p,
+        li {
+            line-height: 1.9;
+        }
+
+        .overview-box {
+            background: #111827;
+            border-left: 4px solid var(--accent-color);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .footer {
+    background: #111827;
+    border-top: 1px solid var(--border-color);
+    padding: 30px 20px;
+    text-align: center;
+    margin-top: 50px;
+    color: #c9d1d9;
+}
+
+pre[class*="language-"] {
+    border-radius: 12px;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #30363d;
+}
+
+.code-title {
+    background: #21262d;
+    color: #58a6ff;
+    padding: 10px 15px;
+    border-radius: 10px 10px 0 0;
+    font-weight: 600;
+    border: 1px solid #30363d;
+    border-bottom: none;
+}
+
+.toolbar-item button {
+    background: #7c3aed !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 4px 12px !important;
+    font-size: 13px !important;
+}
+
+.toolbar-item button:hover {
+    background: #6d28d9 !important;
+}
+
+.table-dark {
+    border-color: #30363d;
+}
+
+.table-dark th {
+    color: #58a6ff;
+}
+
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    border-color: #58a6ff !important;
+}
+
+
+.assignment-box {
+    background: #172554;
+    border-left: 5px solid #3b82f6;
+    border-radius: 12px;
+    padding: 25px;
+    color: #e6edf3;
+}
+
+.assignment-box strong {
+    color: #93c5fd;
+    font-size: 1.1rem;
+}
+
+.assignment-box ol {
+    margin-top: 15px;
+}
+
+.assignment-box li {
+    margin-bottom: 12px;
+}
+
+.btn-success {
+    background: #238636;
+    border-color: #238636;
+}
+
+.btn-success:hover {
+    background: #2ea043;
+    border-color: #2ea043;
+}
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Navbar -->
+
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+        <div class="container">
+
+           <span class="navbar-brand session-title">
+    <i class="fa-solid fa-database"></i>
+    MySql - Session 12
+</span>
+
+        <div class="d-flex gap-2">
+        
+           
+        
+            <a href="index.html" class="btn btn-outline-light">
+                <i class="fa-solid fa-list"></i>
+                All Sessions
+            </a>
+        
+        </div>
+
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+
+        <div class="row">
+
+            <!-- Sidebar -->
+
+            <div class="col-lg-3">
+
+              <div class="sidebar">
+
+    <h5>
+        <i class="fa-solid fa-book"></i>
+        Contents
+    </h5>
+
+    <a href="#where">WHERE, ORDER BY, LIMIT</a>
+    <a href="#relationships">Relationships & Foreign Keys</a>
+    <a href="#joins">Joins Introduction</a>
+    <a href="#transactions">Transactions</a>
+    <a href="#sp">Stored Procedures</a>
+    <a href="#blogdesign">Blog Database Design</a>
+    <a href="#revision">Quick Revision</a>
+    <a href="#assignment">Assignment</a>
+
+</div>
+
+            </div>
+
+            <!-- Main Content -->
+
+            <div class="col-lg-9">
+
+            <div class="content-card">
+
+    <h2>
+        <i class="fa-solid fa-graduation-cap"></i>
+        Session Overview
+    </h2>
+
+    <div class="overview-box">
+
+        <ul class="mb-0">
+
+            <li>WHERE, ORDER BY and LIMIT</li>
+            <li>Relationships and Foreign Keys</li>
+            <li>Joins (Introduction)</li>
+            <li>Transactions</li>
+            <li>Stored Procedures</li>
+            <li>Blog Database Design</li>
+
+        </ul>
+
+    </div>
+
+</div>
+<div class="content-card" id="where">
+
+    <h2>
+        <i class="fa-solid fa-filter"></i>
+        WHERE, ORDER BY and LIMIT
+    </h2>
+
+    <p>
+        These clauses help us filter, sort and restrict records returned by a query.
+    </p>
+
+    <h5>WHERE Clause</h5>
+
+<pre class="line-numbers"><code class="language-sql">SELECT *
+FROM Student
+WHERE City = 'Mumbai';</code></pre>
+
+    <h5>ORDER BY</h5>
+
+<pre class="line-numbers"><code class="language-sql">SELECT *
+FROM Student
+ORDER BY Name;</code></pre>
+
+    <h5>ORDER BY DESC</h5>
+
+<pre class="line-numbers"><code class="language-sql">SELECT *
+FROM Student
+ORDER BY Name DESC;</code></pre>
+
+    <h5>LIMIT</h5>
+
+<pre class="line-numbers"><code class="language-sql">SELECT *
+FROM Student
+LIMIT 2;</code></pre>
+
+    <div class="alert alert-info">
+
+        <strong>Note:</strong>
+
+        LIMIT is commonly used in pagination and dashboard reports.
+
+    </div>
+
+</div>
+<div class="content-card" id="relationships">
+
+    <h2>
+        <i class="fa-solid fa-link"></i>
+        Relationships and Foreign Keys
+    </h2>
+
+    <p>
+        Relationships allow tables to be connected with each other.
+    </p>
+
+    <h5>Example</h5>
+
+    <p>
+        One Category can contain many Blog Posts.
+    </p>
+
+    <table class="table table-dark table-bordered">
+
+        <tr>
+            <th>CategoryId</th>
+            <th>Name</th>
+        </tr>
+
+        <tr>
+            <td>1</td>
+            <td>Technology</td>
+        </tr>
+
+        <tr>
+            <td>2</td>
+            <td>Travel</td>
+        </tr>
+
+    </table>
+
+    <table class="table table-dark table-bordered">
+
+        <tr>
+            <th>PostId</th>
+            <th>Title</th>
+            <th>CategoryId</th>
+        </tr>
+
+        <tr>
+            <td>1</td>
+            <td>Django Basics</td>
+            <td>1</td>
+        </tr>
+
+        <tr>
+            <td>2</td>
+            <td>Goa Trip</td>
+            <td>2</td>
+        </tr>
+
+    </table>
+
+    <h5>Create Category Table</h5>
+
+<pre class="line-numbers"><code class="language-sql">CREATE TABLE Category
+(
+    Id INT PRIMARY KEY AUTO_INCREMENT,
+    Name VARCHAR(100)
+);</code></pre>
+
+    <h5>Create Post Table</h5>
+
+<pre class="line-numbers"><code class="language-sql">CREATE TABLE Post
+(
+    Id INT PRIMARY KEY AUTO_INCREMENT,
+    Title VARCHAR(200),
+    CategoryId INT,
+    FOREIGN KEY(CategoryId)
+    REFERENCES Category(Id)
+);</code></pre>
+
+    <div class="alert alert-success">
+
+        <strong>Important:</strong>
+
+        Foreign Key creates a relationship between two tables.
+
+    </div>
+
+</div>
+<div class="content-card" id="joins">
+
+    <h2>
+        <i class="fa-solid fa-table-columns"></i>
+        Joins (Introduction)
+    </h2>
+
+    <p>
+        Joins are used to retrieve data from multiple related tables.
+    </p>
+
+    <h5>Category Table</h5>
+
+    <table class="table table-dark table-bordered">
+
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+        </tr>
+
+        <tr>
+            <td>1</td>
+            <td>Technology</td>
+        </tr>
+
+        <tr>
+            <td>2</td>
+            <td>Travel</td>
+        </tr>
+
+    </table>
+
+    <h5>Post Table</h5>
+
+    <table class="table table-dark table-bordered">
+
+        <tr>
+            <th>Id</th>
+            <th>Title</th>
+            <th>CategoryId</th>
+        </tr>
+
+        <tr>
+            <td>1</td>
+            <td>Django Basics</td>
+            <td>1</td>
+        </tr>
+
+        <tr>
+            <td>2</td>
+            <td>Goa Trip</td>
+            <td>2</td>
+        </tr>
+
+    </table>
+
+    <h5>INNER JOIN Example</h5>
+
+<pre class="line-numbers"><code class="language-sql">SELECT
+    Post.Title,
+    Category.Name
+FROM Post
+INNER JOIN Category
+ON Post.CategoryId = Category.Id;</code></pre>
+
+    <div class="code-title">
+        Result
+    </div>
+
+<pre class="line-numbers"><code class="language-sql">+---------------+------------+
+| Title         | Name       |
++---------------+------------+
+| Django Basics | Technology |
+| Goa Trip      | Travel     |
++---------------+------------+</code></pre>
+
+    <div class="alert alert-info">
+
+        <strong>Note:</strong>
+
+        INNER JOIN returns records that have matching values in both tables.
+
+    </div>
+
+</div>
+<div class="content-card" id="transactions">
+
+    <h2>
+        <i class="fa-solid fa-arrow-right-arrow-left"></i>
+        Transactions
+    </h2>
+
+    <p>
+        A Transaction is a group of SQL statements executed as a single unit of work.
+    </p>
+
+    <p>
+        Transactions help maintain data consistency and prevent partial updates.
+    </p>
+
+    <h5>COMMIT</h5>
+
+    <p>
+        COMMIT permanently saves changes made during a transaction.
+    </p>
+
+<pre class="line-numbers"><code class="language-sql">START TRANSACTION;
+
+UPDATE Student
+SET City = 'Pune'
+WHERE Id = 1;
+
+COMMIT;</code></pre>
+
+    <hr>
+
+    <h5>ROLLBACK</h5>
+
+    <p>
+        ROLLBACK cancels all changes made during the current transaction.
+    </p>
+
+<pre class="line-numbers"><code class="language-sql">START TRANSACTION;
+
+UPDATE Student
+SET City = 'Mumbai'
+WHERE Id = 1;
+
+ROLLBACK;</code></pre>
+
+    <hr>
+
+    <h5>Bank Transfer Example</h5>
+
+<pre class="line-numbers"><code class="language-sql">START TRANSACTION;
+
+UPDATE Accounts
+SET Balance = Balance - 1000
+WHERE Id = 1;
+
+UPDATE Accounts
+SET Balance = Balance + 1000
+WHERE Id = 2;
+
+COMMIT;</code></pre>
+
+    <div class="alert alert-success">
+
+        <strong>Real World Usage:</strong>
+
+        Transactions are commonly used in Banking, E-Commerce Orders, Payments and Inventory Systems.
+
+    </div>
+
+</div>
+<div class="content-card" id="sp">
+
+    <h2>
+        <i class="fa-solid fa-gears"></i>
+        Stored Procedures (Basics)
+    </h2>
+
+    <p>
+        A Stored Procedure is a group of SQL statements stored inside the database and executed whenever required.
+    </p>
+
+    <h5>Advantages</h5>
+
+    <ul>
+        <li>Reduces code duplication.</li>
+        <li>Improves maintainability.</li>
+        <li>Improves performance for frequently executed queries.</li>
+        <li>Centralizes business logic inside the database.</li>
+    </ul>
+
+    <h5>Example</h5>
+
+<pre class="line-numbers"><code class="language-sql">DELIMITER //
+
+CREATE PROCEDURE GetStudents()
+BEGIN
+    SELECT * FROM Student;
+END //
+
+DELIMITER ;</code></pre>
+
+    <h5>Execute Stored Procedure</h5>
+
+<pre class="line-numbers"><code class="language-sql">CALL GetStudents();</code></pre>
+
+    <div class="code-title">
+        Result
+    </div>
+
+<pre class="line-numbers"><code class="language-sql">All records from Student table will be displayed.</code></pre>
+
+    <div class="alert alert-info">
+
+        <strong>Note:</strong>
+
+        In real applications, Stored Procedures are often used for reports, dashboards and complex business operations.
+
+    </div>
+
+</div>
+<div class="content-card" id="blogdesign">
+
+    <h2>
+        <i class="fa-solid fa-diagram-project"></i>
+        Blog Database Design
+    </h2>
+
+    <p>
+        Before starting our Django Blog Project, let's understand the database design.
+    </p>
+
+    <h5>Tables Required</h5>
+
+<table class="table table-dark table-bordered">
+
+    <thead>
+        <tr>
+            <th>Table</th>
+            <th>Purpose</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        <tr>
+            <td>Category</td>
+            <td>Store Blog Categories</td>
+        </tr>
+
+        <tr>
+            <td>Post</td>
+            <td>Store Blog Posts</td>
+        </tr>
+
+    </tbody>
+
+</table>
+
+<h5>Category Table</h5>
+
+<pre class="line-numbers"><code class="language-sql">Category
+--------------------------------
+Id
+Name</code></pre>
+
+<h5>Post Table</h5>
+
+<pre class="line-numbers"><code class="language-sql">Post
+--------------------------------
+Id
+Title
+Description
+Image
+CreatedDate
+CategoryId</code></pre>
+
+<h5>Relationship</h5>
+
+<pre class="line-numbers"><code class="language-sql">One Category
+      |
+      |
+      |
+Many Posts</code></pre>
+
+<h5>Table Creation Example</h5>
+
+<pre class="line-numbers"><code class="language-sql">CREATE TABLE Category
+(
+    Id INT PRIMARY KEY AUTO_INCREMENT,
+    Name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE Post
+(
+    Id INT PRIMARY KEY AUTO_INCREMENT,
+    Title VARCHAR(200) NOT NULL,
+    Description TEXT,
+    Image VARCHAR(255),
+    CreatedDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+    CategoryId INT,
+
+    FOREIGN KEY(CategoryId)
+    REFERENCES Category(Id)
+);</code></pre>
+
+<div class="alert bg-dark">
+
+    <strong>Note:</strong>
+
+    User Registration, Login and Comments will be implemented later using Django's built-in User model and application features.
+
+</div>
+
+   
+
+   <div class="content-card" id="revision">
+
+    <h2>
+        <i class="fa-solid fa-bolt"></i>
+        Quick Revision
+    </h2>
+
+    <div class="row">
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Filtering Data</h5>
+                    <ul class="mb-0 text-light">
+                        <li>WHERE</li>
+                        <li>ORDER BY</li>
+                        <li>LIMIT</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Relationships</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Connect Tables</li>
+                        <li>Foreign Key</li>
+                        <li>Data Integrity</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Joins</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Combine Tables</li>
+                        <li>INNER JOIN</li>
+                        <li>Related Data</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Transactions</h5>
+                    <ul class="mb-0 text-light">
+                        <li>START TRANSACTION</li>
+                        <li>COMMIT</li>
+                        <li>ROLLBACK</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Stored Procedures</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Reusable SQL</li>
+                        <li>Stored in Database</li>
+                        <li>Executed using CALL</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Blog Design</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Category Table</li>
+                        <li>Post Table</li>
+                        <li>One-To-Many Relation</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<div class="content-card" id="assignment">
+
+    <h2>
+        <i class="fa-solid fa-clipboard-check"></i>
+        Assignment
+    </h2>
+
+    <div class="assignment-box">
+
+        <strong>
+            Complete the following tasks in MySQL Workbench:
+        </strong>
+
+        <ol>
+
+            <li>
+                Create a <strong>Category</strong> table and a <strong>Product</strong> table with a Foreign Key relationship.
+            </li>
+
+            <li>
+                Insert at least 3 categories and 5 products into the database.
+            </li>
+
+            <li>
+                Display products belonging to a specific category using the <strong>WHERE</strong> clause.
+            </li>
+
+            <li>
+                Write an <strong>INNER JOIN</strong> query to display Product Name and Category Name together.
+            </li>
+
+            <li>
+                Create a Stored Procedure named <strong>GetProducts</strong> that displays all records from the Product table.
+            </li>
+
+        </ol>
+
+    </div>
+
+</div>
+
+</div>
+
+</div>
+
+        </div>
+
+    </div>
+
+    <footer class="footer">
+
+    <a href="https://www.revolutionit.in" target="_blank">
+        <img src="Images/whitelogo.png"
+             alt="Company Logo"
+             style="height:55px; margin-bottom:10px;">
+    </a>
+
+    <div>
+        Full Stack Development Training -  Python Django
+    </div>
+
+   
+
+</footer>
+<!-- JQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- Toastr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<!-- Prism Core -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/prism.min.js"></script>
+
+<!-- Python -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-python.min.js"></script>
+
+<!-- Bash -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-bash.min.js"></script>
+
+<!-- Line Numbers -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+
+<!-- Toolbar -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/toolbar/prism-toolbar.min.js"></script>
+
+<!-- Copy Button -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+
+<script>
+
+document.addEventListener("click", function(e){
+
+    if(e.target.innerText === "Copy")
+    {
+        toastr.success("Code copied successfully");
+    }
+
+});
+
+toastr.options = {
+    closeButton: true,
+    progressBar: true,
+    positionClass: "toast-bottom-right",
+    timeOut: "2000"
+};
+
+</script>
+</body>
+
+</html>

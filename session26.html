@@ -1,0 +1,1572 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Django - Session 26</title>
+<link rel="icon"
+      type="image/png"
+      href="Images/djnago_icon.png">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+<!-- Prism Theme -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+
+<!-- Prism Line Numbers -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet"/>
+
+<!-- Prism Toolbar -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+<!-- Toastr -->
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-color: #161b22;
+            --border-color: #30363d;
+            --text-color: #e6edf3;
+            --heading-color: #58a6ff;
+            --accent-color: #7c3aed;
+        }
+
+        html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Poppins', sans-serif;
+    padding-top: 80px;
+}
+
+.navbar-custom {
+    background: #111827;
+    border-bottom: 1px solid var(--border-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+}
+
+
+
+        .session-title {
+            color: white;
+            font-weight: 600;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 90px;
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .sidebar h5 {
+            color: var(--heading-color);
+            margin-bottom: 20px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #c9d1d9;
+            text-decoration: none;
+            padding: 8px 0;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            color: var(--heading-color);
+            padding-left: 5px;
+        }
+
+        .content-card {
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        h2 {
+            color: var(--heading-color);
+            margin-bottom: 20px;
+        }
+
+        p,
+        li {
+            line-height: 1.9;
+        }
+
+        .overview-box {
+            background: #111827;
+            border-left: 4px solid var(--accent-color);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .footer {
+    background: #111827;
+    border-top: 1px solid var(--border-color);
+    padding: 30px 20px;
+    text-align: center;
+    margin-top: 50px;
+    color: #c9d1d9;
+}
+
+pre[class*="language-"] {
+    border-radius: 12px;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #30363d;
+}
+
+.code-title {
+    background: #21262d;
+    color: #58a6ff;
+    padding: 10px 15px;
+    border-radius: 10px 10px 0 0;
+    font-weight: 600;
+    border: 1px solid #30363d;
+    border-bottom: none;
+}
+
+.toolbar-item button {
+    background: #7c3aed !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 4px 12px !important;
+    font-size: 13px !important;
+}
+
+.toolbar-item button:hover {
+    background: #6d28d9 !important;
+}
+
+.table-dark {
+    border-color: #30363d;
+}
+
+.table-dark th {
+    color: #58a6ff;
+}
+
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    border-color: #58a6ff !important;
+}
+
+
+.assignment-box {
+    background: #172554;
+    border-left: 5px solid #3b82f6;
+    border-radius: 12px;
+    padding: 25px;
+    color: #e6edf3;
+}
+
+.assignment-box strong {
+    color: #93c5fd;
+    font-size: 1.1rem;
+}
+
+.assignment-box ol {
+    margin-top: 15px;
+}
+
+.assignment-box li {
+    margin-bottom: 12px;
+}
+
+.btn-success {
+    background: #238636;
+    border-color: #238636;
+}
+
+.btn-success:hover {
+    background: #2ea043;
+    border-color: #2ea043;
+}
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Navbar -->
+
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+        <div class="container">
+
+           <span class="navbar-brand session-title">
+    <i class="fa-brands fa-python"></i>
+    Django - Session 26
+</span>
+
+        <div class="d-flex gap-2">
+        
+           
+        
+            <a href="index.html" class="btn btn-outline-light">
+                <i class="fa-solid fa-list"></i>
+                All Sessions
+            </a>
+        
+        </div>
+
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+
+        <div class="row">
+
+            <!-- Sidebar -->
+
+            <div class="col-lg-3">
+
+              <div class="sidebar">
+
+    <h5>
+        <i class="fa-solid fa-book"></i>
+        Contents
+    </h5>
+
+    <a href="#intro">Introduction to REST API</a>
+    <a href="#drfsetup">Install Django REST Framework</a>
+    <a href="#serializer">Create Serializer</a>
+    <a href="#organize">Organize REST API Files</a>
+    <a href="#categoryapi">Category GET APIs</a>
+    <a href="#testapi">Testing GET APIs</a>
+    <a href="#morecategoryapi">Create, Update and Delete APIs</a>
+     <a href="#testmoreapi">Testing APIs</a>
+   
+    <a href="#revision">Quick Revision</a>
+    <a href="#assignment">Assignment</a>
+
+</div>
+
+            </div>
+
+            <!-- Main Content -->
+
+            <div class="col-lg-9">
+
+         <div class="content-card">
+
+    <h2>
+        <i class="fa-solid fa-graduation-cap"></i>
+        Session Overview
+    </h2>
+
+    <div class="overview-box">
+
+        <ul class="mb-0">
+
+            <li>Introduction to REST API</li>
+
+            <li>Install Django REST Framework</li>
+
+            <li>Create Serializer</li>
+            <li>Organize REST API Files</li>
+            <li>Category CRUD APIs</li>
+
+            <li>Post APIs</li>
+
+            <li>Testing APIs using Postman</li>
+
+            <li>Django Admin vs REST API</li>
+
+        </ul>
+
+    </div>
+
+</div>
+
+
+<div class="content-card" id="intro">
+
+    <h2>
+        <i class="fa-solid fa-plug"></i>
+        Introduction to REST API
+    </h2>
+
+    <p>
+
+        An <strong>API (Application Programming Interface)</strong> allows different applications to communicate with each other.
+
+    </p>
+
+    <p>
+
+        Instead of returning HTML pages, a REST API returns data in <strong>JSON</strong> format.
+
+    </p>
+
+    <h5>How REST API Works</h5>
+
+<pre class="line-numbers"><code class="language-text">Client
+
+(Mobile App / React / Angular)
+
+        │
+
+        ▼
+
+REST API
+
+(Django REST Framework)
+
+        │
+
+        ▼
+
+Django ORM
+
+        │
+
+        ▼
+
+MySQL Database</code></pre>
+
+    <h5>Example JSON Response</h5>
+
+<pre class="line-numbers"><code class="language-json">[
+    {
+        "Id": 1,
+        "Name": "Python"
+    },
+    {
+        "Id": 2,
+        "Name": "Django"
+    }
+]</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Key Difference</strong>
+
+        <p class="mt-2 mb-0">
+
+            A Django Website returns <strong>HTML</strong>, whereas a REST API returns <strong>JSON</strong> that can be consumed by Mobile Apps, React, Angular and other applications.
+
+        </p>
+
+    </div>
+
+</div>
+<div class="alert bg-dark">
+
+<strong>Why do we need REST APIs?</strong>
+
+<ul class="mt-2 mb-0">
+
+<li>Share data with Mobile Applications.</li>
+
+<li>Connect Django with React or Angular.</li>
+
+<li>Exchange data using JSON.</li>
+
+<li>Allow different applications to communicate with the same database.</li>
+
+<li>Reuse the same Backend for multiple Frontend applications.</li>
+
+</ul>
+
+</div>
+<div class="content-card" id="drfsetup">
+
+    <h2>
+        <i class="fa-solid fa-download"></i>
+        Install Django REST Framework
+    </h2>
+
+    <p>
+
+        Django REST Framework (DRF) is the most popular library for building REST APIs in Django.
+
+    </p>
+
+    <h5>Step 1 - Install Package</h5>
+
+<pre class="line-numbers"><code class="language-bash">pip install djangorestframework</code></pre>
+
+    <h5>Step 2 - Register the Application</h5>
+
+<pre class="line-numbers"><code class="language-python">INSTALLED_APPS = [
+
+    ...
+
+    'rest_framework',
+
+]</code></pre>
+
+    <h5>Step 3 - Verify Installation</h5>
+
+<pre class="line-numbers"><code class="language-bash">python manage.py runserver</code></pre>
+
+    <p>
+
+        If the server starts without any errors, Django REST Framework has been installed successfully.
+
+    </p>
+
+    <div class="alert bg-dark">
+
+        <strong>Result</strong>
+
+        The project is now ready to create REST APIs using Django REST Framework.
+
+    </div>
+
+</div>
+<div class="alert bg-dark">
+
+<strong>Why do we use Django REST Framework?</strong>
+
+<table class="table table-dark table-bordered mt-3">
+
+<thead>
+
+<tr>
+
+<th>Feature</th>
+
+<th>Benefit</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td>Serializer</td>
+
+<td>Converts Django Models into JSON.</td>
+
+</tr>
+
+<tr>
+
+<td>APIView</td>
+
+<td>Creates REST APIs easily.</td>
+
+</tr>
+
+<tr>
+
+<td>Response</td>
+
+<td>Returns data in JSON format.</td>
+
+</tr>
+
+<tr>
+
+<td>Status Codes</td>
+
+<td>Provides meaningful API responses.</td>
+
+</tr>
+
+<tr>
+
+<td>Authentication</td>
+
+<td>Supports secure APIs.</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+<div class="content-card" id="serializer">
+
+    <h2>
+        <i class="fa-solid fa-code"></i>
+        Create Serializer
+    </h2>
+
+    <p>
+
+        A <strong>Serializer</strong> converts Django Model objects into JSON format and vice versa.
+
+    </p>
+
+    <p>
+
+        It acts as a bridge between the Django Model and the REST API.
+
+    </p>
+
+    <h5>Step 1 - Create serializers.py</h5>
+
+<pre class="line-numbers"><code class="language-text">blog/serializers.py</code></pre>
+
+    <h5>Step 2 - Create CategorySerializer</h5>
+
+<pre class="line-numbers"><code class="language-python">from rest_framework import serializers
+
+from .models import Category
+
+
+class CategorySerializer(serializers.ModelSerializer):
+
+    class Meta:
+
+        model = Category
+
+        fields = "__all__"</code></pre>
+
+    
+
+</div>
+<div class="alert bg-dark">
+
+<strong>Understanding ModelSerializer</strong>
+
+<table class="table table-dark table-bordered mt-3">
+
+<thead>
+
+<tr>
+
+<th>Concept</th>
+
+<th>Purpose</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td>ModelSerializer</td>
+
+<td>Automatically creates serializer fields from a Django Model.</td>
+
+</tr>
+
+<tr>
+
+<td>model</td>
+
+<td>Specifies which Model will be serialized.</td>
+
+</tr>
+
+<tr>
+
+<td>fields="__all__"</td>
+
+<td>Includes all fields of the Model in the JSON response.</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+<pre class="line-numbers"><code class="language-text">Database Record
+
+        │
+
+        ▼
+
+Serializer
+
+        │
+
+        ▼
+
+JSON Response</code></pre>
+
+</div>
+<div class="content-card" id="organize">
+
+    <h2>
+        <i class="fa-solid fa-folder-tree"></i>
+        Organize REST API Files
+    </h2>
+
+    <p>
+
+        As the project grows, it is a good practice to separate Website Views and REST API Views.
+
+    </p>
+
+    <p>
+
+        Instead of placing all API methods inside <strong>views.py</strong>, we will create a separate <strong>api_views.py</strong> file.
+
+    </p>
+
+    <h5>Step 1 - Create api_views.py</h5>
+
+<pre class="line-numbers"><code class="language-text">blog/api_views.py</code></pre>
+
+    <h5>Step 2 - Create api_urls.py</h5>
+
+<pre class="line-numbers"><code class="language-text">blog/api_urls.py</code></pre>
+
+    <h5>Step 3 - Register API URLs</h5>
+
+<pre class="line-numbers"><code class="language-python">from django.urls import path, include
+
+
+urlpatterns = [
+
+    path("", include("blog.urls")),
+
+    path("api/", include("blog.api_urls")),
+
+]</code></pre>
+
+    <h5>Step 4 - Project Structure</h5>
+
+<pre class="line-numbers"><code class="language-text">blog/
+
+│
+
+├── admin.py
+
+├── models.py
+
+├── forms.py
+
+├── serializers.py
+
+├── views.py          (Website Views)
+
+├── api_views.py      (REST API Views)
+
+├── urls.py           (Website URLs)
+
+├── api_urls.py       (REST API URLs)
+
+├── templates/
+
+└── static/</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Result</strong>
+
+        The project is now organized with separate files for Website and REST API development.
+
+    </div>
+
+</div>
+<div class="alert bg-dark">
+
+<strong>Why do we create api_views.py?</strong>
+
+<table class="table table-dark table-bordered mt-3">
+
+<thead>
+
+<tr>
+
+<th>Website</th>
+
+<th>REST API</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td>views.py</td>
+
+<td>api_views.py</td>
+
+</tr>
+
+<tr>
+
+<td>Returns HTML Pages</td>
+
+<td>Returns JSON Data</td>
+
+</tr>
+
+<tr>
+
+<td>Uses render()</td>
+
+<td>Uses Response()</td>
+
+</tr>
+
+<tr>
+
+<td>Accessed by Browser</td>
+
+<td>Accessed by Mobile Apps, React, Angular, etc.</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+<p class="mb-0">
+
+Separating Website Views and API Views keeps the project clean, organized and easier to maintain as the application grows.
+
+</p>
+
+</div>
+<div class="content-card" id="categoryapi">
+
+    <h2>
+        <i class="fa-solid fa-gears"></i>
+        Build Category REST APIs
+    </h2>
+
+    <p>
+
+        In this section, we will build complete CRUD APIs for the Category model using Django REST Framework.
+
+    </p>
+
+    <h5>Step 1 - Update api_views.py</h5>
+
+<pre class="line-numbers"><code class="language-python">from rest_framework.decorators import api_view
+
+from rest_framework.response import Response
+
+from rest_framework import status
+
+from .models import Category
+
+from .serializers import CategorySerializer</code></pre>
+
+    <h5>Step 2 - GET All Categories</h5>
+
+<pre class="line-numbers"><code class="language-python">@api_view(["GET"])
+
+def category_list(request):
+
+    categories = Category.objects.all()
+
+    serializer = CategorySerializer(
+
+        categories,
+
+        many=True
+
+    )
+
+    return Response(serializer.data)</code></pre>
+
+    <h5>Step 3 - GET Category by Id</h5>
+
+<pre class="line-numbers"><code class="language-python">@api_view(["GET"])
+
+def category_detail(request, id):
+
+    category = Category.objects.get(Id=id)
+
+    serializer = CategorySerializer(category)
+
+    return Response(serializer.data)</code></pre>
+
+    <h5>Step 4 - Update api_urls.py</h5>
+
+<pre class="line-numbers"><code class="language-python">from django.urls import path
+
+from . import api_views
+
+
+urlpatterns = [
+
+    path(
+
+        "categories/",
+
+        api_views.category_list
+
+    ),
+
+    path(
+
+        "categories/&lt;int:id&gt;/",
+
+        api_views.category_detail
+
+    ),
+
+]</code></pre>
+
+   
+
+</div>
+<div class="alert bg-dark">
+
+<strong>Note</strong>
+
+<p class="mt-2">
+
+After creating <strong>api_urls.py</strong>, it must be registered in the project's <strong>main urls.py</strong>. Otherwise, Django will not recognize the API routes.
+
+</p>
+
+<pre class="line-numbers"><code class="language-python">from django.urls import path, include
+
+urlpatterns = [
+
+    path("", include("blog.urls")),
+
+    path("api/", include("blog.api_urls")),
+
+]</code></pre>
+
+<p class="mb-0">
+
+Now all API URLs will be available under the <strong>/api/</strong> prefix.
+
+</p>
+
+</div>
+<div class="alert bg-dark">
+
+<strong>New Concepts Used</strong>
+
+<table class="table table-dark table-bordered mt-3">
+
+<thead>
+
+<tr>
+
+<th>Concept</th>
+
+<th>Purpose</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td>@api_view(["GET"])</td>
+
+<td>Allows the View to handle GET requests.</td>
+
+</tr>
+
+<tr>
+
+<td>many=True</td>
+
+<td>Serializes multiple records.</td>
+
+</tr>
+
+<tr>
+
+<td>serializer.data</td>
+
+<td>Converts Model objects into JSON.</td>
+
+</tr>
+
+<tr>
+
+<td>Response()</td>
+
+<td>Returns a JSON response instead of an HTML page.</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+<div class="content-card" id="testapi">
+
+    <h2>
+        <i class="fa-solid fa-vial"></i>
+        Test Category APIs
+    </h2>
+
+    <p>
+
+        After creating the APIs, we should test them to verify that they return the expected JSON data.
+
+    </p>
+
+    <h5>GET All Categories</h5>
+
+<pre class="line-numbers"><code class="language-text">http://127.0.0.1:8000/api/categories/</code></pre>
+
+    <h5>Sample Response</h5>
+
+<pre class="line-numbers"><code class="language-json">[
+    {
+        "Id": 1,
+        "Name": "Python"
+    },
+    {
+        "Id": 2,
+        "Name": "Django"
+    }
+]</code></pre>
+
+    <h5>GET Category by Id</h5>
+
+<pre class="line-numbers"><code class="language-text">http://127.0.0.1:8000/api/categories/1/</code></pre>
+
+    <h5>Sample Response</h5>
+
+<pre class="line-numbers"><code class="language-json">{
+    "Id": 1,
+    "Name": "Python"
+}</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Result</strong>
+
+        You can test the APIs directly in your Browser or using Postman. Both requests return JSON instead of HTML.
+
+    </div>
+
+</div>
+<div class="alert bg-dark">
+
+<strong>Browser vs REST API</strong>
+
+<table class="table table-dark table-bordered mt-3">
+
+<thead>
+
+<tr>
+
+<th>Website</th>
+
+<th>REST API</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td>Returns HTML Pages</td>
+
+<td>Returns JSON Data</td>
+
+</tr>
+
+<tr>
+
+<td>Designed for Users</td>
+
+<td>Designed for Applications</td>
+
+</tr>
+
+<tr>
+
+<td>Uses Templates</td>
+
+<td>Uses Serializers</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+<div class="content-card" id="morecategoryapi">
+
+    <h2>
+        <i class="fa-solid fa-pen-to-square"></i>
+        Create, Update and Delete Category APIs
+    </h2>
+
+    <p>
+
+        Now we will create REST APIs to insert, update and delete Category records using HTTP requests.
+
+    </p>
+
+    <h5>Step 1 - POST API (Create Category)</h5>
+
+<pre class="line-numbers"><code class="language-python">@api_view(["POST"])
+
+def category_create(request):
+
+    serializer = CategorySerializer(
+
+        data=request.data
+
+    )
+
+    if serializer.is_valid():
+
+        serializer.save()
+
+        return Response(
+
+            serializer.data,
+
+            status=status.HTTP_201_CREATED
+
+        )
+
+    return Response(
+
+        serializer.errors,
+
+        status=status.HTTP_400_BAD_REQUEST
+
+    )</code></pre>
+
+    <h5>Step 2 - PUT API (Update Category)</h5>
+
+<pre class="line-numbers"><code class="language-python">@api_view(["PUT"])
+
+def category_update(request, id):
+
+    category = Category.objects.get(Id=id)
+
+    serializer = CategorySerializer(
+
+        category,
+
+        data=request.data
+
+    )
+
+    if serializer.is_valid():
+
+        serializer.save()
+
+        return Response(serializer.data)
+
+    return Response(
+
+        serializer.errors,
+
+        status=status.HTTP_400_BAD_REQUEST
+
+    )</code></pre>
+
+    <h5>Step 3 - DELETE API</h5>
+
+<pre class="line-numbers"><code class="language-python">@api_view(["DELETE"])
+
+def category_delete(request, id):
+
+    category = Category.objects.get(Id=id)
+
+    category.delete()
+
+    return Response(
+
+        {
+
+            "message":
+
+            "Category Deleted Successfully."
+
+        },
+
+        status=status.HTTP_200_OK
+
+    )</code></pre>
+
+    <h5>Step 4 - Update api_urls.py</h5>
+
+<pre class="line-numbers"><code class="language-python">path(
+
+    "categories/create/",
+
+    api_views.category_create
+
+),
+
+path(
+
+    "categories/update/&lt;int:id&gt;/",
+
+    api_views.category_update
+
+),
+
+path(
+
+    "categories/delete/&lt;int:id&gt;/",
+
+    api_views.category_delete
+
+),</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Result</strong>
+
+        The Category module now supports complete CRUD operations using REST APIs.
+
+    </div>
+
+</div>
+<div class="alert bg-dark">
+
+<strong>HTTP Methods Used</strong>
+
+<table class="table table-dark table-bordered mt-3">
+
+<thead>
+
+<tr>
+
+<th>Method</th>
+
+<th>Purpose</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td>GET</td>
+
+<td>Retrieve Data</td>
+
+</tr>
+
+<tr>
+
+<td>POST</td>
+
+<td>Create New Record</td>
+
+</tr>
+
+<tr>
+
+<td>PUT</td>
+
+<td>Update Existing Record</td>
+
+</tr>
+
+<tr>
+
+<td>DELETE</td>
+
+<td>Delete Record</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+<div class="content-card" id="testmoreapi">
+
+    <h2>
+        <i class="fa-solid fa-flask"></i>
+        Test CRUD APIs using Postman
+    </h2>
+
+    <p>
+
+        We can use <strong>Postman</strong> to test Create, Update and Delete APIs.
+
+    </p>
+
+    <h5>Create Category (POST)</h5>
+
+<pre class="line-numbers"><code class="language-text">POST
+
+http://127.0.0.1:8000/api/categories/create/</code></pre>
+
+<pre class="line-numbers"><code class="language-json">{
+
+    "Name":"Artificial Intelligence"
+
+}</code></pre>
+
+    <h5>Update Category (PUT)</h5>
+
+<pre class="line-numbers"><code class="language-text">PUT
+
+http://127.0.0.1:8000/api/categories/update/1/</code></pre>
+
+<pre class="line-numbers"><code class="language-json">{
+
+    "Name":"Python Programming"
+
+}</code></pre>
+
+    <h5>Delete Category (DELETE)</h5>
+
+<pre class="line-numbers"><code class="language-text">DELETE
+
+http://127.0.0.1:8000/api/categories/delete/1/</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Result</strong>
+
+        Category records can now be created, updated and deleted using REST APIs without accessing the Django Admin Panel.
+
+    </div>
+
+</div>
+<div class="alert bg-dark">
+
+<strong>HTTP Status Codes</strong>
+
+<table class="table table-dark table-bordered mt-3">
+
+<thead>
+
+<tr>
+
+<th>Status Code</th>
+
+<th>Meaning</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td>200 OK</td>
+
+<td>Request completed successfully.</td>
+
+</tr>
+
+<tr>
+
+<td>201 Created</td>
+
+<td>New record created successfully.</td>
+
+</tr>
+
+<tr>
+
+<td>400 Bad Request</td>
+
+<td>Invalid request or validation failed.</td>
+
+</tr>
+
+<tr>
+
+<td>404 Not Found</td>
+
+<td>Requested resource does not exist.</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+<div class="content-card" id="revision">
+
+    <h2>
+        <i class="fa-solid fa-bolt"></i>
+        Quick Revision
+    </h2>
+
+    <div class="row">
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">REST API Basics</h5>
+                    <ul class="mb-0 text-light">
+                        <li>API</li>
+                        <li>JSON</li>
+                        <li>Client-Server</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Django REST Framework</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Installation</li>
+                        <li>Serializer</li>
+                        <li>Response()</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Project Structure</h5>
+                    <ul class="mb-0 text-light">
+                        <li>serializers.py</li>
+                        <li>api_views.py</li>
+                        <li>api_urls.py</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">HTTP Methods</h5>
+                    <ul class="mb-0 text-light">
+                        <li>GET</li>
+                        <li>POST</li>
+                        <li>PUT</li>
+                        <li>DELETE</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Category APIs</h5>
+                    <ul class="mb-0 text-light">
+                        <li>List API</li>
+                        <li>Details API</li>
+                        <li>CRUD Operations</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">API Testing</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Postman</li>
+                        <li>Status Codes</li>
+                        <li>JSON Response</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="alert bg-dark">
+
+        <strong>Concepts Learned Today</strong>
+
+<pre class="line-numbers"><code class="language-text">✓ REST API
+
+✓ JSON
+
+✓ Django REST Framework
+
+✓ ModelSerializer
+
+✓ api_views.py
+
+✓ api_urls.py
+
+✓ GET API
+
+✓ POST API
+
+✓ PUT API
+
+✓ DELETE API
+
+✓ Response()
+
+✓ HTTP Status Codes
+
+✓ Postman Testing</code></pre>
+
+    </div>
+
+</div>
+<div class="content-card" id="assignment">
+
+    <h2>
+        <i class="fa-solid fa-clipboard-check"></i>
+        Assignment
+    </h2>
+
+    <div class="assignment-box">
+
+        <strong>
+            Create REST APIs for the News Portal
+        </strong>
+
+        <p class="mt-3">
+
+            Apply today's Django REST Framework concepts to your <strong>News Portal</strong> project.
+
+        </p>
+
+        <ol>
+
+            <li>
+                Install <strong>Django REST Framework</strong> and register <strong>rest_framework</strong> in <strong>INSTALLED_APPS</strong>.
+            </li>
+
+            <li>
+                Create the following files:
+                <ul>
+                    <li>serializers.py</li>
+                    <li>api_views.py</li>
+                    <li>api_urls.py</li>
+                </ul>
+            </li>
+
+            <li>
+                Register <strong>api_urls.py</strong> in the project's main <strong>urls.py</strong>.
+            </li>
+
+            <li>
+                Create a <strong>NewsCategorySerializer</strong>.
+            </li>
+
+            <li>
+                Implement complete CRUD APIs for the <strong>News Category</strong> module:
+                <ul>
+                    <li>GET All Categories</li>
+                    <li>GET Category by Id</li>
+                    <li>POST Category</li>
+                    <li>PUT Category</li>
+                    <li>DELETE Category</li>
+                </ul>
+            </li>
+
+            <li>
+                Test all APIs using <strong>Postman</strong>.
+            </li>
+
+            <li>
+                Verify the JSON responses and appropriate HTTP Status Codes for each request.
+            </li>
+
+        </ol>
+
+    </div>
+
+</div>
+            </div>
+        </div>
+    </div>
+              <footer class="footer">
+
+    <a href="https://www.revolutionit.in" target="_blank">
+        <img src="Images/whitelogo.png"
+             alt="Company Logo"
+             style="height:55px; margin-bottom:10px;">
+    </a>
+
+    <div>
+        Full Stack Development Training -  Python Django
+    </div>
+
+   
+
+</footer>
+<!-- JQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- Toastr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<!-- Prism Core -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/prism.min.js"></script>
+
+<!-- Python -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-python.min.js"></script>
+
+<!-- Bash -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-bash.min.js"></script>
+
+<!-- Line Numbers -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+
+<!-- Toolbar -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/toolbar/prism-toolbar.min.js"></script>
+
+<!-- Copy Button -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+
+<script>
+
+document.addEventListener("click", function(e){
+
+    if(e.target.innerText === "Copy")
+    {
+        toastr.success("Code copied successfully");
+    }
+
+});
+
+toastr.options = {
+    closeButton: true,
+    progressBar: true,
+    positionClass: "toast-bottom-right",
+    timeOut: "2000"
+};
+
+</script>
+</body>
+
+</html>

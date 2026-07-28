@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Django - Session 15</title>
+<link rel="icon"
+      type="image/png"
+      href="Images/djnago_icon.png">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+<!-- Prism Theme -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+
+<!-- Prism Line Numbers -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet"/>
+
+<!-- Prism Toolbar -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+<!-- Toastr -->
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-color: #161b22;
+            --border-color: #30363d;
+            --text-color: #e6edf3;
+            --heading-color: #58a6ff;
+            --accent-color: #7c3aed;
+        }
+
+        html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Poppins', sans-serif;
+    padding-top: 80px;
+}
+
+.navbar-custom {
+    background: #111827;
+    border-bottom: 1px solid var(--border-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+}
+
+
+
+        .session-title {
+            color: white;
+            font-weight: 600;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 90px;
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .sidebar h5 {
+            color: var(--heading-color);
+            margin-bottom: 20px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #c9d1d9;
+            text-decoration: none;
+            padding: 8px 0;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            color: var(--heading-color);
+            padding-left: 5px;
+        }
+
+        .content-card {
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        h2 {
+            color: var(--heading-color);
+            margin-bottom: 20px;
+        }
+
+        p,
+        li {
+            line-height: 1.9;
+        }
+
+        .overview-box {
+            background: #111827;
+            border-left: 4px solid var(--accent-color);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .footer {
+    background: #111827;
+    border-top: 1px solid var(--border-color);
+    padding: 30px 20px;
+    text-align: center;
+    margin-top: 50px;
+    color: #c9d1d9;
+}
+
+pre[class*="language-"] {
+    border-radius: 12px;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #30363d;
+}
+
+.code-title {
+    background: #21262d;
+    color: #58a6ff;
+    padding: 10px 15px;
+    border-radius: 10px 10px 0 0;
+    font-weight: 600;
+    border: 1px solid #30363d;
+    border-bottom: none;
+}
+
+.toolbar-item button {
+    background: #7c3aed !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 4px 12px !important;
+    font-size: 13px !important;
+}
+
+.toolbar-item button:hover {
+    background: #6d28d9 !important;
+}
+
+.table-dark {
+    border-color: #30363d;
+}
+
+.table-dark th {
+    color: #58a6ff;
+}
+
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    border-color: #58a6ff !important;
+}
+
+
+.assignment-box {
+    background: #172554;
+    border-left: 5px solid #3b82f6;
+    border-radius: 12px;
+    padding: 25px;
+    color: #e6edf3;
+}
+
+.assignment-box strong {
+    color: #93c5fd;
+    font-size: 1.1rem;
+}
+
+.assignment-box ol {
+    margin-top: 15px;
+}
+
+.assignment-box li {
+    margin-bottom: 12px;
+}
+
+.btn-success {
+    background: #238636;
+    border-color: #238636;
+}
+
+.btn-success:hover {
+    background: #2ea043;
+    border-color: #2ea043;
+}
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Navbar -->
+
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+        <div class="container">
+
+           <span class="navbar-brand session-title">
+    <i class="fa-brands fa-python"></i>
+    Django - Session 15
+</span>
+
+        <div class="d-flex gap-2">
+        
+           
+        
+            <a href="index.html" class="btn btn-outline-light">
+                <i class="fa-solid fa-list"></i>
+                All Sessions
+            </a>
+        
+        </div>
+
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+
+        <div class="row">
+
+            <!-- Sidebar -->
+
+            <div class="col-lg-3">
+
+              <div class="sidebar">
+
+    <h5>
+        <i class="fa-solid fa-book"></i>
+        Contents
+    </h5>
+
+    <a href="#inheritance">Template Inheritance</a>
+    <a href="#layout">Common Header and Footer</a>
+    <a href="#staticfiles">Static Files</a>
+    <a href="#bootstrap">Bootstrap Integration</a>
+    <a href="#data">Passing Data to Templates</a>
+    <a href="#revision">Quick Revision</a>
+    <a href="#assignment">Assignment</a>
+
+</div>
+
+            </div>
+
+            <!-- Main Content -->
+
+            <div class="col-lg-9">
+
+            <div class="content-card">
+
+    <h2>
+        <i class="fa-solid fa-graduation-cap"></i>
+        Session Overview
+    </h2>
+
+    <div class="overview-box">
+
+        <ul class="mb-0">
+
+            <li>Template Inheritance</li>
+            <li>Common Header and Footer</li>
+            <li>Static Files</li>
+            <li>Bootstrap Integration</li>
+            <li>Passing Data to Templates</li>
+
+        </ul>
+
+    </div>
+
+</div>
+<div class="content-card" id="inheritance">
+
+    <h2>
+        <i class="fa-solid fa-copy"></i>
+        Template Inheritance
+    </h2>
+
+    <p>
+        Template Inheritance allows multiple pages to share a common layout.
+    </p>
+
+    <p>
+        Instead of repeating the same HTML code on every page, we create one base template and reuse it.
+    </p>
+
+    <h5>Problem Without Template Inheritance</h5>
+
+    <p>
+        Suppose we have Home, About and Contact pages.
+        Each page contains the same Header, Navigation Menu and Footer.
+    </p>
+
+    <p>
+        If we update the menu, we must modify every page individually.
+    </p>
+
+    <h5>Solution</h5>
+
+    <p>
+        Create a common template and let other pages inherit from it.
+    </p>
+
+    <div class="alert bg-dark">
+
+        <strong>Advantage:</strong>
+
+        Write common layout once and reuse it across the entire website.
+
+    </div>
+
+</div>
+<div class="content-card" id="layout">
+
+    <h2>
+        <i class="fa-solid fa-layer-group"></i>
+        Common Header and Footer
+    </h2>
+
+    <p>
+        We will create a common layout file named <strong>base.html</strong>.
+    </p>
+
+    <h5>File Location</h5>
+
+<pre class="line-numbers"><code class="language-bash">demo/templates/base.html</code></pre>
+
+    <h5>base.html</h5>
+
+<pre class="line-numbers"><code class="language-html">&lt;html&gt;
+
+&lt;head&gt;
+    &lt;title&gt;My Website&lt;/title&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+
+    &lt;header&gt;
+        &lt;h1&gt;My Django Website&lt;/h1&gt;
+
+        &lt;a href="/"&gt;Home&lt;/a&gt;
+        &lt;a href="/about/"&gt;About&lt;/a&gt;
+        &lt;a href="/contact/"&gt;Contact&lt;/a&gt;
+    &lt;/header&gt;
+
+    &lt;hr&gt;
+
+    {% block content %}
+    {% endblock %}
+
+    &lt;hr&gt;
+
+    &lt;footer&gt;
+        Copyright © 2026
+    &lt;/footer&gt;
+
+&lt;/body&gt;
+
+&lt;/html&gt;</code></pre>
+
+    <h5>Update home.html</h5>
+
+<pre class="line-numbers"><code class="language-html">{% extends 'base.html' %}
+
+{% block content %}
+
+&lt;h2&gt;Home Page&lt;/h2&gt;
+
+&lt;p&gt;Welcome to Django.&lt;/p&gt;
+
+{% endblock %}</code></pre>
+
+    <h5>Update about.html</h5>
+
+<pre class="line-numbers"><code class="language-html">{% extends 'base.html' %}
+
+{% block content %}
+
+&lt;h2&gt;About Page&lt;/h2&gt;
+
+&lt;p&gt;About Us.&lt;/p&gt;
+
+{% endblock %}</code></pre>
+<div class="alert bg-dark">
+
+    <strong>Understanding block content</strong>
+
+    <p class="mt-2 mb-2">
+        The tags <strong>{% block content %}</strong> and
+        <strong>{% endblock %}</strong> act like a placeholder area in the base template.
+    </p>
+
+    <p class="mb-2">
+        Any HTML code written between these tags will be inserted into the
+        <strong>content section</strong> of <strong>base.html</strong>.
+    </p>
+
+<pre class="line-numbers"><code class="language-html">{% block content %}
+
+&lt;h2&gt;Home Page&lt;/h2&gt;
+
+&lt;p&gt;Welcome to Django.&lt;/p&gt;
+
+{% endblock %}</code></pre>
+
+    <p class="mb-0">
+        Think of it as a start tag and end tag that define the page-specific content area.
+    </p>
+
+</div>
+ 
+
+</div>
+
+<div class="content-card" id="staticfiles">
+
+    <h2>
+        <i class="fa-solid fa-file-code"></i>
+        Static Files
+    </h2>
+
+    <p>
+        Static files are files that do not change, such as CSS, JavaScript and Images.
+    </p>
+
+    <p>
+        Django provides a special folder structure to manage static files.
+    </p>
+
+    <h5>Project Structure</h5>
+
+<pre class="line-numbers"><code class="language-bash">demo
+│
+├── templates
+│   ├── base.html
+│   ├── home.html
+│
+├── static
+│   ├── css
+│   │   └── style.css
+│   │
+│   ├── js
+│   │   └── script.js
+│   │
+│   └── images
+│
+└── views.py</code></pre>
+
+    <h5>Step 1 - Create CSS File</h5>
+
+<pre class="line-numbers"><code class="language-bash">demo/static/css/style.css</code></pre>
+
+<pre class="line-numbers"><code class="language-css">body{
+    background-color:#f8f9fa;
+}
+
+h1{
+    color:blue;
+}</code></pre>
+
+    <h5>Step 2 - Load Static Library</h5>
+
+    <p>Add the following line at the top of base.html</p>
+
+<pre class="line-numbers"><code class="language-html">{% load static %}</code></pre>
+
+    <h5>Step 3 - Link CSS File</h5>
+
+<pre class="line-numbers"><code class="language-html">&lt;link rel="stylesheet"
+href="{% static 'css/style.css' %}"&gt;</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Note:</strong>
+
+        Django cannot directly understand static file paths.
+
+        Therefore, we must use:
+
+<pre class="line-numbers"><code class="language-html">{% load static %}</code></pre>
+
+        and
+
+<pre class="line-numbers"><code class="language-html">{% static 'path' %}</code></pre>
+
+        to access CSS, JavaScript and Images.
+
+    </div>
+
+    <div class="alert bg-dark">
+
+        <strong>Result:</strong>
+
+        The CSS file is now available across all pages because it is linked in base.html.
+
+    </div>
+
+</div>
+<div class="content-card" id="bootstrap">
+
+    <h2>
+        <i class="fa-brands fa-bootstrap"></i>
+        Bootstrap Integration
+    </h2>
+
+    <p>
+        Bootstrap helps us create responsive and professional websites quickly.
+    </p>
+
+    <p>
+        We will add Bootstrap in base.html so all pages can use Bootstrap classes.
+    </p>
+
+    <h5>File Location</h5>
+
+<pre class="line-numbers"><code class="language-bash">demo/templates/base.html</code></pre>
+
+    <h5>Add Bootstrap CSS</h5>
+
+<pre class="line-numbers"><code class="language-html">&lt;head&gt;
+
+&lt;link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+rel="stylesheet"&gt;
+
+&lt;/head&gt;</code></pre>
+
+    <h5>Add Bootstrap JS</h5>
+
+<pre class="line-numbers"><code class="language-html">&lt;script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"&gt;&lt;/script&gt;</code></pre>
+
+    <h5>Example : home.html</h5>
+
+<pre class="line-numbers"><code class="language-html">{% extends 'base.html' %}
+
+{% block content %}
+
+&lt;div class="container mt-5"&gt;
+
+    &lt;h1 class="text-primary"&gt;
+        Welcome To Django
+    &lt;/h1&gt;
+
+    &lt;button class="btn btn-success"&gt;
+        Learn More
+    &lt;/button&gt;
+
+&lt;/div&gt;
+
+{% endblock %}</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Result:</strong>
+
+        Bootstrap classes can now be used on every page without adding the Bootstrap CDN again.
+
+    </div>
+</div>
+    <div class="content-card" id="data">
+
+    <h2>
+        <i class="fa-solid fa-share-nodes"></i>
+        Passing Data to Templates
+    </h2>
+
+    <p>
+        Django allows us to send data from a View to an HTML page.
+    </p>
+
+    <p>
+        This data can then be displayed inside the template.
+    </p>
+
+    <h5>Step 1 - Update View</h5>
+
+<pre class="line-numbers"><code class="language-python">from django.shortcuts import render
+
+def home(request):
+
+    data = {
+        'name':'Shree'
+    }
+
+    return render(request,'home.html',data)</code></pre>
+
+    <h5>Step 2 - Display Data in Template</h5>
+
+<pre class="line-numbers"><code class="language-html">&#123;% extends 'base.html' %&#125;
+
+&#123;% block content %&#125;
+
+&lt;h2&gt;Welcome &#123;&#123; name &#125;&#125;&lt;/h2&gt;
+
+&#123;% endblock %&#125;</code></pre>
+
+    
+<div class="alert bg-dark">
+
+    <strong>Result:</strong>
+
+    Django replaces:
+
+<pre class="line-numbers"><code class="language-html">&#123;&#123; name &#125;&#125;</code></pre>
+
+    with the value received from the View and displays:
+
+<pre class="line-numbers"><code class="language-html">Welcome Shree</code></pre>
+
+</div>
+    </div>
+<div class="content-card" id="revision">
+
+    <h2>
+        <i class="fa-solid fa-bolt"></i>
+        Quick Revision
+    </h2>
+
+    <div class="row">
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Template Inheritance</h5>
+                    <ul class="mb-0 text-light">
+                        <li>base.html</li>
+                        <li>extends</li>
+                        <li>Reusable Layout</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Block Content</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Page Specific Content</li>
+                        <li>block content</li>
+                        <li>endblock</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Static Files</h5>
+                    <ul class="mb-0 text-light">
+                        <li>CSS</li>
+                        <li>JavaScript</li>
+                        <li>Images</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Static Tags</h5>
+                    <ul class="mb-0 text-light">
+                        <li>load static</li>
+                        <li>static path</li>
+                        <li>Link Resources</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Bootstrap</h5>
+                    <ul class="mb-0 text-light">
+                        <li>CDN</li>
+                        <li>Responsive Design</li>
+                        <li>Reusable Components</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Template Variables</h5>
+                    <ul class="mb-0 text-light">
+                        <li>{{ variable }}</li>
+                        <li>Dictionary Data</li>
+                        <li>Dynamic Content</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+   <div class="content-card" id="assignment">
+
+    <h2>
+        <i class="fa-solid fa-clipboard-check"></i>
+        Assignment
+    </h2>
+
+    <div class="assignment-box">
+
+        <strong>
+            Complete the following tasks:
+        </strong>
+
+        <ol>
+
+            <li>
+                Create a <strong>base.html</strong> file with Header, Navigation Menu and Footer.
+            </li>
+
+            <li>
+                Create three pages:
+                <strong>Home</strong>,
+                <strong>About</strong> and
+                <strong>Services</strong>.
+            </li>
+
+            <li>
+                Use Template Inheritance so all pages share the same layout.
+            </li>
+
+            <li>
+                Create a CSS file inside the static folder and apply styles to the Header and Footer.
+            </li>
+
+            <li>
+                Pass the following data from a View to a Template and display it on the page:
+<pre class="line-numbers"><code class="language-python">{
+    'name':'Shree',
+    'city':'Pune',
+    'course':'Python Django'
+}</code></pre>
+            </li>
+
+        </ol>
+
+    </div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+
+</div>
+
+        </div>
+
+    </div>
+
+    <footer class="footer">
+
+    <a href="https://www.revolutionit.in" target="_blank">
+        <img src="Images/whitelogo.png"
+             alt="Company Logo"
+             style="height:55px; margin-bottom:10px;">
+    </a>
+
+    <div>
+        Full Stack Development Training -  Python Django
+    </div>
+
+   
+
+</footer>
+<!-- JQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- Toastr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<!-- Prism Core -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/prism.min.js"></script>
+
+<!-- Python -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-python.min.js"></script>
+
+<!-- Bash -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-bash.min.js"></script>
+
+<!-- Line Numbers -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+
+<!-- Toolbar -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/toolbar/prism-toolbar.min.js"></script>
+
+<!-- Copy Button -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+
+<script>
+
+document.addEventListener("click", function(e){
+
+    if(e.target.innerText === "Copy")
+    {
+        toastr.success("Code copied successfully");
+    }
+
+});
+
+toastr.options = {
+    closeButton: true,
+    progressBar: true,
+    positionClass: "toast-bottom-right",
+    timeOut: "2000"
+};
+
+</script>
+</body>
+
+</html>

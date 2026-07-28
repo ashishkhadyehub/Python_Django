@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Django - Session 20</title>
+<link rel="icon"
+      type="image/png"
+      href="Images/djnago_icon.png">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+<!-- Prism Theme -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+
+<!-- Prism Line Numbers -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet"/>
+
+<!-- Prism Toolbar -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+<!-- Toastr -->
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-color: #161b22;
+            --border-color: #30363d;
+            --text-color: #e6edf3;
+            --heading-color: #58a6ff;
+            --accent-color: #7c3aed;
+        }
+
+        html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Poppins', sans-serif;
+    padding-top: 80px;
+}
+
+.navbar-custom {
+    background: #111827;
+    border-bottom: 1px solid var(--border-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+}
+
+
+
+        .session-title {
+            color: white;
+            font-weight: 600;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 90px;
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .sidebar h5 {
+            color: var(--heading-color);
+            margin-bottom: 20px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #c9d1d9;
+            text-decoration: none;
+            padding: 8px 0;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            color: var(--heading-color);
+            padding-left: 5px;
+        }
+
+        .content-card {
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        h2 {
+            color: var(--heading-color);
+            margin-bottom: 20px;
+        }
+
+        p,
+        li {
+            line-height: 1.9;
+        }
+
+        .overview-box {
+            background: #111827;
+            border-left: 4px solid var(--accent-color);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .footer {
+    background: #111827;
+    border-top: 1px solid var(--border-color);
+    padding: 30px 20px;
+    text-align: center;
+    margin-top: 50px;
+    color: #c9d1d9;
+}
+
+pre[class*="language-"] {
+    border-radius: 12px;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #30363d;
+}
+
+.code-title {
+    background: #21262d;
+    color: #58a6ff;
+    padding: 10px 15px;
+    border-radius: 10px 10px 0 0;
+    font-weight: 600;
+    border: 1px solid #30363d;
+    border-bottom: none;
+}
+
+.toolbar-item button {
+    background: #7c3aed !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 4px 12px !important;
+    font-size: 13px !important;
+}
+
+.toolbar-item button:hover {
+    background: #6d28d9 !important;
+}
+
+.table-dark {
+    border-color: #30363d;
+}
+
+.table-dark th {
+    color: #58a6ff;
+}
+
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    border-color: #58a6ff !important;
+}
+
+
+.assignment-box {
+    background: #172554;
+    border-left: 5px solid #3b82f6;
+    border-radius: 12px;
+    padding: 25px;
+    color: #e6edf3;
+}
+
+.assignment-box strong {
+    color: #93c5fd;
+    font-size: 1.1rem;
+}
+
+.assignment-box ol {
+    margin-top: 15px;
+}
+
+.assignment-box li {
+    margin-bottom: 12px;
+}
+
+.btn-success {
+    background: #238636;
+    border-color: #238636;
+}
+
+.btn-success:hover {
+    background: #2ea043;
+    border-color: #2ea043;
+}
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Navbar -->
+
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+        <div class="container">
+
+           <span class="navbar-brand session-title">
+    <i class="fa-brands fa-python"></i>
+    Django - Session 20
+</span>
+
+        <div class="d-flex gap-2">
+        
+           
+        
+            <a href="index.html" class="btn btn-outline-light">
+                <i class="fa-solid fa-list"></i>
+                All Sessions
+            </a>
+        
+        </div>
+
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+
+        <div class="row">
+
+            <!-- Sidebar -->
+
+            <div class="col-lg-3">
+
+              <div class="sidebar">
+
+    <h5>
+        <i class="fa-solid fa-book"></i>
+        Contents
+    </h5>
+
+    <a href="#projectintro">Project Introduction</a>
+    <a href="#createproject">Create Blog Project</a>
+    <a href="#mysqlsetup">Configure MySQL Database</a>
+    <a href="#blogapp">Create Blog App</a>
+    <a href="#templates">Templates & Static Files</a>
+    <a href="#basetemplate">Create Base Template</a>
+    <a href="#revision">Quick Revision</a>
+    <a href="#assignment">Assignment</a>
+
+</div>
+
+            </div>
+
+            <!-- Main Content -->
+
+            <div class="col-lg-9">
+
+           <div class="content-card">
+
+    <h2>
+        <i class="fa-solid fa-graduation-cap"></i>
+        Session Overview
+    </h2>
+
+    <div class="overview-box">
+
+        <ul class="mb-0">
+
+            <li>Project Introduction</li>
+            <li>Create Blog Project</li>
+            <li>Configure MySQL Database</li>
+            <li>Create Blog App</li>
+            <li>Templates & Static Files</li>
+            <li>Create Base Template</li>
+
+        </ul>
+
+    </div>
+
+</div>
+
+
+
+<div class="content-card" id="projectintro">
+
+    <h2>
+        <i class="fa-solid fa-diagram-project"></i>
+        Project Introduction
+    </h2>
+
+    <p>
+        So far, we have learned the fundamental concepts of Django such as Models, Views, Templates, Forms and CRUD operations.
+    </p>
+
+    <p>
+        Now it is time to build a complete real-world application by applying all these concepts together.
+    </p>
+
+    <h5>Project Name</h5>
+
+    <div class="alert bg-dark">
+
+        <strong>Django Blog Portal</strong>
+
+    </div>
+
+    <h5>Project Features</h5>
+
+    <table class="table table-dark table-bordered">
+
+        <thead>
+
+            <tr>
+
+                <th>Module</th>
+
+                <th>Description</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+
+                <td>Authentication</td>
+
+                <td>Admin Login & Logout</td>
+
+            </tr>
+
+            <tr>
+
+                <td>Category</td>
+
+                <td>Manage Blog Categories</td>
+
+            </tr>
+
+            <tr>
+
+                <td>Posts</td>
+
+                <td>Create, Edit and Delete Blog Posts with Image</td>
+
+            </tr>
+
+           
+
+            <tr>
+
+                <td>Comments</td>
+
+                <td>User Comments</td>
+
+            </tr>
+
+            <tr>
+
+                <td>Search</td>
+
+                <td>Search Blog Posts</td>
+
+            </tr>
+
+            <tr>
+
+                <td>Pagination</td>
+
+                <td>Display Posts Page Wise</td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+    <div class="alert bg-dark">
+
+        <strong>Goal</strong>
+
+        By the end of this project, you will have a complete Django Blog Application that can be included in your portfolio.
+
+    </div>
+
+</div>
+<div class="content-card" id="createproject">
+
+    <h2>
+        <i class="fa-solid fa-folder-plus"></i>
+        Create Blog Project
+    </h2>
+
+    <p>
+        We will create a new Django Project inside a Virtual Environment.
+    </p>
+
+    <p>
+        This keeps the project independent and manages all required packages in one place.
+    </p>
+
+    <h5>Step 1 - Create Project Folder</h5>
+
+<pre class="line-numbers"><code class="language-bash">mkdir blogproject
+
+cd blogproject</code></pre>
+
+    <h5>Step 2 - Create Virtual Environment</h5>
+
+<pre class="line-numbers"><code class="language-bash">python -m venv venv</code></pre>
+
+    <h5>Step 3 - Activate Virtual Environment</h5>
+
+<pre class="line-numbers"><code class="language-bash">venv\Scripts\activate</code></pre>
+
+    <h5>Step 4 - Install Django</h5>
+
+<pre class="line-numbers"><code class="language-bash">pip install django</code></pre>
+
+    <h5>Step 5 - Create Django Project</h5>
+
+<pre class="line-numbers"><code class="language-bash">django-admin startproject blogproject</code></pre>
+
+    <h5>Step 6 - Install Required Packages</h5>
+
+<pre class="line-numbers"><code class="language-bash">pip install mysqlclient
+
+pip install pillow
+
+pip install django-ckeditor</code></pre>
+
+    <h5>Step 7 - Open Visual Studio Code</h5>
+
+<pre class="line-numbers"><code class="language-bash">code .</code></pre>
+
+    <h5>Step 8 - Verify Installation</h5>
+
+<pre class="line-numbers"><code class="language-bash">python manage.py runserver</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Result:</strong>
+
+        The Django development server starts successfully and the default welcome page is displayed in the browser.
+
+    </div>
+
+</div>
+<div class="alert bg-dark">
+
+    <strong>Why are we installing these packages?</strong>
+
+    <table class="table table-dark table-bordered mt-3">
+
+        <thead>
+
+            <tr>
+
+                <th>Package</th>
+
+                <th>Purpose</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            <tr>
+
+                <td>Django</td>
+
+                <td>Python Web Framework</td>
+
+            </tr>
+
+            <tr>
+
+                <td>mysqlclient</td>
+
+                <td>Connect Django with MySQL Database</td>
+
+            </tr>
+
+            <tr>
+
+                <td>Pillow</td>
+
+                <td>Support Image Upload in Blog Posts</td>
+
+            </tr>
+
+            <tr>
+
+                <td>django-ckeditor</td>
+
+                <td>Rich Text Editor for Blog Content</td>
+
+            </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+<div class="content-card" id="mysqlsetup">
+
+    <h2>
+        <i class="fa-solid fa-database"></i>
+        Configure MySQL Database
+    </h2>
+
+    <p>
+        By default, Django uses SQLite. For this project, we will use MySQL as our database.
+    </p>
+
+    <h5>Step 1 - Create Database</h5>
+
+<pre class="line-numbers"><code class="language-sql">CREATE DATABASE BlogDB;</code></pre>
+
+    <h5>Step 2 - Open settings.py</h5>
+
+<pre class="line-numbers"><code class="language-bash">blogproject/settings.py</code></pre>
+
+    <h5>Step 3 - Update DATABASES</h5>
+
+<pre class="line-numbers"><code class="language-python">DATABASES = {
+
+    'default': {
+
+        'ENGINE': 'django.db.backends.mysql',
+
+        'NAME': 'BlogDB',
+
+        'USER': 'root',
+
+        'PASSWORD': '',
+
+        'HOST': 'localhost',
+
+        'PORT': '3306',
+
+    }
+
+}</code></pre>
+
+    <h5>Step 4 - Apply Migrations</h5>
+
+<pre class="line-numbers"><code class="language-bash">python manage.py migrate</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Result:</strong>
+
+        Django creates all required system tables inside the MySQL database.
+
+    </div>
+
+</div>
+<div class="alert bg-dark">
+
+    <strong>Why are we using MySQL?</strong>
+
+    <ul class="mb-0 mt-2">
+
+        <li>Suitable for real-world applications.</li>
+
+        <li>Supports large amounts of data.</li>
+
+        <li>Most companies use relational databases like MySQL or PostgreSQL.</li>
+
+        <li>The Django ORM works the same with SQLite and MySQL.</li>
+
+    </ul>
+
+</div>
+<div class="content-card" id="blogapp">
+
+    <h2>
+        <i class="fa-solid fa-layer-group"></i>
+        Create Blog App
+    </h2>
+
+    <p>
+        A Django Project can contain multiple Applications.
+    </p>
+
+    <p>
+        We will create a separate application named <strong>blog</strong> to manage all blog-related features.
+    </p>
+
+    <h5>Step 1 - Create App</h5>
+
+<pre class="line-numbers"><code class="language-bash">python manage.py startapp blog</code></pre>
+
+    <h5>Step 2 - Register App</h5>
+
+    <p>
+        Open:
+    </p>
+
+<pre class="line-numbers"><code class="language-bash">blogproject/settings.py</code></pre>
+
+    <p>
+        Add the app name inside <strong>INSTALLED_APPS</strong>.
+    </p>
+
+<pre class="line-numbers"><code class="language-python">'blog',</code></pre>
+
+   
+
+</div>
+<div class="alert bg-dark">
+
+    <strong>Why did we create a Blog App?</strong>
+
+    <p class="mt-2">
+
+        Django follows a modular architecture where each application is responsible for a specific feature.
+
+    </p>
+
+    <p>
+
+        The <strong>blog</strong> app will contain all files related to the Blog Module such as Models, Views, Forms and Templates.
+
+    </p>
+
+</div>
+<div class="alert bg-dark">
+
+<strong>Project Structure</strong>
+
+<pre class="line-numbers"><code class="language-text">blogproject
+│
+├── blog
+│   ├── models.py
+│   ├── views.py
+│   ├── forms.py
+│   ├── admin.py
+│   └── migrations
+│
+├── blogproject
+│
+├── manage.py
+│
+└── venv</code></pre>
+
+</div>
+<div class="content-card" id="templates">
+
+    <h2>
+        <i class="fa-solid fa-folder-tree"></i>
+        Configure Project Resources
+    </h2>
+
+    <p>
+        Before developing the Blog Project, we will configure the Templates, Static Files and Media Files.
+    </p>
+
+    <p>
+        This prepares the project for storing HTML pages, CSS, JavaScript and uploaded Blog Images.
+    </p>
+
+    <h5>Step 1 - Create Folder Structure</h5>
+
+<pre class="line-numbers"><code class="language-text">blogproject
+│
+├── blog
+│
+├── templates
+│
+├── static
+│   ├── css
+│   ├── js
+│   └── images
+│
+├── media
+│
+├── manage.py
+│
+└── blogproject</code></pre>
+
+    <h5>Step 2 - Configure Templates Folder</h5>
+
+    <p>
+        Open <strong>blogproject/settings.py</strong> and update the
+        <strong>TEMPLATES</strong> setting.
+    </p>
+
+<pre class="line-numbers"><code class="language-python">'DIRS': [BASE_DIR / 'templates'],</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Purpose:</strong>
+
+        Django will now search for HTML files inside the
+        <strong>templates</strong> folder.
+
+    </div>
+
+    <h5>Step 3 - Configure Static Files</h5>
+
+    <p>
+        Add the following code in <strong>settings.py</strong>.
+    </p>
+
+<pre class="line-numbers"><code class="language-python">STATIC_URL = 'static/'
+
+STATICFILES_DIRS = [
+
+    BASE_DIR / 'static',
+
+]</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Purpose:</strong>
+
+        Static files include CSS, JavaScript and Images used by the website.
+
+    </div>
+
+    <h5>Step 4 - Configure Media Files</h5>
+
+<pre class="line-numbers"><code class="language-python">MEDIA_URL = '/media/'
+
+MEDIA_ROOT = BASE_DIR / 'media'</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Purpose:</strong>
+
+        Uploaded files such as Blog Images will be stored inside the
+        <strong>media</strong> folder.
+
+    </div>
+
+    <h5>Step 5 - Configure Media URLs</h5>
+
+    <p>
+        Open <strong>blogproject/urls.py</strong>.
+    </p>
+
+    <p>
+        Import the following modules.
+    </p>
+
+<pre class="line-numbers"><code class="language-python">from django.conf import settings
+
+from django.conf.urls.static import static</code></pre>
+
+    <p>
+        Add the following code after <strong>urlpatterns</strong>.
+    </p>
+
+<pre class="line-numbers"><code class="language-python">if settings.DEBUG:
+
+    urlpatterns += static(
+
+        settings.MEDIA_URL,
+
+        document_root=settings.MEDIA_ROOT
+
+    )</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Purpose:</strong>
+
+        This allows Django to display uploaded media files while running the project in development mode.
+
+    </div>
+
+    <div class="alert bg-dark">
+
+        <strong>Static Files vs Media Files</strong>
+
+        <table class="table table-dark table-bordered mt-3">
+
+            <thead>
+
+                <tr>
+
+                    <th>Static Files</th>
+
+                    <th>Media Files</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr>
+
+                    <td>CSS</td>
+
+                    <td>Uploaded Images</td>
+
+                </tr>
+
+                <tr>
+
+                    <td>JavaScript</td>
+
+                    <td>User Uploaded Files</td>
+
+                </tr>
+
+                <tr>
+
+                    <td>Website Logo</td>
+
+                    <td>Blog Featured Images</td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <div class="alert bg-dark">
+
+        <strong>Result:</strong>
+
+        The Blog Project is now fully configured for Templates, Static Files and Media Files. We can start developing the application without making any additional project-level configuration.
+
+    </div>
+
+</div>
+
+<div class="content-card" id="basetemplate">
+
+    <h2>
+        <i class="fa-solid fa-laptop-code"></i>
+        Create Base Template
+    </h2>
+
+    <p>
+        Instead of creating the layout for every page separately, we will create a common
+        <strong>base.html</strong> file.
+    </p>
+
+    <p>
+        This file contains the common Header, Navigation Bar and Footer used throughout the project.
+    </p>
+
+    <h5>File Location</h5>
+
+<pre class="line-numbers"><code class="language-bash">templates/base.html</code></pre>
+
+    <h5>base.html</h5>
+
+<pre class="line-numbers"><code class="language-html">&lt;!DOCTYPE html&gt;
+
+&#123;% load static %&#125;
+
+&lt;html lang="en"&gt;
+
+&lt;head&gt;
+
+    &lt;meta charset="UTF-8"&gt;
+
+    &lt;meta name="viewport"
+          content="width=device-width, initial-scale=1"&gt;
+
+    &lt;title&gt;Django Blog Portal&lt;/title&gt;
+
+    &lt;!-- Bootstrap CSS --&gt;
+    &lt;link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+          rel="stylesheet"&gt;
+
+    &lt;!-- Font Awesome --&gt;
+    &lt;link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"&gt;
+
+    &lt;!-- Custom CSS --&gt;
+    &lt;link rel="stylesheet"
+          href="&#123;% static 'css/style.css' %&#125;"&gt;
+
+&lt;/head&gt;
+
+&lt;body&gt;
+
+&lt;nav class="navbar navbar-expand-lg navbar-dark bg-dark"&gt;
+
+    &lt;div class="container"&gt;
+
+        &lt;a class="navbar-brand"
+           href="/"&gt;
+
+            &lt;i class="fa-solid fa-blog"&gt;&lt;/i&gt;
+
+            Django Blog
+
+        &lt;/a&gt;
+
+        &lt;button class="navbar-toggler"
+                data-bs-toggle="collapse"
+                data-bs-target="#menu"&gt;
+
+            &lt;span class="navbar-toggler-icon"&gt;&lt;/span&gt;
+
+        &lt;/button&gt;
+
+        &lt;div class="collapse navbar-collapse"
+             id="menu"&gt;
+
+            &lt;ul class="navbar-nav ms-auto"&gt;
+
+                &lt;li class="nav-item"&gt;
+
+                    &lt;a class="nav-link"
+                       href="/"&gt;
+
+                        &lt;i class="fa-solid fa-house"&gt;&lt;/i&gt;
+
+                        Home
+
+                    &lt;/a&gt;
+
+                &lt;/li&gt;
+
+                &lt;li class="nav-item"&gt;
+
+                    &lt;a class="nav-link"
+                       href="#"&gt;
+
+                        &lt;i class="fa-solid fa-folder"&gt;&lt;/i&gt;
+
+                        Categories
+
+                    &lt;/a&gt;
+
+                &lt;/li&gt;
+
+                &lt;li class="nav-item"&gt;
+
+                    &lt;a class="nav-link"
+                       href="#"&gt;
+
+                        &lt;i class="fa-solid fa-file-lines"&gt;&lt;/i&gt;
+
+                        Posts
+
+                    &lt;/a&gt;
+
+                &lt;/li&gt;
+
+                &lt;li class="nav-item"&gt;
+
+                    &lt;a class="nav-link"
+                       href="#"&gt;
+
+                        &lt;i class="fa-solid fa-right-to-bracket"&gt;&lt;/i&gt;
+
+                        Login
+
+                    &lt;/a&gt;
+
+                &lt;/li&gt;
+
+            &lt;/ul&gt;
+
+        &lt;/div&gt;
+
+    &lt;/div&gt;
+
+&lt;/nav&gt;
+
+&lt;div class="container my-5"&gt;
+
+    &#123;% block content %&#125;
+
+    &#123;% endblock %&#125;
+
+&lt;/div&gt;
+
+&lt;footer class="bg-dark text-white text-center py-3"&gt;
+
+    &lt;p class="mb-0"&gt;
+
+        © 2026 Django Blog Portal |
+        Developed During Python Django Training
+
+    &lt;/p&gt;
+
+&lt;/footer&gt;
+
+&lt;script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"&gt;&lt;/script&gt;
+
+&lt;/body&gt;
+
+&lt;/html&gt;</code></pre>
+
+</div>
+<div class="content-card" id="runproject">
+
+    <h2>
+        <i class="fa-solid fa-play"></i>
+        Configure URLs and Run Project
+    </h2>
+
+    <p>
+        Finally, we will connect the Blog App with the main project and display the Home page.
+    </p>
+
+    <h5>Step 1 - Create urls.py inside Blog App</h5>
+
+<pre class="line-numbers"><code class="language-bash">blog/urls.py</code></pre>
+
+<pre class="line-numbers"><code class="language-python">from django.urls import path
+
+from . import views
+
+urlpatterns = [
+
+    path('', views.home, name='home'),
+
+]</code></pre>
+
+    <h5>Step 2 - Update blog/views.py</h5>
+
+<pre class="line-numbers"><code class="language-python">from django.shortcuts import render
+
+def home(request):
+
+    return render(request,'home.html')</code></pre>
+
+    <h5>Step 3 - Include App URLs</h5>
+
+    <p>
+        Open <strong>blogproject/urls.py</strong>.
+    </p>
+
+<pre class="line-numbers"><code class="language-python">from django.contrib import admin
+
+from django.urls import path, include
+
+urlpatterns = [
+
+    path('admin/', admin.site.urls),
+
+    path('', include('blog.urls')),
+
+]</code></pre>
+
+    <h5>Step 4 - Create Home Page</h5>
+
+<pre class="line-numbers"><code class="language-bash">templates/home.html</code></pre>
+
+<pre class="line-numbers"><code class="language-html">&#123;% extends 'base.html' %&#125;
+
+&#123;% block content %&#125;
+
+&lt;div class="text-center mt-5"&gt;
+
+    &lt;h1&gt;Welcome To Django Blog Portal&lt;/h1&gt;
+
+    &lt;p&gt;
+
+        Our Blog Project setup is completed successfully.
+
+    &lt;/p&gt;
+
+&lt;/div&gt;
+
+&#123;% endblock %&#125;</code></pre>
+
+    <h5>Step 5 - Run Project</h5>
+
+<pre class="line-numbers"><code class="language-bash">python manage.py runserver</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Result:</strong>
+
+        The Home page is displayed using the common <strong>base.html</strong> layout with the Navigation Bar and Footer.
+
+    </div>
+
+</div>
+<div class="content-card" id="revision">
+
+    <h2>
+        <i class="fa-solid fa-bolt"></i>
+        Quick Revision
+    </h2>
+
+    <div class="row">
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Project Setup</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Virtual Environment</li>
+                        <li>Django Project</li>
+                        <li>Required Packages</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">MySQL</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Database Configuration</li>
+                        <li>settings.py</li>
+                        <li>Migration</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Blog App</h5>
+                    <ul class="mb-0 text-light">
+                        <li>startapp</li>
+                        <li>INSTALLED_APPS</li>
+                        <li>Project Structure</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Templates</h5>
+                    <ul class="mb-0 text-light">
+                        <li>templates</li>
+                        <li>static</li>
+                        <li>media</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Layout</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Bootstrap</li>
+                        <li>Navbar</li>
+                        <li>Footer</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Packages</h5>
+                    <ul class="mb-0 text-light">
+                        <li>mysqlclient</li>
+                        <li>Pillow</li>
+                        <li>CKEditor</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="alert bg-dark">
+
+        <strong>Commands Practiced Today</strong>
+
+<pre class="line-numbers"><code class="language-bash">python -m venv venv
+
+pip install django
+
+django-admin startproject blogproject
+
+python manage.py startapp blog
+
+python manage.py migrate
+
+python manage.py runserver</code></pre>
+
+    </div>
+
+</div>
+<div class="content-card" id="assignment">
+
+    <h2>
+        <i class="fa-solid fa-clipboard-check"></i>
+        Assignment
+    </h2>
+
+    <div class="assignment-box">
+
+        <strong>
+            Build a News Portal Project
+        </strong>
+
+        <p class="mt-3">
+
+            Create a new Django project named <strong>News Portal</strong> by following the same steps demonstrated in today's Blog Project.
+
+        </p>
+
+        <ol>
+
+            <li>
+                Create a new Django Project and Virtual Environment.
+            </li>
+
+            <li>
+                Configure MySQL Database.
+            </li>
+
+            <li>
+                Create a Django App named <strong>news</strong>.
+            </li>
+
+            <li>
+                Configure the <strong>templates</strong>, <strong>static</strong> and <strong>media</strong> folders.
+            </li>
+
+            <li>
+                Create a professional layout using Bootstrap with:
+                <ul>
+                    <li>Responsive Navigation Bar</li>
+                    <li>Footer</li>
+                    <li>Custom CSS</li>
+                </ul>
+            </li>
+
+            <li>
+                Create a Home Page using Template Inheritance.
+            </li>
+
+        </ol>
+
+        <div class="alert bg-dark">
+
+            <strong>Note:</strong>
+
+            Throughout the remaining sessions, continue developing the <strong>News Portal</strong> by implementing the same features demonstrated in the <strong>Blog Project</strong>.
+
+        </div>
+
+    </div>
+
+</div>
+            </div>
+        </div>
+    </div>
+              <footer class="footer">
+
+    <a href="https://www.revolutionit.in" target="_blank">
+        <img src="Images/whitelogo.png"
+             alt="Company Logo"
+             style="height:55px; margin-bottom:10px;">
+    </a>
+
+    <div>
+        Full Stack Development Training -  Python Django
+    </div>
+
+   
+
+</footer>
+<!-- JQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- Toastr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<!-- Prism Core -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/prism.min.js"></script>
+
+<!-- Python -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-python.min.js"></script>
+
+<!-- Bash -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-bash.min.js"></script>
+
+<!-- Line Numbers -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+
+<!-- Toolbar -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/toolbar/prism-toolbar.min.js"></script>
+
+<!-- Copy Button -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+
+<script>
+
+document.addEventListener("click", function(e){
+
+    if(e.target.innerText === "Copy")
+    {
+        toastr.success("Code copied successfully");
+    }
+
+});
+
+toastr.options = {
+    closeButton: true,
+    progressBar: true,
+    positionClass: "toast-bottom-right",
+    timeOut: "2000"
+};
+
+</script>
+</body>
+
+</html>

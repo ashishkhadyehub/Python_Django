@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Django - Session 13</title>
+<link rel="icon"
+      type="image/png"
+      href="Images/djnago_icon.png">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+<!-- Prism Theme -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+
+<!-- Prism Line Numbers -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet"/>
+
+<!-- Prism Toolbar -->
+<link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+<!-- Toastr -->
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-color: #161b22;
+            --border-color: #30363d;
+            --text-color: #e6edf3;
+            --heading-color: #58a6ff;
+            --accent-color: #7c3aed;
+        }
+
+        html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Poppins', sans-serif;
+    padding-top: 80px;
+}
+
+.navbar-custom {
+    background: #111827;
+    border-bottom: 1px solid var(--border-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+}
+
+
+
+        .session-title {
+            color: white;
+            font-weight: 600;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 90px;
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .sidebar h5 {
+            color: var(--heading-color);
+            margin-bottom: 20px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #c9d1d9;
+            text-decoration: none;
+            padding: 8px 0;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            color: var(--heading-color);
+            padding-left: 5px;
+        }
+
+        .content-card {
+            background: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        h2 {
+            color: var(--heading-color);
+            margin-bottom: 20px;
+        }
+
+        p,
+        li {
+            line-height: 1.9;
+        }
+
+        .overview-box {
+            background: #111827;
+            border-left: 4px solid var(--accent-color);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .footer {
+    background: #111827;
+    border-top: 1px solid var(--border-color);
+    padding: 30px 20px;
+    text-align: center;
+    margin-top: 50px;
+    color: #c9d1d9;
+}
+
+pre[class*="language-"] {
+    border-radius: 12px;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #30363d;
+}
+
+.code-title {
+    background: #21262d;
+    color: #58a6ff;
+    padding: 10px 15px;
+    border-radius: 10px 10px 0 0;
+    font-weight: 600;
+    border: 1px solid #30363d;
+    border-bottom: none;
+}
+
+.toolbar-item button {
+    background: #7c3aed !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 4px 12px !important;
+    font-size: 13px !important;
+}
+
+.toolbar-item button:hover {
+    background: #6d28d9 !important;
+}
+
+.table-dark {
+    border-color: #30363d;
+}
+
+.table-dark th {
+    color: #58a6ff;
+}
+
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    border-color: #58a6ff !important;
+}
+
+
+.assignment-box {
+    background: #172554;
+    border-left: 5px solid #3b82f6;
+    border-radius: 12px;
+    padding: 25px;
+    color: #e6edf3;
+}
+
+.assignment-box strong {
+    color: #93c5fd;
+    font-size: 1.1rem;
+}
+
+.assignment-box ol {
+    margin-top: 15px;
+}
+
+.assignment-box li {
+    margin-bottom: 12px;
+}
+
+.btn-success {
+    background: #238636;
+    border-color: #238636;
+}
+
+.btn-success:hover {
+    background: #2ea043;
+    border-color: #2ea043;
+}
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Navbar -->
+
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+        <div class="container">
+
+           <span class="navbar-brand session-title">
+    <i class="fa-brands fa-python"></i>
+    Django - Session 13
+</span>
+
+        <div class="d-flex gap-2">
+        
+           
+        
+            <a href="index.html" class="btn btn-outline-light">
+                <i class="fa-solid fa-list"></i>
+                All Sessions
+            </a>
+        
+        </div>
+
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+
+        <div class="row">
+
+            <!-- Sidebar -->
+
+            <div class="col-lg-3">
+
+              <div class="sidebar">
+
+    <h5>
+        <i class="fa-solid fa-book"></i>
+        Contents
+    </h5>
+
+    <a href="#intro">Introduction to Django</a>
+    <a href="#venv">Virtual Environment</a>
+    <a href="#installation">Django Installation</a>
+    <a href="#project">Project Creation</a>
+    <a href="#app">Application Creation</a>
+    <a href="#structure">Project Structure</a>
+    <a href="#revision">Quick Revision</a>
+    <a href="#assignment">Assignment</a>
+
+</div>
+
+            </div>
+
+            <!-- Main Content -->
+
+            <div class="col-lg-9">
+
+            <div class="content-card">
+
+    <h2>
+        <i class="fa-solid fa-graduation-cap"></i>
+        Session Overview
+    </h2>
+
+    <div class="overview-box">
+
+        <ul class="mb-0">
+
+            <li>Introduction to Django</li>
+            <li>Virtual Environment</li>
+            <li>Django Installation</li>
+            <li>Project Creation</li>
+            <li>Application Creation</li>
+            <li>Project Structure</li>
+
+        </ul>
+
+    </div>
+
+</div>
+<div class="content-card" id="intro">
+
+    <h2>
+        <i class="fa-solid fa-rocket"></i>
+        Introduction to Django
+    </h2>
+
+    <p>
+        Django is a high-level Python Web Framework used to build secure, scalable and maintainable web applications.
+    </p>
+
+    <h5>Applications Commonly Built Using Django</h5>
+
+    <ul>
+        <li>Blog Websites</li>
+        <li>E-Commerce Applications</li>
+        <li>Content Management Systems</li>
+        <li>Social Media Platforms</li>
+        <li>Business Management Systems</li>
+    </ul>
+
+    <h5>Features of Django</h5>
+
+    <ul>
+        <li>Built using Python.</li>
+        <li>Fast Development.</li>
+        <li>Built-in Admin Panel.</li>
+        <li>Secure Authentication System.</li>
+        <li>ORM for Database Operations.</li>
+        <li>Supports MySQL, PostgreSQL and SQLite.</li>
+    </ul>
+
+    <h5>Why Django?</h5>
+
+    <p>
+        Django follows the "Don't Repeat Yourself (DRY)" principle and provides many built-in features that reduce development time.
+    </p>
+
+    <div class="alert bg-dark">
+
+        <strong>Note:</strong>
+
+        In this training we will build a complete Blog Application using Django, MySQL and Bootstrap.
+
+    </div>
+
+</div>
+<div class="content-card" id="venv">
+
+    <h2>
+        <i class="fa-solid fa-box"></i>
+        Virtual Environment
+    </h2>
+
+    <p>
+        A Virtual Environment is an isolated Python environment used to install project-specific packages.
+    </p>
+
+    <p>
+        It helps avoid conflicts between packages used by different projects.
+    </p>
+
+    <h5>Create Project Folder</h5>
+
+<pre class="line-numbers"><code class="language-bash">mkdir DjangoTraining
+
+cd DjangoTraining</code></pre>
+
+    <h5>Create Virtual Environment</h5>
+
+<pre class="line-numbers"><code class="language-bash">python -m venv env</code></pre>
+
+    <h5>Activate Virtual Environment (Windows)</h5>
+
+<pre class="line-numbers"><code class="language-bash">env\Scripts\activate</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-bash">(env) C:\DjangoTraining></code></pre>
+
+    <h5>Deactivate Virtual Environment</h5>
+
+<pre class="line-numbers"><code class="language-bash">deactivate</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Important:</strong>
+
+        Always activate the virtual environment before installing Django or running the project.
+
+    </div>
+
+</div>
+<div class="content-card" id="installation">
+
+    <h2>
+        <i class="fa-solid fa-download"></i>
+        Django Installation
+    </h2>
+
+    <p>
+        After activating the Virtual Environment, we can install Django using pip.
+    </p>
+
+    <h5>Install Django</h5>
+
+<pre class="line-numbers"><code class="language-bash">pip install django</code></pre>
+
+    <h5>Verify Installation</h5>
+
+<pre class="line-numbers"><code class="language-bash">django-admin --version</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-bash">6.0.6</code></pre>
+
+    <h5>View Installed Packages</h5>
+
+<pre class="line-numbers"><code class="language-bash">pip list</code></pre>
+
+    <div class="code-title">
+        Sample Output
+    </div>
+
+<pre class="line-numbers"><code class="language-bash">Package   Version
+--------- -------
+Django    6.0.6
+pip       26.1.2
+sqlparse  0.5.5
+asgiref   3.11.1</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Important:</strong>
+
+        Ensure the virtual environment is activated before running the installation command.
+
+    </div>
+
+</div>
+<div class="content-card" id="project">
+
+    <h2>
+        <i class="fa-solid fa-folder-plus"></i>
+        Project Creation
+    </h2>
+
+    <p>
+        A Django Project is the main container that holds settings, URLs and applications.
+    </p>
+
+    <h5>Create Project</h5>
+
+<pre class="line-numbers"><code class="language-bash">django-admin startproject BlogProject</code></pre>
+
+    <h5>Move Inside Project Folder</h5>
+
+<pre class="line-numbers"><code class="language-bash">cd BlogProject</code></pre>
+
+    <h5>Run Development Server</h5>
+
+<pre class="line-numbers"><code class="language-bash">python manage.py runserver</code></pre>
+
+    <div class="code-title">
+        Output
+    </div>
+
+<pre class="line-numbers"><code class="language-bash">Starting development server at
+http://127.0.0.1:8000/</code></pre>
+
+    <h5>Open Browser</h5>
+
+<pre class="line-numbers"><code class="language-bash">http://127.0.0.1:8000</code></pre>
+
+    <h5>Django Welcome Screen</h5>
+
+    <p>
+        If installation and project creation are successful, Django displays its default welcome page.
+    </p>
+
+   
+
+    <h5>Stop Server</h5>
+
+<pre class="line-numbers"><code class="language-bash">CTRL + C</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Note:</strong>
+
+        The development server is used only during development and testing.
+
+    </div>
+
+</div>
+<div class="alert bg-dark">
+
+    <strong>Commands Used So Far</strong>
+
+<pre class="line-numbers"><code class="language-bash">python -m venv env
+
+env\Scripts\activate
+
+pip install django
+
+django-admin startproject BlogProject
+
+cd BlogProject
+
+python manage.py runserver</code></pre>
+
+</div>
+
+<div class="content-card" id="app">
+
+    <h2>
+        <i class="fa-solid fa-cubes"></i>
+        Application Creation
+    </h2>
+
+    <p>
+        A Django Application is a module that performs a specific task within a project.
+    </p>
+
+    <h5>Create Application</h5>
+
+<pre class="line-numbers"><code class="language-bash">python manage.py startapp blog</code></pre>
+
+    <h5>Project Structure After Creating Application</h5>
+
+<pre class="line-numbers"><code class="language-bash">BlogProject
+│
+├── BlogProject
+│
+├── blog
+│
+└── manage.py</code></pre>
+
+    <div class="alert bg-dark">
+
+        <strong>Important:</strong>
+
+        Multiple applications can exist inside a single Django project.
+
+    </div>
+<div class="alert bg-dark">
+
+    <strong>Important: Register Application</strong>
+
+    <p class="mt-2 mb-2">
+        After creating an application, we must register it in the project's
+        <strong>settings.py</strong> file.
+    </p>
+
+    <p class="mb-2">
+        If the application is not registered, Django will not be able to use its templates, models, admin configuration and other resources.
+    </p>
+
+    <h6>File Location</h6>
+
+<pre class="line-numbers"><code class="language-python">trainingproject/settings.py</code></pre>
+
+    <h6>Add Application Name</h6>
+
+<pre class="line-numbers"><code class="language-python">INSTALLED_APPS = [
+
+    'demo',
+
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+
+]</code></pre>
+
+    <div class="mt-2">
+
+        <strong>Result:</strong>
+
+        Django can now discover:
+
+        <ul class="mb-0 mt-2">
+            <li>Templates</li>
+            <li>Models</li>
+            <li>Admin Configuration</li>
+            <li>Migrations</li>
+        </ul>
+
+    </div>
+
+</div>
+</div>
+<div class="alert bg-dark">
+
+    <strong>Project vs Application</strong>
+
+    <br><br>
+
+    <strong>Project</strong> is the complete website.
+
+    <br>
+
+    <strong>Application</strong> is a specific feature or module inside the website.
+
+    <br><br>
+
+    Example:
+
+    <ul class="mb-0 mt-2">
+        <li>Project → Blog Website</li>
+        <li>Application → Blog Module</li>
+        <li>Application → User Management Module</li>
+        <li>Application → Product Module</li>
+    </ul>
+
+</div>
+<div class="content-card" id="structure">
+
+    <h2>
+        <i class="fa-solid fa-folder-tree"></i>
+        Project Structure
+    </h2>
+
+    <p>
+        After creating a project and application, Django generates several files and folders automatically.
+    </p>
+
+    <h5>Project Structure</h5>
+
+<pre class="line-numbers"><code class="language-bash">BlogProject
+│
+├── BlogProject
+│   ├── settings.py
+│   ├── urls.py
+│   ├── asgi.py
+│   ├── wsgi.py
+│   └── __init__.py
+│
+├── blog
+│   ├── admin.py
+│   ├── apps.py
+│   ├── models.py
+│   ├── tests.py
+│   ├── views.py
+│   └── migrations
+│
+└── manage.py</code></pre>
+
+    <h5>Important Files</h5>
+
+    <table class="table table-dark table-bordered">
+
+        <thead>
+            <tr>
+                <th>File</th>
+                <th>Purpose</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>manage.py</td>
+                <td>Execute Django Commands</td>
+            </tr>
+
+            <tr>
+                <td>settings.py</td>
+                <td>Project Configuration</td>
+            </tr>
+
+            <tr>
+                <td>urls.py</td>
+                <td>URL Routing</td>
+            </tr>
+
+            <tr>
+                <td>views.py</td>
+                <td>Application Logic</td>
+            </tr>
+
+            <tr>
+                <td>models.py</td>
+                <td>Database Models</td>
+            </tr>
+
+            <tr>
+                <td>admin.py</td>
+                <td>Admin Panel Configuration</td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+    <div class="alert bg-dark">
+
+        <strong>Note:</strong>
+
+        We will learn settings.py, urls.py, views.py and models.py in detail in upcoming sessions.
+
+    </div>
+
+</div>
+<div class="content-card" id="revision">
+
+    <h2>
+        <i class="fa-solid fa-bolt"></i>
+        Quick Revision
+    </h2>
+
+    <div class="row">
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Virtual Environment</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Create → python -m venv env</li>
+                        <li>Activate → env\Scripts\activate</li>
+                        <li>Deactivate → deactivate</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Django Installation</h5>
+                    <ul class="mb-0 text-light">
+                        <li>pip install django</li>
+                        <li>django-admin --version</li>
+                        <li>pip list</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Project Commands</h5>
+                    <ul class="mb-0 text-light">
+                        <li>startproject</li>
+                        <li>runserver</li>
+                        <li>CTRL + C</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Application</h5>
+                    <ul class="mb-0 text-light">
+                        <li>startapp</li>
+                        <li>Specific Module</li>
+                        <li>Inside Project</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Project vs App</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Project = Complete Website</li>
+                        <li>App = Feature / Module</li>
+                        <li>Multiple Apps Possible</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Important Files</h5>
+                    <ul class="mb-0 text-light">
+                        <li>settings.py</li>
+                        <li>urls.py</li>
+                        <li>views.py</li>
+                        <li>models.py</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<div class="content-card" id="assignment">
+
+    <h2>
+        <i class="fa-solid fa-clipboard-check"></i>
+        Assignment
+    </h2>
+
+    <div class="assignment-box">
+
+        <strong>
+            Complete the following tasks:
+        </strong>
+
+        <ol>
+
+            <li>
+                Create a new folder named <strong>DjangoPractice</strong>.
+            </li>
+
+            <li>
+                Create and activate a Virtual Environment inside the folder.
+            </li>
+
+            <li>
+                Install Django and verify the installed version.
+            </li>
+
+            <li>
+                Create a Django Project named <strong>StudentPortal</strong> and run the development server.
+            </li>
+
+            <li>
+                Create an Application named <strong>students</strong> inside the project.
+            </li>
+
+        </ol>
+
+    </div>
+
+</div>
+</div>
+
+        </div>
+
+    </div>
+
+    <footer class="footer">
+
+    <a href="https://www.revolutionit.in" target="_blank">
+        <img src="Images/whitelogo.png"
+             alt="Company Logo"
+             style="height:55px; margin-bottom:10px;">
+    </a>
+
+    <div>
+        Full Stack Development Training -  Python Django
+    </div>
+
+   
+
+</footer>
+<!-- JQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- Toastr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<!-- Prism Core -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/prism.min.js"></script>
+
+<!-- Python -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-python.min.js"></script>
+
+<!-- Bash -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/components/prism-bash.min.js"></script>
+
+<!-- Line Numbers -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+
+<!-- Toolbar -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/toolbar/prism-toolbar.min.js"></script>
+
+<!-- Copy Button -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+
+<script>
+
+document.addEventListener("click", function(e){
+
+    if(e.target.innerText === "Copy")
+    {
+        toastr.success("Code copied successfully");
+    }
+
+});
+
+toastr.options = {
+    closeButton: true,
+    progressBar: true,
+    positionClass: "toast-bottom-right",
+    timeOut: "2000"
+};
+
+</script>
+</body>
+
+</html>

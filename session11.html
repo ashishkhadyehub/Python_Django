@@ -28,7 +28,7 @@
 
 <!-- Prism Toolbar -->
 <link href="https://cdn.jsdelivr.net/npm/prismjs@1.30.0/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet"/>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
 <!-- Toastr -->
 <link rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"/>
@@ -255,7 +255,7 @@ pre[class*="language-"] {
     </h5>
 
     <a href="#installation">MySQL Installation</a>
-    <a href="#dbms">DBMS & RDBMS</a>
+    <a href="#dbms">Introduction to Databases</a>
     <a href="#database">Database Creation</a>
     <a href="#table">Tables & Data Types</a>
     <a href="#primarykey">Primary Key & Auto Increment</a>
@@ -283,7 +283,7 @@ pre[class*="language-"] {
         <ul class="mb-0">
 
             <li>MySQL Installation</li>
-            <li>Introduction to DBMS and RDBMS</li>
+            <li>Introduction to Databases</li>
             <li>Database Creation</li>
             <li>Tables and Data Types</li>
             <li>Primary Key and Auto Increment</li>
@@ -376,39 +376,37 @@ pre[class*="language-"] {
 
 
             </div>
-             <!-- <div class="content-card" id="dbms">
+            <div class="content-card" id="dbms">
 
     <h2>
         <i class="fa-solid fa-database"></i>
-        Introduction to DBMS and RDBMS
+        Introduction to Databases
     </h2>
 
     <p>
         A Database is a collection of related data stored in an organized manner.
     </p>
 
-    <h5>What is DBMS?</h5>
-
     <p>
-        DBMS (Database Management System) is software used to create, manage and manipulate databases.
+        Databases help us store, manage and retrieve data efficiently.
     </p>
-
-    <h5>Examples of DBMS</h5>
-
-    <ul>
-        <li>MySQL</li>
-        <li>Oracle</li>
-        <li>Microsoft SQL Server</li>
-        <li>PostgreSQL</li>
-    </ul>
 
     <h5>What is RDBMS?</h5>
 
     <p>
-        RDBMS (Relational Database Management System) stores data in the form of tables and establishes relationships between them.
+        RDBMS (Relational Database Management System) stores data in the form of tables and allows relationships between tables.
     </p>
 
-    <h5>Example</h5>
+    <h5>Examples of RDBMS</h5>
+
+    <ul>
+        <li>MySQL</li>
+        <li>Microsoft SQL Server</li>
+        <li>Oracle Database</li>
+        <li>PostgreSQL</li>
+    </ul>
+
+    <h5>Example Table</h5>
 
     <table class="table table-dark table-bordered">
 
@@ -426,6 +424,7 @@ pre[class*="language-"] {
                 <td>Shree</td>
                 <td>Mumbai</td>
             </tr>
+
             <tr>
                 <td>2</td>
                 <td>Vinayak</td>
@@ -435,44 +434,516 @@ pre[class*="language-"] {
 
     </table>
 
-    <h5>DBMS vs RDBMS</h5>
+    <h5>SQL vs NoSQL</h5>
 
     <table class="table table-dark table-bordered">
 
         <thead>
             <tr>
                 <th>Feature</th>
-                <th>DBMS</th>
-                <th>RDBMS</th>
+                <th>SQL</th>
+                <th>NoSQL</th>
             </tr>
         </thead>
 
         <tbody>
+
             <tr>
                 <td>Storage</td>
-                <td>Files</td>
                 <td>Tables</td>
+                <td>Documents / Collections</td>
             </tr>
 
             <tr>
-                <td>Relationships</td>
-                <td>Not Mandatory</td>
-                <td>Supported</td>
+                <td>Schema</td>
+                <td>Fixed Structure</td>
+                <td>Flexible Structure</td>
             </tr>
 
             <tr>
                 <td>Examples</td>
-                <td>File Systems</td>
                 <td>MySQL, SQL Server</td>
+                <td>MongoDB, Firebase</td>
+            </tr>
+
+            <tr>
+                <td>Best For</td>
+                <td>Structured Business Data</td>
+                <td>Large Flexible Data</td>
             </tr>
 
         </tbody>
 
     </table>
 
-            </div> -->
+    <div class="alert bg-dark">
 
+        <strong>Why MySQL? -</strong>
 
+        MySQL is one of the most popular SQL databases and is widely used with Django, PHP, .NET and many enterprise applications.
+
+    </div>
+
+</div>
+<div class="content-card" id="database">
+
+    <h2>
+        <i class="fa-solid fa-server"></i>
+        Database Creation
+    </h2>
+
+    <p>
+        A Database is a collection of related tables used to store and manage data.
+    </p>
+
+    <h5>Create Database</h5>
+
+<pre class="line-numbers"><code class="language-sql">CREATE DATABASE CollegeDB;</code></pre>
+
+    <h5>View All Databases</h5>
+
+<pre class="line-numbers"><code class="language-sql">SHOW DATABASES;</code></pre>
+
+    <h5>Select Database</h5>
+
+<pre class="line-numbers"><code class="language-sql">USE CollegeDB;</code></pre>
+
+    <h5>Example</h5>
+
+<pre class="line-numbers"><code class="language-sql">CREATE DATABASE CollegeDB;
+
+SHOW DATABASES;
+
+USE CollegeDB;</code></pre>
+
+    <div class="alert alert-info">
+
+        <strong>Note:</strong>
+
+        Before creating tables, we must select a database using the
+        <strong>USE</strong> command.
+
+    </div>
+
+</div>
+<div class="content-card" id="table">
+
+    <h2>
+        <i class="fa-solid fa-table"></i>
+        Tables and Data Types
+    </h2>
+
+    <p>
+        A Table stores data in rows and columns.
+    </p>
+
+    <h5>Create Table</h5>
+
+<pre class="line-numbers"><code class="language-sql">CREATE TABLE Student
+(
+    Id INT,
+    Name VARCHAR(100),
+    City VARCHAR(100)
+);</code></pre>
+
+    <h5>View Tables</h5>
+
+<pre class="line-numbers"><code class="language-sql">SHOW TABLES;</code></pre>
+
+    <h5>Table Structure</h5>
+
+<pre class="line-numbers"><code class="language-sql">DESCRIBE Student;</code></pre>
+
+    <hr>
+
+    <h4>Commonly Used Data Types</h4>
+
+    <table class="table table-dark table-bordered">
+
+        <thead>
+            <tr>
+                <th>Data Type</th>
+                <th>Description</th>
+                <th>Example</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>INT</td>
+                <td>Stores Whole Numbers</td>
+                <td>101</td>
+            </tr>
+
+            <tr>
+                <td>VARCHAR(100)</td>
+                <td>Stores Text</td>
+                <td>Shree</td>
+            </tr>
+
+            <tr>
+                <td>DECIMAL(10,2)</td>
+                <td>Stores Decimal Values</td>
+                <td>5500.75</td>
+            </tr>
+
+            <tr>
+                <td>DATE</td>
+                <td>Stores Date</td>
+                <td>2026-06-13</td>
+            </tr>
+
+            <tr>
+                <td>DATETIME</td>
+                <td>Stores Date & Time</td>
+                <td>2026-06-13 10:30:00</td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+    <hr>
+
+    <h4>Common Constraints</h4>
+
+    <table class="table table-dark table-bordered">
+
+        <thead>
+            <tr>
+                <th>Constraint</th>
+                <th>Purpose</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>PRIMARY KEY</td>
+                <td>Uniquely Identifies Records</td>
+            </tr>
+
+            <tr>
+                <td>NOT NULL</td>
+                <td>Value Cannot Be Empty</td>
+            </tr>
+
+            <tr>
+                <td>UNIQUE</td>
+                <td>Prevents Duplicate Values</td>
+            </tr>
+
+            <tr>
+                <td>AUTO_INCREMENT</td>
+                <td>Automatically Generates Numbers</td>
+            </tr>
+
+            <tr>
+                <td>DEFAULT</td>
+                <td>Assigns Default Value</td>
+            </tr>
+
+        </tbody>
+
+    </table>
+
+    <h5>Example Table with Constraints</h5>
+
+<pre class="line-numbers"><code class="language-sql">CREATE TABLE Student
+(
+    Id INT PRIMARY KEY AUTO_INCREMENT,
+    Name VARCHAR(100) NOT NULL,
+    Email VARCHAR(100) UNIQUE,
+    City VARCHAR(100) DEFAULT 'Mumbai'
+);</code></pre>
+
+</div>
+<div class="content-card" id="primarykey">
+
+    <h2>
+        <i class="fa-solid fa-key"></i>
+        Primary Key and Auto Increment
+    </h2>
+
+    <h5>Primary Key</h5>
+
+    <p>
+        A Primary Key is used to uniquely identify each record in a table.
+    </p>
+
+    <h5>Features of Primary Key</h5>
+
+    <ul>
+        <li>Must contain unique values.</li>
+        <li>Cannot contain NULL values.</li>
+        <li>Only one Primary Key can exist in a table.</li>
+    </ul>
+
+    <h5>Example</h5>
+
+<pre class="line-numbers"><code class="language-sql">CREATE TABLE Student
+(
+    Id INT PRIMARY KEY,
+    Name VARCHAR(100),
+    City VARCHAR(100)
+);</code></pre>
+
+    <hr>
+
+    <h5>Auto Increment</h5>
+
+    <p>
+        AUTO_INCREMENT automatically generates sequential numbers for new records.
+    </p>
+
+<pre class="line-numbers"><code class="language-sql">CREATE TABLE Student
+(
+    Id INT PRIMARY KEY AUTO_INCREMENT,
+    Name VARCHAR(100),
+    City VARCHAR(100)
+);</code></pre>
+
+    <h5>Example Records</h5>
+
+    <table class="table table-dark table-bordered">
+
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>City</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>Shree</td>
+                <td>Mumbai</td>
+            </tr>
+
+            <tr>
+                <td>2</td>
+                <td>Vinayak</td>
+                <td>Pune</td>
+            </tr>
+
+            <tr>
+                <td>3</td>
+                <td>Rohit</td>
+                <td>Kolhapur</td>
+            </tr>
+        </tbody>
+
+    </table>
+
+    <div class="alert alert-info">
+
+        <strong>Note:</strong>
+
+        When using AUTO_INCREMENT, we do not need to manually insert values into the Id column.
+
+    </div>
+
+</div>
+<div class="content-card" id="dml">
+
+    <h2>
+        <i class="fa-solid fa-table-list"></i>
+        DML Statements
+    </h2>
+
+    <p>
+        DML (Data Manipulation Language) statements are used to insert, retrieve, update and delete records from a table.
+    </p>
+
+    <h5>Sample Table</h5>
+
+<pre class="line-numbers"><code class="language-sql">CREATE TABLE Student
+(
+    Id INT PRIMARY KEY AUTO_INCREMENT,
+    Name VARCHAR(100),
+    City VARCHAR(100)
+);</code></pre>
+
+    <hr>
+
+    <h5>INSERT</h5>
+
+<pre class="line-numbers"><code class="language-sql">INSERT INTO Student(Name, City)
+VALUES('Shree', 'Mumbai');</code></pre>
+
+<pre class="line-numbers"><code class="language-sql">INSERT INTO Student(Name, City)
+VALUES('Vinayak', 'Pune');</code></pre>
+
+    <hr>
+
+    <h5>SELECT</h5>
+
+<pre class="line-numbers"><code class="language-sql">SELECT * FROM Student;</code></pre>
+
+    <div class="code-title">
+        Result
+    </div>
+
+<pre class="line-numbers"><code class="language-sql">+----+---------+---------+
+| Id | Name    | City    |
++----+---------+---------+
+| 1  | Shree   | Mumbai  |
+| 2  | Vinayak | Pune    |
++----+---------+---------+</code></pre>
+
+    <hr>
+
+    <h5>UPDATE</h5>
+
+<pre class="line-numbers"><code class="language-sql">UPDATE Student
+SET City = 'Kolhapur'
+WHERE Id = 2;</code></pre>
+
+    <hr>
+
+    <h5>DELETE</h5>
+
+<pre class="line-numbers"><code class="language-sql">DELETE FROM Student
+WHERE Id = 2;</code></pre>
+
+    <hr>
+
+    <h5>View Updated Records</h5>
+
+<pre class="line-numbers"><code class="language-sql">SELECT * FROM Student;</code></pre>
+
+    <div class="alert alert-warning">
+
+        <strong>Important:</strong>
+
+        Always use the WHERE clause with UPDATE and DELETE statements.
+        Without WHERE, all records in the table may be affected.
+
+    </div>
+
+</div>
+<div class="content-card" id="revision">
+
+    <h2>
+        <i class="fa-solid fa-bolt"></i>
+        Quick Revision
+    </h2>
+
+    <div class="row">
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">RDBMS</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Stores Data in Tables</li>
+                        <li>Supports Relationships</li>
+                        <li>Example: MySQL</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Database</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Collection of Tables</li>
+                        <li>Created using CREATE DATABASE</li>
+                        <li>Selected using USE</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">Table</h5>
+                    <ul class="mb-0 text-light">
+                        <li>Rows & Columns</li>
+                        <li>Stores Records</li>
+                        <li>Created using CREATE TABLE</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+    <div class="card bg-dark border-secondary h-100">
+        <div class="card-body">
+            <h5 class="text-info">Constraints</h5>
+            <ul class="mb-0 text-light">
+                <li>PRIMARY KEY</li>
+                <li>AUTO_INCREMENT</li>
+                <li>NOT NULL</li>
+                <li>UNIQUE</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card bg-dark border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="text-info">DML</h5>
+                    <ul class="mb-0 text-light">
+                        <li>INSERT</li>
+                        <li>SELECT</li>
+                        <li>UPDATE & DELETE</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<div class="content-card" id="assignment">
+
+    <h2>
+        <i class="fa-solid fa-clipboard-check"></i>
+        Assignment
+    </h2>
+
+    <div class="assignment-box">
+
+        <strong>
+            Complete the following tasks in MySQL Workbench:
+        </strong>
+
+        <ol>
+
+            <li>
+                Create a database named <strong>CompanyDB</strong> and select it for use.
+            </li>
+
+            <li>
+                Create an <strong>Employee</strong> table with the following columns:
+                Id, Name, Department and Salary.
+            </li>
+
+            <li>
+                Insert at least 3 employee records into the Employee table.
+            </li>
+
+            <li>
+                Update the Department of one employee and verify the changes using SELECT.
+            </li>
+
+            <li>
+                Delete one employee record and display the remaining records.
+            </li>
+
+        </ol>
+
+    </div>
+
+</div>
         </div>
 
     </div>
